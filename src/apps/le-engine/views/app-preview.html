@@ -1,0 +1,111 @@
+<div class="view-common">
+    <div class="le-row list-common">
+        <div>
+            <div class="le-row list-common">
+                <div class="le-col-12 mirror-info">
+                    <p class="lead" ng-show="!viewAppPermissions">{{appPreviewPage.viewAppPermissionsTip}}</p>
+                    <table class="le-table-info table table-bordered" ng-show="viewAppPermissions">
+                        <thead>
+                        <tr>
+                            <th colspan="2">
+                                <span>{{appPreviewPage.appTitle}}</span>
+                                <a ng-show="deleteAppPermissions" class="pull-right tb-set-btn" ng-click="deleteApp('small',appInfo)">
+                                    <i class="iconfont icon-move delete-option"></i>
+                                </a>
+                                <a ng-show="editAppPermissions"class="pull-right tb-set-btn" ng-click="settingApp('large',appInfo,'edit')"><i class="iconfont icon-write edit-option"></i></a>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2">
+                                    <span class="title">ID:</span>
+                                    <span class="con">{{appInfo.Id}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="title">{{appPreviewPage.app}}:</span>
+                                    <span class="con">{{appInfo.Name}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{appPreviewPage.createdBy}}:</span>
+                                    <span class="con">{{appInfo.OwnerName}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="title">{{appPreviewPage.k8sNamespace}}:</span>
+                                    <span class="con">{{appInfo.K8sNamespace}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{appPreviewPage.k8sPodsLimit}}:</span>
+                                    <span class="con">{{appInfo.K8sPodsLimit}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="title">{{appPreviewPage.nodeSelector}}:</span>
+                                    <span class="con">{{appInfo.NodeSelector}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{appPreviewPage.imagePath}}:</span>
+                                    <span class="con">{{appInfo.ImagePath}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="title">{{appPreviewPage.domainName}}:</span>
+                                    <span class="con">{{appInfo.DomainName}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{appPreviewPage.upstream}}:</span>
+                                    <span class="con">{{appInfo.Upstream}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="title">{{appPreviewPage.port}}:</span>
+                                    <span class="con">{{appInfo.Port}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{appPreviewPage.https}}:</span>
+                                    <span class="con" ng-show="!appInfo.Https" class="span span-warning">{{appInfo.Https|yesnoFormate}}</span>
+                                    <span class="con" ng-show="appInfo.Https" class="span span-success">{{appInfo.Https|yesnoFormate}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="auto-break-line">
+                                    <span class="title">{{appPreviewPage.groupName}}:</span>
+                                    <span class="con">{{appInfo.GroupName}}</span>
+                                </td>
+                                <td class="auto-break-line">
+                                    <span class="title">{{appPreviewPage.companyName}}:</span>
+                                    <span class="con">{{appInfo.Company}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="title">{{appPreviewPage.createdAt}}:</span>
+                                    <span class="con">{{appInfo.CreatedAt | date: 'yyyy-MM-dd HH:mm:ss '}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{appPreviewPage.updatedAt}}:</span>
+                                    <span class="con">{{appInfo.LastActivityAt | date: 'yyyy-MM-dd HH:mm:ss '}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="auto-break-line" colspan="2">
+                                    <span class="title">{{appPreviewPage.description}}:</span>
+                                    <span class="con">{{appInfo.Description}}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

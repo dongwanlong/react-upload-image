@@ -1,0 +1,51 @@
+{
+  "mode":{
+    "production":"build/production",
+    "test":"build/test"
+  },
+  "root":{
+    "projectname":"letvcloud_matrix_fe",
+    "src":"src",
+    "rev":"build/rev"
+  },
+  "tasks":{
+    "copy":{
+      "src":"src/WEB-INF/**/*.jsp",
+      "dest":"D:/java_team/letvSpace_bak/lcp/cloudplatform-webportal-webapp/src/main/webapp"
+    },
+  	"clean":{
+  		"src":["build/"]
+  	},
+    "css":{
+      "staticsrc":"stylesheets/home/*.css",
+      "staticdest":"/stylesheets/home/",
+      "concatsrc":"stylesheets/vendor/*.css",
+      "concatdest":"/stylesheets/vendor",
+      "md5src":"stylesheets/*.css",
+      "md5dest":"/stylesheets",
+      "vmreplace":"<link rel='stylesheet' href='/stylesheets/vendor/vendor.css'>",
+      "dashreplace":"<link rel='stylesheet' href='/stylesheets/vendor/vendor.css'>"
+    },
+    "js":{
+      "staticsrc":"javascripts/home/*.js",
+      "staticdest":"/javascripts/home/",
+      "pagesrc":"javascripts/page/*.js",
+      "pagedest":"/javascripts/page/"
+    },
+    "rev":{
+      "staticrev":["build/rev/staticcss.json","build/rev/staticjs.json"],
+      "staticsrc":["src/*.html"],
+      "staticdest":"/",
+      "pagerev":["build/rev/staticcss.json","build/rev/pagejs.json"],
+      "invitesrc":["src/WEB-INF/views/invite/*.jsp"],
+      "paysrc":["src/WEB-INF/views/payment/*.jsp"],
+      "invitedest":"/WEB-INF/views/invite",
+      "paydest":"/WEB-INF/views/payment",
+      "consolerev":["build/rev/concatcss.json","build/rev/md5css.json"],
+      "vmsrc":["src/WEB-INF/views/cloudvm/*.jsp"],
+      "vmdest":"/WEB-INF/views/cloudvm",
+      "dashboardsrc":["src/WEB-INF/views/profile.jsp"],
+      "dashdest":"/WEB-INF/views"
+    }
+  }
+}

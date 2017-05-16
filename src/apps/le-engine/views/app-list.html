@@ -1,0 +1,75 @@
+<div class="view-common">
+    <div class="le-row list-common">
+        <div class="le-row operate-panel">
+            <div class="le-col-12 le-btn-group">
+                <button class="btn btn-le-blue" ng-if="appType=='owner'" ng-click="settingApp('create','xxxl')"><span>{{appListPage.appCreate}}</span></button>
+                <button class="btn btn-le-blue" ng-if="appType=='owner'" ng-click="deleteApp('small')"><span>{{appListPage.appDelete}}</span></button>
+                <div class="le-search-box pull-right">
+                    <input type="text" ng-model="searchName" ng-keyup="doSearch($event)" placeholder="{{appListPage.appSearch}}"/>
+                    <span class="search-icon" ng-click="doSearch()"></span>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="le-row list-common">
+                <div class="le-col-12">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th width="9%"></th>
+                            <th width="13%"><span>{{appListPage.appName}}</span></th>
+                            <th width="13%"><span>{{appListPage.K8sPodsLimit}}</span></th>
+                            <th width="13%"><span>{{appListPage.DomainName}}</span></th>
+                            <th width="13%"><span>{{appListPage.ImagePath}}</span></th>
+                            <th width="13%"><span>{{appListPage.appOwner}}</span></th>
+                            <th width="13%"><span>{{appListPage.AccessLevelName}}</span></th>
+                            <th width="13%"><span>{{appListPage.LastActivityAt}}</span></th>
+                        </tr>
+                        </thead>
+                        <tbody id="allApp">
+                        <tr ng-repeat="app in appList">
+                            <td class="unselectable"><span class="iconfont icon-checkiconfill" ng-class="{checked:app.checked}" ng-click="checkApp(app)"></span></td>
+                            <td class="le-col-name">
+                                <a ng-href="#/app-cell/{{encoded(app.Id)}}/{{app.Name}}">
+                                    <span ng-click="setAppName(app.Name)" class="text-blue" >{{app.Name}}</span>
+                                </a>
+                            </td>
+                            <td class=""><span>{{app.K8sPodsLimit}}</span></td>
+                            <td class="">
+                                <span ng-if="app.DomainName">{{app.DomainName}}</span>
+                                <span ng-if="!app.DomainName">{{appListPage.noRecords}}</span>
+                            </td>
+                            <td class=""><span>{{app.ImagePath}}</span></td>
+                            <td class=""><span>{{app.OwnerName}}</span></td>
+                            <td class=""><span>{{app.AccessLevelName}}</span></td>
+                            <td class=""><span>{{app.LastActivityAt|date : 'yyyy-MM-dd HH:mm:ss '}}</span></td>
+                        </tr>
+                        <tr ng-if="appList.length==0 || !appList">
+                            <td ng-if="!isListLoading && appType=='owner'" colspan=10 class="nodata">{{appListPage.goToCreateApp}}</td>
+                            <td ng-if="!isListLoading && appType!='owner'" colspan=10 class="nodata">{{appListPage.noApp}}</td>
+                            <td ng-if="isListLoading" colspan=10></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div ng-show="!isListLoading && appList.length>0" class="le-pagination">
+                        <span>{{pagination.total}}{{totalItems}}{{pagination.nums}}，{{pagination.perPage}}</span>
+                        <span class="pageSpan">{{pageSize}}</span>
+                        <span>{{pagination.nums}}</span>
+                        <pagination boundary-links="true" direction-links="true"
+                                    ng-change="pageChange()" items-per-page="pageSize"
+                                    total-items="totalItems" ng-model="currentPage" class="pagination-sm" max-size="5"
+                                    rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                                    last-text="&raquo;">
+                        </pagination>
+                    </div>
+                    <div ng-if="isListLoading" class="spin"></div>
+                    <div ng-if="isListLoading" class="far-spin"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

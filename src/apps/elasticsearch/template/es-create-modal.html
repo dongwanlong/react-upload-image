@@ -1,0 +1,88 @@
+<div class="modal-header letv-modal-header vm-create-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{esCreateModalPage.title}}</h3>
+</div>
+<div class="modal-body">
+    <form novalidate class="es-create-form" name="es_create_form">
+        <div class="col-sm-8 body-left">
+            <div id="left-flowone">
+                <div class="left-inputs">
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-3"><span class="letv-control-label">{{esCreateModalPage.esName}}：</span></div>
+                        <div class="col-sm-9">
+                            <input type="text" name="es_name" class="le-form-control" ng-model="esName" regex="REGEX.NAME_ES"  ng-trim="false" necessary="true" input-restrict le-auto-focus/>
+                            <input-validation-tooltip ng-show="(es_create_form.$submitted || es_create_form.es_name.$touched) && es_create_form.es_name.$error.inputRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME_ES}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-3"><span class="letv-control-label">{{esCreateModalPage.esMark}}：</span></div>
+                        <div class="col-sm-9">
+                            <input type="text" name="es_mark" class="le-form-control" ng-model="esMark" length="50"  ng-trim="false" input-length-restrict />
+                            <input-validation-tooltip ng-show="(es_create_form.$submitted || es_create_form.es_mark.$touched) && es_create_form.es_mark.$error.inputLengthRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.MARK_ES}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-3"><span class="letv-control-label">{{esCreateModalPage.esMemorySize}}：</span></div>
+                        <div class="col-sm-9">
+                            <le-select class="es-select" select-model="esMemorySizeNow" select-options="esMemorySizeList"></le-select>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-3"><span class="letv-control-label">{{esCreateModalPage.esNodeCount}}：</span></div>
+                        <div class="col-sm-9">
+                            <numeric-input numeric-model="esNodeCount" numeric-max="5" numeric-min="1"></numeric-input>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-3"><span class="letv-control-label">{{esCreateModalPage.esStorageSize}}：</span></div>
+                        <div class="col-sm-9">
+                            <le-select class="es-select" select-model="esStorageSizeNow" select-options="esStorageSizeList"></le-select>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-3"><span class="letv-control-label">{{esCreateModalPage.esHcluster}}：</span></div>
+                        <div class="col-sm-9">
+                            <le-select select-model="esHcluster" select-options="esHclusterList"></le-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 body-right">
+            <div class="right-top">
+                <div class="top-title"><span>{{esCreateModalPage.orderTitle}}</span><i class="iconfont icon-rounddown"></i></div>
+                <ul class="top-items">
+                    <li><span class="title">{{esCreateModalPage.memorySize}}：</span><span class="value">{{esMemorySizeNow.text}}</span></li>
+                    <li><span class="title">{{esCreateModalPage.storageSize}}：</span><span class="value">{{esStorageSizeNow.text}}</span></li>
+                    <li><span class="title">{{esCreateModalPage.esNodeCount}}：</span><span class="value">{{esNodeCount}}</span></li>
+                </ul>
+            </div>
+            <div class="right-bottom">
+                <div class="row-order-price" ng-show="!isCalculatingPrice">
+                       <span>
+                                    <span class="title">{{esCreateModalPage.total}}：</span>
+                                    <span class="price">{{esTotalPrice}}</span>
+                                    <span class="unit">{{esCreateModalPage.CNY}}</span>
+                       </span>
+                </div>
+                <div class="row-calculating-price" ng-show="isCalculatingPrice">
+                    <span>{{esCreateModalPage.priceCalculating}}</span>
+                </div>
+                <div class="row-submit-order">
+                    <button class="btn btn-le-red btn-submit-order" ng-click="es_create_form.$valid && !isFormSubmiting &&createEs()" ng-disabled="isEsCanBuy">
+                        <span ng-if="!isFormSubmiting">{{esCreateModalPage.submitOrderBtn}}</span>
+                        <span ng-if="isFormSubmiting">{{esCreateModalPage.submitOrdering}}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <iframe style="display:none" ng-src="{{keypairDownloadUrl}}"></iframe>
+    </form>
+</div>

@@ -1,0 +1,58 @@
+<div class="view-common">
+    <div class="le-row list-common">
+        <div class="le-row operate-panel">
+            <div class="le-col-6 le-btn-group">
+                <button class="btn btn-le-blue" ng-if="buildImagePermissions" ng-click="autoCiTag('large')">{{ciHistoryListPage.tabBtnAutoCreate}}</button>
+                <button class="btn btn-le-yellow" ng-if="buildImagePermissions" ng-click="openCiTagCreateModal('medium')"><span>{{ciHistoryListPage.tabBtnCreate}}</span></button>
+                <button class="btn btn-le-red" ng-click="refreshList()"><span>{{ciHistoryListPage.tabBtnRefress}}</span></button>
+            </div>
+            <div class="le-col-12" ng-if="mirrorPath">
+                <br><p>{{ciHistoryListPage.currentImagePath}}: {{mirrorPath}}</p>
+            </div>
+        </div>
+        <div>
+            <div class="le-row list-common">
+                <div class="le-col-12">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th width="15%"><span>{{ciHistoryListPage.tableTitleCreateResulte}}</span></th>
+                            <th width="15%"><span>{{ciHistoryListPage.tableTitleTag}}</span></th>
+                            <th width="40%"><span>{{ciHistoryListPage.tableTitleIdentification}}</span></th>
+                            <th width="15%"><span>{{ciHistoryListPage.tableTitleCreateTime}}</span></th>
+                            <th width="15%"><span>{{ciHistoryListPage.tableTitleUpdateTime}}</span></th>
+                        </tr>
+                        </thead>
+                        <tbody id="allMirrorTag">
+                        <tr ng-repeat="ciHistory in ciTagHistoryList">
+                            <td ng-click="openUniqueHistory('hlarge',ciHistory);">
+                                <span ng-show="ciHistory.BuildResult==0" class="link span span-process">{{ciHistory.BuildResult|BuildResult}}</span>
+                                <span ng-show="ciHistory.BuildResult==1" class="link span span-success">{{ciHistory.BuildResult|BuildResult}}</span>
+                                <span ng-show="ciHistory.BuildResult==-1" class="link span span-warning">{{ciHistory.BuildResult|BuildResult}}</span>
+                            </td>
+                            <td>
+                                <span>{{ciHistory.TagName}}</span>
+                            </td>
+                            <td class="unique">
+                                <span ng-mouseover="mouseHandle('enter');"  ng-mouseleave="mouseHandle('leave')">  {{ciHistory.UniqueIdentification}}</span>
+                            </td>
+                            <td><span>{{ciHistory.CreatedAt|date : 'yyyy-MM-dd HH:mm:ss'}}</span></td>
+                            <td><span>{{ciHistory.UpdatedAt|date : 'yyyy-MM-dd HH:mm:ss'}}</span></td>
+                        </tr>
+                        <tr ng-if="ciTagHistoryList.length==0">
+                            <td ng-if="!isListLoading" colspan=6 class="nodata">{{ciHistoryListPage.goToCreateCiHistory}}</td>
+                            <td ng-if="isListLoading" colspan=6></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div ng-if="isListLoading" class="spin"></div>
+                    <div ng-if="isListLoading" class="far-spin"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

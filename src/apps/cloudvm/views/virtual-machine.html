@@ -1,0 +1,319 @@
+<div class="view-common view-virtual-machine" ng-controller="VirtualMachineCrtl">
+    <div class="le-row operate-panel">
+        <div class="le-col-6 le-btn-group">
+            <button class="btn btn-le-blue" ng-click="openVmCreateModal('large')" ng-disabled="operationBtn.create==0"><span>创建云主机</span></button>
+            <button class="btn btn-le-blueGreen" ng-click="startVm('small')" ng-disabled="operationBtn.start==0"><span>启动</span></button>
+            <button class="btn btn-le-green" ng-click="stopVm('small')" ng-disabled="operationBtn.stop==0"><span>关机</span></button>
+            <div dropdown class="more-operation-dropdown">
+                <a href class="btn btn-le-yellow" dropdown-toggle>
+                    更多操作
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="simple-dropdown">
+                    <!-- <li><a href="javascript:void(0);" ng-click="rebootVm('400')">重启云主机</a></li>
+                    <li><a href="javascript:void(0);" ng-click="openVmSnapshotCreateModal('500')">创建快照</a></li>
+                    <li><a href="javascript:void(0);" ng-click="openDiskAttachModal('500')">挂载云硬盘</a></li>
+                    <li><a href="javascript:void(0);" ng-click="openDiskDetachModal('500')">卸载云硬盘</a></li>
+                    <li><a href="javascript:void(0);" ng-click="openFloatingIpBindModal('500')">绑定公网IP</a></li>
+                    <li><a href="javascript:void(0);" ng-click="openVmPasswordChangeModal('500')">修改密码</a></li>
+                    <li><a href="javascript:void(0);" ng-click="deleteVm('400')">删除云主机</a></li> -->
+                    <li><button class="btn dropdown-btn" ng-click="rebootVm('small')" ng-disabled="operationBtn.restart==0">重启云主机</button></li>
+                    <li><button class="btn dropdown-btn" ng-click="openDiskEditModal('medium')">编辑云主机</button></li>
+                    <li><button class="btn dropdown-btn" ng-click="openVmSnapshotCreateModal('medium')" ng-disabled="operationBtn.createsnap==0">创建快照</button></li>
+                    <li><button class="btn dropdown-btn" ng-click="openDiskAttachModal('medium')" ng-disabled="operationBtn.attachdisk==0">挂载云硬盘</button></li>
+                    <li><button class="btn dropdown-btn" ng-click="openDiskDetachModal('medium')" ng-disabled="operationBtn.detachdisk==0">卸载云硬盘</button></li>
+                    <li><button class="btn dropdown-btn" ng-click="openFloatingIpBindModal('medium')" ng-disabled="operationBtn.bindfloatIp==0">绑定公网IP</button></li>
+                    <li><button class="btn dropdown-btn" ng-click="openVmPasswordChangeModal('medium')" ng-disabled="operationBtn.editpass==0">修改密码</button></li>
+                    <li><button class="btn dropdown-btn" ng-click="deleteVm('small')" ng-disabled="operationBtn.delete==0">删除云主机</button></li>
+                </ul>
+            </div>
+        </div>
+        <div class="le-col-6">
+            <div class="le-search-box pull-right">
+                <input type="text" ng-model="searchVmName" ng-model-options="{debounce:500}" ng-change="doSearch()" placeholder="输入云主机名称" />
+                <span class="search-icon"></span>
+            </div>
+        </div>
+    </div>
+    <div class="le-row list-common">
+        <div class="le-col-12">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th  class="unselectable">
+                         <span class="iconfont icon-righticon"  ng-class="{checked:isAllVmChecked()}" ng-click="checkAllVm()"></span>
+                    </th>
+                    <th><span>名称</span></th>
+                    <th><span>内网IP</span></th>
+                    <th><span>公网IP</span></th>
+                    <th><span>状态</span></th>
+                    <th><span>镜像</span></th>
+                    <th><span>配置</span></th>
+                    <!-- <th><span>监控</span></th> -->
+                    <th><span>创建时间</span></th>
+                    <th><span>VNC登录</span></th>
+                </tr>
+                </thead>
+                <tbody id="tby">
+                <tr ng-if="vmList.length>0" ng-repeat="vm in vmList">
+                    <td class="unselectable">
+                        <span class="iconfont icon-checkiconfill" ng-class="{checked:vm.checked}" ng-click="checkVm(vm,$index)"></span>
+                    </td>
+                    <td class="le-col-name"><span>{{vm.name}}</span></td>
+                    <td>
+                        <span ng-show="vm.ipAddresses.private.length || vm.ipAddresses.shared.length">
+                            <div class="vm-address-private" ng-repeat="privateAddress in vm.ipAddresses.private">
+                                <span>{{privateAddress.subnet.name}}：</span><span>{{privateAddress.ipAddress}}</span>
+                            </div>
+                            <div class="vm-address-private" ng-repeat="sharedAddress in vm.ipAddresses.shared">
+                                 <span>{{sharedAddress}}</span>
+                            </div>
+                        </span>
+                        <span ng-show="!vm.ipAddresses.private.length && !vm.ipAddresses.shared.length">未设置</span>
+                    </td>
+                    <td><span>{{vm.ipAddresses.public.join(', ') || '未设置'}}</span></td>
+                    <td>
+                        <span>{{vm | vmStatusFilter}}</span>
+                        <span ng-show="vm.vmState ==='building' || !!vm.taskState" class="status-loading"></span>
+                    </td>
+                    <td><span>{{vm.image.name || EMPTY_TEXT}}</span></td>
+                    <td><span>{{vm | vmFlavorFilter}}</span></td>
+                    <!-- <td><span class="iconfont icon-monitor"></span></td> -->
+                    <td><span>{{vm.created | date:'yyyy-MM-dd HH:mm'}}</span></td>
+                    <td><span class="iconfont icon-computer" ng-click="navigateToVNC(vm)"></span></td>
+                </tr>
+                <tr ng-if="vmList.length==0">
+                    <td ng-if="!isListLoading" colspan=10 class="nodata">暂无云主机，去创建吧。</td>
+                    <td ng-if="isListLoading" colspan=10></td>
+                </tr>
+                </tbody>
+            </table>
+            <div ng-show="!isListLoading && vmList.length>0" class="le-pagination">
+                <span>共{{totalItems}}条，每页显示{{pageSize}}条</span>
+                <pagination boundary-links="true" direction-links="true"
+                            ng-change="onPageChange()" items-per-page="pageSize"
+                            total-items="totalItems" ng-model="currentPage" class="pagination-sm" max-size="5"
+                            rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                            last-text="&raquo;">
+                </pagination>
+            </div>
+            <div ng-if="isListLoading" class="spin"></div>
+            <div ng-if="isListLoading" class="far-spin"></div>
+        </div>
+
+    </div>
+    <toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+    </toaster-container>
+
+    <script type="text/ng-template" id="VmEditModalTpl">
+        <div class="modal-vm-edit">
+            <form novalidate class="form-vm-edit" name="vm_edit_form">
+                <div class="le-modal-header">
+                    <span class="header-title">编辑云主机</span>
+                    <a class="close" ng-click="closeModal()">
+                        <i class="iconfont icon-add"></i>
+                    </a>
+                </div>
+                <div class="le-modal-body">
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">名称：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <input type="text" class="le-form-control input-vm-name" ng-model="vmName" name="vm_name" ng-trim="false" le-auto-focus name-input-restrict />
+                            <input-validation-tooltip ng-show="(vm_edit_form.$submitted || vm_edit_form.vm_name.$touched) && vm_edit_form.vm_name.$error.nameInputRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-12 col-submit-order">
+                            <button class="btn btn-le-blue" ng-click="vm_edit_form.$valid && !isFormSubmiting && editVm()" ng-disabled="isFormSubmiting">
+                                <span ng-if="!isFormSubmiting">编辑</span>
+                                <span ng-if="isFormSubmiting">编辑执行中...</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+    <script type="text/ng-template" id="DiskAttachModalTpl">
+        <div class="modal-vm-disk-attach">
+            <form novalidate class="form-vm-disk-attach" name="vm_disk_attach_form">
+            <div class="le-modal-header">
+                <span class="header-title">挂载云硬盘</span>
+                <a class="close" ng-click="closeModal()">
+                    <i class="iconfont icon-add"></i>
+                </a>
+            </div>
+            <div class="le-modal-body">
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">云硬盘：</span>
+                    </div>
+                    <div class="le-col-9 col-control">
+                        <input type="hidden" name='selected_disk' ng-model="selectedDisk" required/>
+                        <le-select select-model="selectedDisk" select-options="diskListSelectorData" select-empty-text="暂无可挂载的云硬盘" is-select-option-loading="isDiskListLoading"></le-select>
+                        <input-validation-tooltip class="le-select-tooltip" ng-show="vm_disk_attach_form.$submitted && vm_disk_attach_form.selected_disk.$error.required"
+                                                  validation-message="请选择云硬盘">
+                        </input-validation-tooltip>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-12 col-submit-order">
+                        <button class="btn btn-le-blue" ng-click="vm_disk_attach_form.$valid && !isFormSubmiting && attachDisk()" ng-disabled="isFormSubmiting">
+                            <span ng-if="!isFormSubmiting">挂载</span>
+                            <span ng-if="isFormSubmiting">挂载执行中...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </script>
+    <script type="text/ng-template" id="DiskDetachModalTpl">
+        <div class="modal-vm-disk-detach">
+            <form novalidate class="form-vm-disk-detach" name="vm_disk_detach_form">
+            <div class="le-modal-header">
+                <span class="header-title">卸载云硬盘</span>
+                <a class="close" ng-click="closeModal()">
+                    <i class="iconfont icon-add"></i>
+                </a>
+            </div>
+            <div class="le-modal-body">
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">云硬盘：</span>
+                    </div>
+                    <div class="le-col-9 col-control">
+                        <input type="hidden" name='selected_disk' ng-model="selectedDisk" required />
+                        <le-select select-model="selectedDisk" select-options="diskListSelectorData" select-empty-text="暂无可卸载的云硬盘"></le-select>
+                        <input-validation-tooltip class="le-select-tooltip" ng-show="vm_disk_detach_form.$submitted && vm_disk_detach_form.selected_disk.$error.required"
+                                                  validation-message="请选择云硬盘">
+                        </input-validation-tooltip>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-12 col-submit-order">
+                        <button class="btn btn-le-blue" ng-click="vm_disk_detach_form.$valid && !isFormSubmiting && detachDisk()" ng-disabled="isFormSubmiting">
+                            <span ng-if="!isFormSubmiting">卸载</span>
+                            <span ng-if="isFormSubmiting">卸载执行中...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </script>
+    <script type="text/ng-template" id="FloatingIpBindModalTpl">
+        <div class="modal-vm-floatingIp-bind">
+            <form novalidate class="form-vm-floatingIp-bind" name="vm_floatingIp_bind_form">
+            <div class="le-modal-header">
+                <span class="header-title">绑定公网IP</span>
+                <a class="close" ng-click="closeModal()">
+                    <i class="iconfont icon-add"></i>
+                </a>
+            </div>
+            <div class="le-modal-body">
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">公网IP：</span>
+                    </div>
+                    <div class="le-col-9 col-control">
+                        <input type="hidden" name='selected_floatingIp' ng-model="selectedFloatingIp" required />
+                        <le-select select-model="selectedFloatingIp" select-options="floatingIpListSelectorData" select-empty-text="暂无可绑定的公网IP" is-select-option-loading="isFloatingIpListLoading"></le-select>
+                        <input-validation-tooltip class="le-select-tooltip" ng-show="vm_floatingIp_bind_form.$submitted && vm_floatingIp_bind_form.selected_floatingIp.$error.required"
+                                                  validation-message="请选择公网ip">
+                        </input-validation-tooltip>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-12 col-submit-order">
+                        <button class="btn btn-le-blue" ng-click="vm_floatingIp_bind_form.$valid && !isFormSubmiting && bindFloatingIp()" ng-disabled="isFormSubmiting">
+                            <span ng-if="!isFormSubmiting">绑定</span>
+                            <span ng-if="isFormSubmiting">绑定执行中...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </script>
+    <script type="text/ng-template" id="VmSnapshotCreateModalTpl">
+        <div class="modal-vm-snapshot-create">
+            <div class="le-modal-header">
+                <span class="header-title">创建云主机快照</span>
+                <a class="close" ng-click="closeModal()">
+                    <i class="iconfont icon-add"></i>
+                </a>
+            </div>
+            <div class="le-modal-body">
+                <form novalidate class="form-vm-snapshot-create" name="vm_snapshot_create_form">
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">快照名称：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <input type="text" class="le-form-control input-vm-snapshot-name" ng-model="vmSnapshotName" ng-trim="false" name="vm_snapshot_name" le-auto-focus name-input-restrict />
+                            <input-validation-tooltip ng-show="(vm_snapshot_create_form.$submitted || vm_snapshot_create_form.vm_snapshot_name.$touched) && vm_snapshot_create_form.vm_snapshot_name.$error.nameInputRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-12 col-submit-order">
+                            <button class="btn btn-le-blue" ng-click="vm_snapshot_create_form.$valid && !isFormSubmiting && createVmSnapshot()" ng-disabled="isFormSubmiting">
+                                <span ng-if="!isFormSubmiting">创建</span>
+                                <span ng-if="isFormSubmiting">创建执行中...</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </script>
+    <script type="text/ng-template" id="VmPasswordChangeModalTpl">
+        <div class="modal-vm-password-change">
+            <div class="le-modal-header">
+                <span class="header-title">修改云主机密码</span>
+                <a class="close" ng-click="closeModal()">
+                    <i class="iconfont icon-add"></i>
+                </a>
+            </div>
+            <div class="le-modal-body">
+                <form novalidate class="form-vm-password-change" name="vm_password_change_form">
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">新密码：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <input type="password" class="le-form-control" ng-model="newPassword" name="vm_new_password" password-restrict />
+                            <input-validation-tooltip ng-show="(vm_password_change_form.$submitted || vm_password_change_form.vm_new_password.$touched) && vm_password_change_form.vm_new_password.$error.passwordRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.PASSWORD}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">确认密码：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <input type="password" class="le-form-control" ng-model="confirmPassword" name="vm_confirm_password" password-confirm password-model="newPassword" />
+                            <input-validation-tooltip ng-show="(vm_password_change_form.$submitted || vm_password_change_form.vm_confirm_password.$touched) && vm_password_change_form.vm_confirm_password.$error.passwordConfirm"
+                                                      validation-message="两次输入的密码不一致">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-12 col-submit-order">
+                            <button class="btn btn-le-blue" ng-click="vm_password_change_form.$valid && !isFormSubmiting && changeVmPassword()" ng-disabled="isFormSubmiting">
+                                <span ng-if="!isFormSubmiting">修改</span>
+                                <span ng-if="isFormSubmiting">修改执行中...</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </script>
+</div>

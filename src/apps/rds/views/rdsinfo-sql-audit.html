@@ -1,0 +1,203 @@
+<div class="view-common" ng-controller="RdsInfoSqlAuditCtrl">
+    <div class="le-row operate-panel">
+        <div class="le-col-6 le-btn-group">
+            <button class="btn btn-le-blue" ng-click="openSqlAuditModal('large')"><span>{{langRdsInfoSqlAuditPage.createSqlAudit}}</span></button>
+        </div>
+    </div>
+    <div class="le-row le-tab-header">
+        <div class="le-tab-btn" ng-class="{'le-tab-active': tabShow === 'DML'}" ng-click="switchTabToDML()"><span>{{langRdsInfoSqlAuditPage.DML}}</span></div>
+        <div class="le-tab-btn" ng-class="{'le-tab-active': tabShow === 'DDL'}" ng-click="switchTabToDDL()"><span>{{langRdsInfoSqlAuditPage.DDL}}</span></div>
+    </div>
+    <div>
+        <div class="le-row list-common">
+            <div class="le-col-12">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><span>{{langPrimary.title}}</span></th>
+                            <th><span>{{langRdsInfoSqlAuditPage.executeUser}}</span></th>
+                            <th><span>{{langRdsInfoSqlAuditPage.executeTime}}</span></th>
+                            <th><span>{{langPrimary.operation}}</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tby">
+                        <tr ng-repeat="item in sqlAuditList">
+                            <td class="le-col-name">
+                                <span>{{item.title}}</span>
+                            </td>
+                            <td><span>{{item.createUserModel.userName}}</span></td>
+                            <td><span>{{item.createTime | date:'yyyy-MM-dd HH:mm'}}</span></td>
+                            <td><span><a href="javascript:void(0);" ng-click="openSqlAuditDetailModal(item, 'large')">{{langPrimary.detail}}</a></span></td>
+                        </tr>
+                        <tr ng-if="sqlAuditList.length==0">
+                            <td ng-if="!isListLoading" colspan=10 class="nodata">{{langPrimary.noDataHint}}</td>
+                            <td ng-if="isListLoading" colspan=10></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div ng-show="!isListLoading && sqlAuditList.length>0" class="le-pagination">
+                    <span>{{pagination.total}}{{totalItems}}{{pagination.nums}}，{{pagination.perPage}}{{pageSize}}{{pagination.nums}}</span>
+                    <pagination boundary-links="true" direction-links="true"
+                                ng-change="pageChange()" items-per-page="pageSize"
+                                total-items="totalItems" ng-model="currentPage" class="pagination-sm" max-size="5"
+                                rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                                last-text="&raquo;">
+                    </pagination>
+                </div>
+                <div ng-if="isListLoading" class="spin"></div>
+                <div ng-if="isListLoading" class="far-spin"></div>
+            </div>
+        </div>
+    </div>
+    <script type="text/ng-template" id="RdsInfoSqlAuditModalTpl">
+        <div class="modal-sql-audit">
+            <div class="le-modal-header">
+                <span class="header-title">{{langRdsInfoSqlAuditPage.createSqlAudit}}</span>
+                <a class="close" ng-click="closeModal()">
+                    <i class="iconfont icon-add"></i>
+                </a>
+            </div>
+            <div class="le-modal-body">
+                <div class="panel-sql-info" ng-show="!isSqlValid">
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">{{langPrimary.title}}：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <input type="text" class="le-form-control" ng-model="title" ng-trim="false" />
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">{{langPrimary.type}}：</span>
+                        </div>
+                        <div class="le-col-9 radio-check-group">
+                            <div class="letv-radioCheck" ng-class="{'selected':sqlType === 'DML'}" ng-click="sqlType='DML'">
+                                <i class="iconfont icon-checkblockicon"></i>
+                                <span class="letv-radio-content">DML</span>
+                            </div>
+                            <div class="letv-radioCheck" ng-class="{'selected':sqlType === 'DDL'}" ng-click="sqlType='DDL'">
+                                <i class="iconfont icon-checkblockicon"></i>
+                                <span class="letv-radio-content">DDL</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">{{langRdsInfoSqlAuditPage.sql}}：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <textarea class="textarea-sql" rows="8" cols="60" ng-model="sql"></textarea>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                            <div class="le-col-8 col-error-tail pull-left">
+                                <span  ng-show="!!errorMsgAnalyseSql" class="error-tail text-red">{{errorMsgAnalyseSql}}</span>
+                            </div>
+                            <div class="le-col-2 pull-right">
+                                <button class="btn btn-le-blue pull-right" ng-click="analyseSql()">{{langRdsInfoSqlAuditPage.analyseSql}}</button>
+                            </div>
+                    </div>
+                </div>
+                <div class="panel-sql-result" ng-show="isSqlValid">
+                    <div class="le-row container-sql-result">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th><span>{{langRdsInfoSqlAuditPage.sql}}</span></th>
+                                    <th><span>{{langPrimary.type}}</span></th>
+                                    <th><span>{{langPrimary.affect}}</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in sqlMetas">
+                                    <td><pre>{{item.fsql}}</pre></td>
+                                    <td>{{item.type}}</td>
+                                    <td>{{item | rdsSqlAuditAffectFilter : sqlType }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="le-row">
+                                <div class="le-col-8 col-error-tail pull-left">
+                                    <span ng-show="!!errorMsgExecuteSql" class="error-tail text-red">{{errorMsgExecuteSql}}</span>
+                                </div>
+                                <div class="le-col-2 pull-right">
+                                    <button class="btn btn-le-blue pull-right" ng-click="executeSql()">{{langRdsInfoSqlAuditPage.executeSql}}</button>
+                                </div>
+                                <div class="le-col-2 pull-right">
+                                    <button class="btn btn-le-blue pull-right" ng-show="isExecuteFail" ng-click="sendToDBA()">{{langRdsInfoSqlAuditPage.sendToDBA}}</button>
+                                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="RdsInfoSqlAuditDetailModalTpl">
+        <div class="modal-sql-audit">
+            <div class="le-modal-header">
+                <span class="header-title">{{langRdsInfoSqlAuditPage.sqlAuditDetail}}</span>
+                <a class="close" ng-click="closeModal()">
+                    <i class="iconfont icon-add"></i>
+                </a>
+            </div>
+            <div class="le-modal-body">
+                <div class="le-row">
+                    <div class="le-col-12">
+                        <table class="le-table-base table table-bordered">
+                            <thead>
+                            <tr>
+                                <th colspan="2"><span>{{langPrimary.basicInfo}}</span></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><span class="title">{{langPrimary.title}}:</span><span class="con">{{sqlAuditDetailInfo.title}}</span></td>
+                                <td>
+                                    <span class="title">{{langPrimary.status}}:</span>
+                                    <span class="con">{{sqlAuditDetailInfo.status | rdsSqlAuditStatusFilter}}</span>
+                                    <a href="javascript:void(0);" ng-click="sendToDBA()" ng-show="sqlAuditDetailInfo.status === 'ERROR'">{{langRdsInfoSqlAuditPage.sendToDBA}}</a>
+                                </td>
+                            </tr>
+                            <tr><td><span class="title">{{langRdsInfoSqlAuditPage.executeUser}}:</span><span class="con">{{sqlAuditDetailInfo.createUserModel.userName}}</span></td><td><span class="title">{{langRdsInfoSqlAuditPage.executeTime}}:</span><span class="con">{{sqlAuditDetailInfo.createTime | date:'yyyy-MM-dd HH:mm'}}</span></td></tr>
+                            <tr ng-show="sqlAuditDetailInfo.status === 'ERROR' && sqlAuditDetailInfo.error"><td colspan="2"><span class="title" colspan="2">{{langPrimary.error}}:</span><span class="con">{{sqlAuditDetailInfo.error}}</span></td></tr>
+                            <tr ng-show="sqlAuditDetailInfo.status ==='AUDITFAIL' && sqlAuditDetailInfo.error"><td colspan="2"><span class="title" colspan="2">{{langRdsInfoSqlAuditPage.auditFailMsg}}:</span><span class="con">{{sqlAuditDetailInfo.error}}</span></td></tr>
+                            </tbody>
+                        </table>
+                        <table class="le-table-base table table-bordered">
+                            <thead>
+                            <tr>
+                                <th><span>{{langRdsInfoSqlAuditPage.sqlAuditScript}}</span></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr><td><pre class="container-sql">{{sqlAuditDetailInfo.sqlAnalysisResult.fsql}}</pre></td></tr>
+                            </tbody>
+                        </table>
+                        <table class="le-table-base table table-bordered">
+                            <thead>
+                            <tr>
+                                <th colspan="3"><span>{{langRdsInfoSqlAuditPage.sqlAnalysisResult}}</span></th>
+                            </tr>
+                            </thead>
+                        </table>
+                        <div class="container-sql-result">
+                            <table class="table table-bordered">
+                                <tbody>
+                                <tr ng-repeat="item in sqlAuditDetailInfo.sqlAnalysisResult.sqlMetas">
+                                    <td class="td-sql-meta"><pre>{{item.fsql}}</pre></td>
+                                    <td class="td-sql-meta"><span>{{item.type}}</span></td>
+                                    <td class="td-sql-meta"><span>{{item | rdsSqlAuditAffectFilter : sqlType}}</span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

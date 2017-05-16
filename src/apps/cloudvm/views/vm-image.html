@@ -1,0 +1,62 @@
+<div class="view-common" ng-controller="VmImageCrtl">
+    <div class="le-row operate-panel">
+        <div class="le-col-offset-6 le-col-6">
+            <div class="le-search-box pull-right">
+                <input type="text" ng-model="searchName" ng-model-options="{debounce:500}" ng-change="doSearch()"
+                       placeholder="输入镜像名称"/>
+                <span class="search-icon"></span>
+            </div>
+        </div>
+    </div>
+    <div class="le-row list-common">
+        <div class="le-col-12">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th class="unselectable">
+                        <span class="iconfont icon-righticon" ng-class="{checked:isAllImgChecked()}"
+                              ng-click="checkAllimg()"></span>
+                    </th>
+                    <th><span>名称</span></th>
+                    <th><span>平台</span></th>
+                    <th><span>类型</span></th>
+                    <th><span>状态</span></th>
+                    <th><span>容量</span></th>
+                    <th><span>创建时间</span></th>
+                </tr>
+                </thead>
+                <tbody id="tby">
+                <tr ng-repeat="img in imageList">
+                    <td class="unselectable">
+                        <span class="iconfont icon-checkiconfill" ng-class="{checked:img.checked}"
+                              ng-click="checkimg(img)"></span>
+                    </td>
+                    <td class="le-col-name"><span>{{img.name|| EMPTY_TEXT}}</span></td>
+                    <td><span>{{img.platform}}</span></td>
+                    <td><span>{{img.type}}</span></td>
+                    <td><span>{{img.status | vmImageStatusFilter}}</span></td>
+                    <td><span>{{img.size | vmImageSizeFilter}}</span></td>
+                    <td><span>{{img.createdAt | date:'yyyy-MM-dd HH:mm'}}</span></td>
+                </tr>
+                <tr ng-if="imageList.length==0">
+                    <td ng-if="!isListLoading" colspan=10 class="nodata">暂无镜像，去创建吧。</td>
+                    <td ng-if="isListLoading" colspan=10></td>
+                </tr>
+                </tbody>
+            </table>
+            <div ng-show="!isListLoading && imageList.length>0" class="le-pagination">
+                <span>共{{totalItems}}条，每页显示{{pageSize}}条</span>
+                <pagination boundary-links="true" direction-links="true"
+                            ng-change="onPageChange()" items-per-page="pageSize"
+                            total-items="totalItems" ng-model="currentPage" class="pagination-sm" max-size="5"
+                            rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                            last-text="&raquo;">
+                </pagination>
+            </div>
+            <div ng-if="isListLoading" class="spin"></div>
+            <div ng-if="isListLoading" class="far-spin"></div>
+        </div>
+    </div>
+    <toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+    </toaster-container>
+</div>

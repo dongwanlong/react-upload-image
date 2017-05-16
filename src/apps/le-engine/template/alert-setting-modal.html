@@ -1,0 +1,146 @@
+<div class="modal-header letv-modal-header vm-edit-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{!isEdit?langAlertSettingModalPage.tilteCreate:langAlertSettingModalPage.tilteEidt}}</h3>
+</div>
+<div class="modal-body">
+    <form novalidate class="form-alert-setting_" name="alert_setting_form">
+        <div class="le-col-12 clearfix ">
+            <div class="left-inputs clearfix">
+                <div class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{langAlertField.name}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space">
+                            <input type="text" name="name" class="le-form-control" necessary="true" ng-model="name"  regex="REGEX.NAME_ALERT" ng-trim="false" min="4" max="32" le-auto-focus input-restrict />
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(alert_setting_form.$submitted || alert_setting_form.name.$touched) && alert_setting_form.name.$error.inputRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME_ALERT}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div> 
+
+                <div class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{langAlertField.alertType}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space">
+                            <le-select  select-model="alertClass" select-options="alertClassOptions"></le-select>
+                        </div>
+                    </div>
+                </div> 
+
+                <div class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{langAlertField.alertMetric}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space">
+                            <le-select  select-model="alertMetric" select-options="alertMetricOptions"></le-select>
+                        </div>
+                    </div>
+                </div>  
+                <div class="inputs-item clearfix" ng-show="!isErrorMetricSelected()">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{langAlertField.alertPeriod}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space">
+                            <le-select  select-model="alertPeriod" select-options="alertPeriodOptions"></le-select>
+                        </div>
+                    </div>
+                </div>  
+                <div class="inputs-item clearfix" ng-show="!isErrorMetricSelected()">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{langAlertField.alertMethod}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space">
+                            <le-select  select-model="alertMethod" select-options="alertMethodOptions"></le-select>
+                        </div>
+                    </div>
+                </div>  
+
+                <div class="inputs-item clearfix" ng-show="!isErrorMetricSelected()">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{langAlertField.alertOperator}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space">
+                            <le-select  select-model="alertOperator" select-options="alertOperatorOptions"></le-select>
+                        </div>
+                    </div>
+                </div>  
+                <div class="inputs-item clearfix" ng-show="!isErrorMetricSelected()">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{langAlertField.alertThreshold}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space"> 
+                            <div class="container-alert-threshold">                           
+                                <input type="number"
+                                placeholder="{{alertMetric.relatedOption.helpTxt}}"
+                                name="alert_threshold"
+                                class="le-form-control alert-threshold-value" 
+                                ng-model="alertThreshold"  
+                                ng-trim="true"
+                                ng-blur="limitNumber(alertThreshold,alertMetric.relatedOption)"
+                                ng-required="!isErrorMetricSelected()" />
+                                <span class="alert-threshold-unit">{{alertMetric.relatedOption.unit}}</span>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{langAlertField.alertNotifyTarget}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th width="60"></th>
+                                        <th width="70"><span>Owner</span></th>
+                                        <th width="70"><span>Master</span></th>
+                                        <th width="70"><span>Developer</span></th>
+                                        <th width="70"><span>Reporter</span></th>
+                                        <th width="70"><span>Guest</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span>{{langPrimary.sms}}</span></td>
+                                        <td class="unselectable" ng-repeat="role in allRoles">
+                                            <span class="iconfont icon-checkiconfill" ng-class="{checked:isNotifyRoleChecked(role,'sms')}" ng-click="checkNotifyRole(role,'sms')"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>{{langPrimary.voice}}</span></td>
+                                        <td class="unselectable" ng-repeat="role in allRoles">
+                                            <span class="iconfont icon-checkiconfill" ng-class="{checked:isNotifyRoleChecked(role,'voice')}" ng-click="checkNotifyRole(role,'voice')"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>{{langPrimary.email}}</span></td>
+                                        <td class="unselectable" ng-repeat="role in allRoles">
+                                            <span class="iconfont icon-checkiconfill" ng-class="{checked:isNotifyRoleChecked(role,'email')}" ng-click="checkNotifyRole(role,'email')"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inputs-item clearfix" ng-show="!isErrorMetricSelected()">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{langAlertField.alertNotifyInterval}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space">
+                            <le-select  select-model="alertNotifyInterval" select-options="alertNotifyIntervalOptions"></le-select>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+            <div class="left-button clearfix">
+                <button class="btn btn-le-red btn-submit-order pull-right" ng-click="alert_setting_form.$valid && doSubmit();" >
+                    <span>{{langAlertSettingModalPage.ok}}</span>
+                </button>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </form>
+</div>
+
+

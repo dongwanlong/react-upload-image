@@ -1,0 +1,78 @@
+<div class="view-common">
+    <div class="le-row operate-panel">
+        <div class="le-col-6 le-btn-group">
+            <button class="btn btn-le-blue" ng-click="openRdsCreateModal('large')"><span>{{rdsListPage.createRdsBtn}}</span></button>
+        </div>
+        <div class="le-col-6">
+            <div class="le-search-box pull-right">
+                <input type="text" ng-model="searchName" ng-model-options="{debounce:500}" ng-change="doSearch()"
+                       placeholder="{{rdsListPage.inputRdsName}}"/>
+                <span class="search-icon"></span>
+            </div>
+        </div>
+    </div>
+    <div class="le-row list-common">
+        <div class="le-col-12">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th class="unselectable">
+                        <span class="iconfont icon-righticon" ng-class="{checked:isAllRdsChecked()}"
+                              ng-click="checkAllRds()"></span>
+                    </th>
+                    <th><span>{{rdsListPage.exampleName}}</span></th>
+                    <th><span>{{rdsListPage.state}}</span></th>
+                    <th><span>{{rdsListPage.exampleType}}</span></th>
+                    <th><span>{{rdsListPage.Type}}</span></th>
+                    <th><span>{{rdsListPage.usableAreaType}}</span></th>
+                    <th><span>{{rdsListPage.usableArea}}</span></th>
+                    <th><span>{{rdsListPage.serviceCluster}}</span></th>
+                    <th><span>{{rdsListPage.owner}}</span></th>
+                    <th><span>{{rdsListPage.payType}}</span></th>
+                </tr>
+                </thead>
+                <tbody id="tby">
+                <tr ng-repeat="rds in rdsList">
+                    <td class="unselectable">
+                        <span class="iconfont icon-checkiconfill" ng-class="{checked:rds.checked}"
+                              ng-click="checkRds(rds)"></span>
+                    </td>
+                    <td class="le-col-name">
+                        <a ng-show="rds.status==6" ng-href="#/{{regionId}}/rdsinfo-base/{{rds.id}}">{{rds.dbName}}</a>
+                        <span ng-show="rds.status!=6" class="text-gray">{{rds.dbName}}</span>
+                    </td>
+                    <td class="">
+                        <span ng-show="rds.status!=2">{{rds.status | rdsStatusFilter}}</span>
+                        <span ng-show="rds.status==2">{{rds.progress_status | rdsCreateProgressFilter}}</span>
+                        <span ng-show="rds.status==2" class="status-loading"></span>
+                    </td>
+                    <td class=""><span>{{rdsListPage.vip}}</span></td>
+                    <td class=""><span>MySQL5.5</span></td>
+                    <td class=""><span>{{rdsListPage.singleUsableArea}}</span></td>
+                    <td class=""><span>{{rds.hcluster.hclusterNameAlias}}</span></td>
+                    <td class=""><span>{{rds.mcluster.mclusterName}}</span></td>
+                    <td class=""><span>{{rds.user.userName}}</span></td>
+                    <td class=""><span>{{rdsListPage.packYears}}{{rds.createTime | rdsTransLastDateFilter}}{{rdsListPage.daysAfterMaturity}}</span></td>
+                </tr>
+                <tr ng-if="rdsList.length==0">
+                    <td ng-if="!isListLoading" colspan=10 class="nodata">{{rdsListPage.goToCreateRds}}</td>
+                    <td ng-if="isListLoading" colspan=10></td>
+                </tr>
+                </tbody>
+            </table>
+            <div ng-show="!isListLoading && rdsList.length>0" class="le-pagination">
+                <span>{{pagination.total}}{{totalItems}}{{pagination.nums}}，{{pagination.perPage}}{{pageSize}}{{pagination.nums}}</span>
+                <pagination boundary-links="true" direction-links="true"
+                            ng-change="pageChange()" items-per-page="pageSize"
+                            total-items="totalItems" ng-model="currentPage" class="pagination-sm" max-size="5"
+                            rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                            last-text="&raquo;">
+                </pagination>
+            </div>
+            <div ng-if="isListLoading" class="spin"></div>
+            <div ng-if="isListLoading" class="far-spin"></div>
+        </div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

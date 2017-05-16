@@ -1,0 +1,193 @@
+<div class="modal-header letv-modal-header vm-edit-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 ng-if="handleType=='create'" class="modal-title">{{ciSettingModalPage.createTitle}}</h3>
+    <h3 ng-if="handleType=='edit'" class="modal-title">{{ciSettingModalPage.editTitle}}</h3>
+</div>
+<div class="modal-body">
+    <form novalidate class="ci_setting_form" name="ci_setting_form">
+        <div>
+            <div ng-class="{'edit': 'le-col-9 body-left', 'create': 'le-col-9 body-left'}[handleType]">
+                <div class="left-inputs">
+                    <!--GIT-->
+                    <div class="inputs-item clearfix">
+                        <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{ciSettingModalPage.lableGit}}：</span></div>
+                        <div class="le-col-9 letv-control-content">
+                            <div class="le-col-11 clear-space">
+                                <input placeholder="{{ciSettingModalPage.inputGit}}" ng-readonly="isEdit" ng-mouseover="ciCreateDesc=REGEX_MESSAGE.TIP_GIT"  length="255" necessary="true" type="text" name="ci_git" class="le-form-control" ng-model="ciGit" ng-trim="false"  le-auto-focus input-length-restrict/>
+                            </div>
+                            <div class="le-col-1 clear-space col-control-height">
+                                <input-validation-tooltip ng-show="(ci_setting_form.$submitted || ci_setting_form.ci_git.$touched )&& ci_setting_form.ci_git.$error.inputLengthRestrict"
+                                                          validation-message="{{REGEX_MESSAGE.STRING_256}}">
+                                </input-validation-tooltip>
+                            </div>
+                        </div>
+                    </div>
+                    <!--分支-->
+                    <div class="inputs-item clearfix">
+                        <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{ciSettingModalPage.lableBranch}}：</span></div>
+                        <div class="le-col-9 letv-control-content">
+                            <div class="le-col-11 clear-space">
+                                <input placeholder="{{ciSettingModalPage.inputBranch}}" ng-readonly="isEdit" ng-mouseover="ciCreateDesc=REGEX_MESSAGE.TIP_BRANCH"  length="255" necessary="true" type="text" name="ci_branch" class="le-form-control" ng-model="ciBranch" ng-trim="false"  input-length-restrict/>
+                            </div>
+                            <div class="le-col-1 clear-space col-control-height">
+                                <input-validation-tooltip ng-show="(ci_setting_form.$submitted || ci_setting_form.ci_branch.$touched )&& ci_setting_form.ci_branch.$error.inputLengthRestrict"
+                                                          validation-message="{{REGEX_MESSAGE.STRING_256}}">
+                                </input-validation-tooltip>
+                            </div>
+                        </div>
+                    </div>
+                    <!--描述-->
+                    <div class="inputs-item clearfix">
+                        <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{ciSettingModalPage.lableDescribe}}：</span></div>
+                        <div class="le-col-9 letv-control-content">
+                            <div class="le-col-11 clear-space">
+                                <input placeholder="{{ciSettingModalPage.inputCiDescribe}}" ng-mouseover="ciCreateDesc=REGEX_MESSAGE.TIP_CI_DESCRIBE"  min-length="5" length="1024" necessary="true" type="text" name="ci_description"  class="le-form-control" ng-model="ciDescription"  ng-trim="false" input-length-restrict />
+                            </div>
+                            <div class="le-col-1 clear-space col-control-height">
+                                <input-validation-tooltip ng-show="(ci_setting_form.$submitted || ci_setting_form.ci_description.$touched )&& ci_setting_form.ci_description.$error.inputLengthRestrict"
+                                        validation-message="{{REGEX_MESSAGE.CI_DESCRIPTION}}">
+                                </input-validation-tooltip>
+                            </div>
+                        </div>
+                    </div>
+                    <!--镜像名称-->
+                    <div ng-show="!isEdit" class="inputs-item clearfix">
+                        <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{ciSettingModalPage.lableImageName}}：</span></div>
+                        <div class="le-col-9 letv-control-content">
+                            <div class="le-col-4 clear-space">
+                                <le-select disabled="isEdit" select-model="currentRepertory" select-options="repertoryList"></le-select>
+                            </div>
+                            <div class="le-col-7">
+                                <input ng-mouseover="ciCreateDesc=REGEX_MESSAGE.NAME_MIRROR_NAME" placeholder="{{ciSettingModalPage.inputImageName}}" type="text" ng-readonly="isEdit" name="ci_mirror" necessary="true" ng-change="setCreateName()" class="le-form-control" min="4" max="32" regex="REGEX.NAME_MIRROR_NAME" ng-model="ciMirror"  ng-trim="false" input-restrict />
+                            </div>
+                            <div class="le-col-1 col-control-height clear-space">
+                                <input-validation-tooltip ng-show="(ci_setting_form.$submitted || ci_setting_form.ci_mirror.$touched )&& ci_setting_form.ci_mirror.$error.inputRestrict"
+                                                          validation-message="{{REGEX_MESSAGE.NAME_MIRROR_NAME}}">
+                                </input-validation-tooltip>
+                            </div>
+                        </div>
+                    </div>
+                    <!--构建名称-->
+                    <div class="inputs-item clearfix">
+                        <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{ciSettingModalPage.lableCreateName}}：</span></div>
+                        <div class="le-col-9 letv-control-content">
+                            <div class="le-col-11 clear-space">
+                                <input placeholder="{{ciSettingModalPage.inputBuildNamePath}}" ng-mouseover="ciCreateDesc=REGEX_MESSAGE.CI_CREATE_NAME"  ng-readonly="isEdit" necessary="true" type="text" name="ci_createname"  class="le-form-control" ng-model="ciCreateName"   regex="REGEX.NAME_CI" ng-trim="false" input-restrict />
+                            </div>
+                            <div class="le-col-1 clear-space col-control-height">
+                                <input-validation-tooltip ng-show="(ci_setting_form.$submitted || ci_setting_form.ci_createname.$touched )&& ci_setting_form.ci_createname.$error.inputRestrict"
+                                        validation-message="{{REGEX_MESSAGE.CI_CREATE_NAME}}">
+                                </input-validation-tooltip>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--dockerfile 路径-->
+                    <div class="inputs-item clearfix">
+                        <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{ciSettingModalPage.lableDockerPath}}：</span></div>
+                        <div class="le-col-9 letv-control-content">
+                            <div class="le-col-11 clear-space">
+                                <input placeholder="{{ciSettingModalPage.inputDockerfilePath}}" ng-mouseover="ciCreateDesc=REGEX_MESSAGE.TIP_DOCKERFILE_PATH" length="255" necessary="true" type="text" name="ci_dockerfilepath"  class="le-form-control" ng-model="ciDockerfilepath" ng-trim="false" input-length-restrict  />
+                            </div>
+                            <div class="le-col-1 clear-space col-control-height">
+                                <input-validation-tooltip ng-show="(ci_setting_form.$submitted || ci_setting_form.ci_dockerfilepath.$touched )&& ci_setting_form.ci_dockerfilepath.$error.inputLengthRestrict"
+                                        validation-message="{{REGEX_MESSAGE.STRING_256}}">
+                                </input-validation-tooltip>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--是否编译-->
+                    <div class="inputs-item clearfix">
+                        <div class="le-col-3 letv-control-title"></div>
+                        <div class="le-col-9 letv-control-content">
+                            <le-radio-select select-model="currentCompile" select-options="compileOptions"></le-radio-select>
+                        </div>
+                    </div>
+
+                    <div ng-show="currentCompile.value">
+
+                        <!--指定编译环境-->
+                        <div class="inputs-item clearfix">
+                            <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{ciSettingModalPage.lableAddEnv}}</span>:</div>
+                            <div class="le-col-9 letv-control-content">
+                                <le-radio-select select-model="currentCompileEnv" select-options="compileEnvOptions"></le-radio-select>
+                            </div>
+                        </div>
+                        <div class="inputs-item clearfix" ng-show="currentCompileEnv.value">
+                            <div class="le-col-3 letv-control-title"><span class="letv-control-label"></span></div>
+                            <div class="le-col-9 letv-control-content">
+                                <div class="le-col-7 clear-space">
+                                    <input type="hidden" name="current_root_image" ng-model="currentRootImage.value" required />
+                                    <le-select ng-mouseover="ciCreateDesc=currentRootImage.relatedOption.Description" select-model="currentRootImage" select-options="rootImageList"></le-select>
+                                </div>
+                                <div class="le-col-4">
+                                    <input type="hidden" name="current_root_image_tag" ng-model="currentRootImageTag.value" required />
+                                    <le-select  select-model="currentRootImageTag" select-options="rootImageTagList"></le-select>
+                                </div>
+                                <div class="le-col-1 clear-space col-control-height">
+                                    <input-validation-tooltip ng-show="ci_setting_form.$submitted && (ci_setting_form.current_root_image.$error.required || ci_setting_form.current_root_image_tag.$error.required)"
+                                                              validation-message="{{REGEX_MESSAGE.IMAGE_TAG_REQUIRED}}">
+                                    </input-validation-tooltip>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inputs-item clearfix" ng-show="!currentCompileEnv.value">
+                            <div class="le-col-3 letv-control-title"><span class="letv-control-label"></span></div>
+                            <div class="le-col-9 letv-control-content">
+                                <div class="le-col-11 clear-space">
+                                    <input placeholder="{{REGEX_MESSAGE.TIP_COMPILE_PATH}}" ng-mouseover="ciCreateDesc=REGEX_MESSAGE.TIP_COMPILE_PATH" necessary="currentCompile.value && !currentCompileEnv.value" length="255"  type="text" name="compile_image"  class="le-form-control" ng-model="compileImage" ng-trim="false" input-length-restrict  />
+                                </div>
+                                <div class="le-col-1 clear-space col-control-height">
+                                    <input-validation-tooltip ng-show="(ci_setting_form.$submitted || ci_setting_form.compile_image.$touched )&& ci_setting_form.compile_image.$error.inputLengthRestrict"
+                                                              validation-message="{{REGEX_MESSAGE.STRING_256}}">
+                                    </input-validation-tooltip>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--编译脚本路径-->
+                        <div class="inputs-item clearfix">
+                            <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{ciSettingModalPage.lableCompilePath}}：</span></div>
+                            <div class="le-col-9 letv-control-content">
+                                <div class="le-col-11 clear-space">
+                                    <input ng-mouseover="ciCreateDesc=REGEX_MESSAGE.TIP_COMPILEFILE_PATH" placeholder="{{ciSettingModalPage.inputCompileShellPath}}" necessary="currentCompile.value" length="255" type="text" name="ci_compilefilepath"  class="le-form-control" ng-model="ciCompilefilepath" ng-trim="false"  input-length-restrict/>
+                                </div>
+                                <div class="le-col-1 clear-space col-control-height">
+                                    <input-validation-tooltip ng-show="(ci_setting_form.$submitted || ci_setting_form.ci_compilefilepath.$touched )&& ci_setting_form.ci_compilefilepath.$error.inputLengthRestrict"
+                                                              validation-message="{{REGEX_MESSAGE.STRING_256}}">
+                                    </input-validation-tooltip>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="le-col-3 body-right">
+                <div class="right-top">
+                    <div class="top-title"><span>{{ciSettingModalPage.createDescribe}}</span><i class="iconfont icon-rounddown"></i></div><br>
+                    <p class="form-description">{{ciCreateDesc}}</p>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <!--按钮-->
+        <div class="button-body">
+            <div class="le-col-12">
+                <div class="row-submit-order pull-right">
+                    <button class="btn btn-le-red btn-submit-order" ng-click="ci_setting_form.$valid && settingCi()">
+                        <span>{{mirrorCreateModalPage.ok}}</span>
+                    </button>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <iframe style="display:none" ng-src="{{keypairDownloadUrl}}"></iframe>
+    </form>
+</div>

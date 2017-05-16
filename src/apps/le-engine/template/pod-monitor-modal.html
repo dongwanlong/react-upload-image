@@ -1,0 +1,31 @@
+<div class="modal-header letv-modal-header" style="height: 100px;">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">
+        {{title}}<br>{{titleOthers}}
+    </h3>
+</div>
+<div class="modal-body">
+    <div class="view-common">
+        <div class="le-row operate-panel">
+            <div class="le-row">
+                <div class="le-col-9 le-btn-group btn-monitor">
+                    <span class="btn" ng-class="{'le-btn-active': timeType === 'real'}" ng-click="switchTimeType('real')" autofocus>{{langPodMonitorModal.realTime}}</span>
+                    <span class="btn" ng-class="{'le-btn-active': timeType === 'day'}" ng-click="switchTimeType('day')">{{langPodMonitorModal.oneDayTime}}</span>
+                    <span class="btn" ng-class="{'le-btn-active': timeType === 'two-day'}" ng-click="switchTimeType('two-day')">{{langPodMonitorModal.twoDayTime}}</span>
+                    <span class="btn" ng-class="{'le-btn-active': timeType === 'week'}" ng-click="switchTimeType('week')">{{langPodMonitorModal.oneWeekTime}}</span>
+                    <span class="btn" ng-class="{'le-btn-active': timeType === 'month'}" ng-click="switchTimeType('month')">{{langAppMonitorPage.oneMonthTime}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="le-row list-common">
+            <p style="padding: 10px 80px" ng-show="loadingNetwork">{{langAppMonitorPage.loadingNetwork}}</p>
+            <div ng-show="!loadingNetwork" id="chart-network-pod" style="min-width:800px;height:500px" loading="loadingNetwork" char-option="monitorNetwork" time-type="timeType"  refresh-tag="refreshTag" heightchar></div>
+            <p style="padding: 10px 80px" ng-show="loadingCpu">{{langAppMonitorPage.loadingCpu}}</p>
+            <div ng-show="!loadingCpu" id="chart-cpu-pod" style="min-width:800px;height:500px" loading="loadingCpu" char-option="monitorCpu" time-type="timeType"  refresh-tag="refreshTag" heightchar></div>
+            <p style="padding: 10px 80px" ng-show="loadingMemory">{{langAppMonitorPage.loadingMemory}}</p>
+            <div ng-show="!loadingMemory" id="chart-memory-pod" style="min-width:800px;height:500px" loading="loadingMemory" char-option="monitorMemory" time-type="timeType"  refresh-tag="refreshTag" heightchar></div>
+        </div>
+    </div>
+</div>

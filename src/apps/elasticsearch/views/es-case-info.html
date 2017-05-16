@@ -1,0 +1,63 @@
+<div class="le-row list-common" ng-controller="esCaseInfoCtrl">
+    <div class="le-col-12">
+        <table ng-show="!isloading" class="le-table-base table table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{esCaseInfoPage.baseInfoTitle}}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr><td><span class="title">{{esCaseInfoPage.baseInfoName}}:</span><span class="con">{{esInfo.esName}}</span></td><td><span class="title">{{esCaseInfoPage.baseInfoArea}}:</span><span class="con">北京</span></td></tr>
+            </tbody>
+        </table>
+
+        <table ng-show="!isloading" class="le-table-base table table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{esCaseInfoPage.statusTitle}}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr><td><span class="title">{{esCaseInfoPage.statusStatus}}:</span><span class="con">{{esInfo.status|esStatusFilter}}</span></td><td><span class="title"></span><span class="con"></span></td></tr>
+            </tbody>
+        </table>
+
+        <table ng-show="!isloading" class="le-table-base table table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{esCaseInfoPage.settingTitle}}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr><td><span class="title">{{esCaseInfoPage.settingMemory}}:</span><span class="con">{{esInfo.memorySize|gTransMemoryFilter}}</span></td><td><span class="title">{{esCaseInfoPage.settingStorage}}:</span><span class="con">{{esInfo.storageSize|gTransMemoryFilter}}</span></td></tr>
+            <tr><td><span class="title">{{esCaseInfoPage.settingNodeCounts}}:</span><span class="con">{{esInfo.nodeCount}}</span></td><td><span class="title"></span><span class="con"></span></td></tr>
+            </tbody>
+        </table>
+
+        <table ng-show="!isloading" class="le-table-base table table-bordered">
+            <thead>
+            <tr>
+                <th><span>{{esCaseInfoPage.connectTitle}}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr><td><span class="title">{{esCaseInfoPage.connectIpList}}:</span><span>{{ipListStr}}</span></td></tr>
+            </tbody>
+        </table>
+
+        <table ng-show="!isloading" class="le-table-base table table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{esCaseInfoPage.cycleTitle}}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr><td><span class="title">{{esCaseInfoPage.cycleCreateTime}}:</span><span class="con">{{esInfo.createTime|date :'yyyy-MM-dd HH:mm:ss'}}</span></td><td><span class="title"></span><span class="con"></span></td></tr>
+            </tbody>
+        </table>
+
+        <div ng-if="isloading" class="spin"></div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

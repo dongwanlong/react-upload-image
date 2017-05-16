@@ -1,0 +1,65 @@
+<div class="view-common">
+    <div class="le-row operate-panel" ng-style="dockerList.length<=0 && {'border-bottom': '0px'}">
+        <div class="le-row le-tab-header">
+            <div class="le-tab-btn" ng-class="{'le-tab-active': monitorType === 'app'}" ng-click="monitorType='app'"><span>{{langAppMonitorPage.tabApp}}</span></div>
+            <div class="le-tab-btn" ng-class="{'le-tab-active': monitorType === 'pod'}" ng-click="monitorType='pod'"><span>{{langAppMonitorPage.tabDocker}}</span></div>
+        </div>
+        <div ng-if="dockerList.length>0" class="le-row" ng-show="monitorType==='app'">
+            <div class="le-col-9 le-btn-group btn-monitor">
+                <span class="btn" ng-class="{'le-btn-active': timeType === 'real'}" ng-click="switchTimeType('real')" autofocus>{{langAppMonitorPage.realTime}}</span>
+                <span class="btn" ng-class="{'le-btn-active': timeType === 'day'}" ng-click="switchTimeType('day')">{{langAppMonitorPage.oneDayTime}}</span>
+                <span class="btn" ng-class="{'le-btn-active': timeType === 'two-day'}" ng-click="switchTimeType('two-day')">{{langAppMonitorPage.twoDayTime}}</span>
+                <span class="btn" ng-class="{'le-btn-active': timeType === 'week'}" ng-click="switchTimeType('week')">{{langAppMonitorPage.oneWeekTime}}</span>
+                <span class="btn" ng-class="{'le-btn-active': timeType === 'month'}" ng-click="switchTimeType('month')">{{langAppMonitorPage.oneMonthTime}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="le-row list-common">
+        <div ng-show="monitorType==='app'">
+            <div ng-if="!isListLoading && dockerList.length<=0"><h2>{{langAppMonitorPage.noApperTip}}</h2></div>
+            <div ng-if="dockerList.length>0">
+                <p style="padding: 10px 80px" ng-show="loadingNetwork">{{langAppMonitorPage.loadingNetwork}}</p>
+                <div ng-show="!loadingNetwork" id="chart-network" style="min-width:800px;height:500px" loading="loadingNetwork" char-option="monitorNetwork" time-type="timeType"  refresh-tag="refreshTag" heightchar></div>
+                <p style="padding: 10px 80px" ng-show="loadingCpu">{{langAppMonitorPage.loadingCpu}}</p>
+                <div ng-show="!loadingCpu" id="chart-cpu" style="min-width:800px;height:500px" loading="loadingCpu" char-option="monitorCpu" time-type="timeType"  refresh-tag="refreshTag" heightchar></div>
+                <p style="padding: 10px 80px" ng-show="loadingMemory">{{langAppMonitorPage.loadingMemory}}</p>
+                <div ng-show="!loadingMemory" id="chart-memory" style="min-width:800px;height:500px" loading="loadingMemory" char-option="monitorMemory" time-type="timeType"  refresh-tag="refreshTag" heightchar></div>
+            </div>
+        </div>
+        <div ng-show="monitorType==='pod'">
+            <div ng-if="!isListLoading && dockerList.length<=0"><h2>{{langAppMonitorPage.noPodTip}}</h2></div>
+            <div ng-if="dockerList.length>0">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><span>{{langAppMonitorPage.tableDocker}}</span></th>
+                            <th><span>{{langAppMonitorPage.tableIp}}</span></th>
+                            <th><span>{{langAppMonitorPage.tableRunTime}}</span></th>
+                            <th><span>{{langAppMonitorPage.tableState}}</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="docker in dockerList">
+                        <td>
+                            <a ng-href="void:javascript(0)">
+                                <span ng-click="openPodMonitor('xxxl',docker)" class="text-blue" >{{docker.Name}}</span>
+                            </a>
+                        </td>
+                        <td><span>{{docker.PodIP}}</span></td>
+                        <td><span>{{docker.ContainerRunTime | durationFilter}}</span></td>
+                        <td><span>{{docker.ContainerStatus}}</span></td>
+                    </tr>
+                    <tr ng-if="dockerList.length==0 || !dockerList">
+                        <td ng-if="!isListLoading" colspan=4 class="nodata">{{langAppMonitorPage.noPod}}</td>
+                        <td ng-if="isListLoading" colspan=4></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div ng-if="isListLoading" class="spin"></div>
+                <div ng-if="isListLoading" class="far-spin"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

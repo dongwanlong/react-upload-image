@@ -1,0 +1,18 @@
+<div class="">
+    <div class="le-modal-header">
+        <span  class="header-title">{{RdsInfoDeleteUserPage.title}}{{username}}</span>
+        <a class="close" ng-click="closeModal()">
+            <i class="iconfont icon-add"></i>
+        </a>
+    </div>
+    <div class="le-modal-body">
+        <form novalidate class="rdsinfo_modify_form" name="rdsinfo_modify_form">
+            <div class="le-row alert-dialog">
+                <div class="le-col-12">
+                    <button class="btn btn-le-yellow pull-right" ng-click="closeModal()">{{RdsInfoDeleteUserPage.cancel}}</button>
+                    <button class="btn btn-le-blue pull-right" ng-click="removeUser()">{{RdsInfoDeleteUserPage.ok}}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

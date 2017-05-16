@@ -1,0 +1,40 @@
+<div class="header" ng-controller="HeaderEngineCtrl">
+    <a ng-href="#/main-app-list-owner" class="header-brand pull-left">
+        <img ng-if="currentLang=='zh-cn'" class="brand-logo" src="/images/apps/le-engine/letvcloud-logo.png">
+        <img ng-if="currentLang=='en-us'" class="brand-logo" src="/images/apps/le-engine/lecloud-logo-en.png">
+    </a>
+    <a href="#/main-help" class="header-logout pull-right">
+        <span><i class="iconfont icon-lecloud_bangzhu iconfont-head"></i></span>
+    </a>
+    <a href="javascript:void(0);" class="header-logout pull-right" ng-click="logout()">
+        <span>{{headerPage.logOut}}</span>
+    </a>
+    <div class="header-separator pull-right">
+        <i class="separator"></i>
+    </div>
+    <a href="javascript:void(0);" ng-click="userSetting('large')" class="header-account pull-right header-nav">
+        <span><i class="iconfont icon-user1 iconfont-head"></i></span>
+        <span class="header-username">{{userName}}</span>
+    </a>
+    <div class="header-list languages dropdown pull-right">
+        <a id="drop2" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <span>{{currentLang|gTransLangFilter}}</span>
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="drop2">
+            <li ng-repeat="lang in langList"><a ng-href="{{languageHref(lang)}}" ng-class="{'active': currentLang === lang}">{{lang | gTransLangFilter}}</a></li>
+        </ul>
+    </div>
+    <div class="header-list dropdown pull-right ">
+        <a id="drop1" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <span ng-if="currentLang=='zh-cn'">{{regionInfo.region.Name}}</span>
+            <span ng-if="currentLang=='en-us'">{{regionInfo.region.NameEn}}</span>
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="drop1">
+            <li ng-repeat="region in regionInfo.regionList">
+                <a href="http://{{region.Address}}/?lang={{currentLang}}" class="le-text-ellipsis" ng-class="{'active':regionInfo.region===region}" title="{{currentLang=='zh-cn'?region.Name:region.NameEn}}">{{currentLang=='zh-cn'?region.Name:region.NameEn}}</a>
+            </li>
+        </ul>
+    </div>
+</div>

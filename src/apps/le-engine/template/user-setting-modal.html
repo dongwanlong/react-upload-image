@@ -1,0 +1,121 @@
+<div class="modal-header letv-modal-header">
+    <a ng-show="!init" class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{init?userSettingModal.titleInit:userSettingModal.title}}</h3>
+</div>
+<div class="modal-body">
+    <form novalidate class="user-create-form" name="user_create_form">
+        <div class="le-col-12 clearfix ">
+            <div class="left-inputs">
+                <!--用户名-->
+                <div class="inputs-item clearfix">
+                    <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{userSettingModal.userNameLabel}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <input type="text" name="user_name" class="le-form-control" ng-model="userName" necessary="true"  ng-trim="false" ng-readonly="true"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Email-->
+                <div class="inputs-item clearfix">
+                    <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{userSettingModal.emailLabel}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <input type="text" name="user_email" class="le-form-control" ng-model="userEmail" necessary="true"  ng-trim="false" ng-readonly="true"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Access Token-->
+                <div class="inputs-item clearfix">
+                    <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{userSettingModal.accesssTokenLabel}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <input type="text" name="user_accesss_token" class="le-form-control" ng-model="userAccesssToken"  ng-trim="false" ng-readonly="true"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!--创建APP权限-->
+                <div class="inputs-item clearfix">
+                    <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{userSettingModal.appCreatePowerLabel}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <span class="letv-control-label">{{userCanCreateApps|hasnoFilter}}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!--创建镜像仓库权限-->
+                <div class="inputs-item clearfix">
+                    <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{userSettingModal.imageGroupCreatePowerLabel}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <span class="letv-control-label">{{userCanCreateImageGroups|hasnoFilter}}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!--电话-->
+                <div class="inputs-item clearfix">
+                    <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{userSettingModal.phoneLabel}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <input type="text" name="user_phone" necessary="true" class="le-form-control"  ng-model="userPhone"  regex="REGEX.PHONE" ng-trim="false" input-restrict le-auto-focus/>
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(user_create_form.$submitted || user_create_form.user_phone.$touched) && user_create_form.user_phone.$error.inputRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.PHONE}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+
+                <!--微信号-->
+                <div class="inputs-item clearfix">
+                    <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{userSettingModal.wexinLabel}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <input type="text" name="user_weixin" class="le-form-control"  ng-model="userWeixin" length="255" ng-trim="false" input-length-restrict />
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(user_create_form.$submitted || user_create_form.user_weixin.$touched) && user_create_form.user_weixin.$error.inputLengthRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.USER_WEXIN}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+
+                <!--QQ号-->
+                <div class="inputs-item clearfix">
+                    <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{userSettingModal.qqLabel}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <input type="text" name="user_qq" class="le-form-control"  ng-model="userQQ"  length="255" ng-trim="false" input-length-restrict />
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(user_create_form.$submitted || user_create_form.user_qq.$touched) && user_create_form.user_qq.$error.inputLengthRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.USER_QQ}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="left-button clearfix">
+                    <button style="margin-left: 10px" class="btn btn-le-red btn-submit-order pull-right" ng-click="user_create_form.$valid && settingUser();" >
+                        <span ng-show="isFormSubmiting">{{userSettingModal.savingBtn}}</span>
+                        <span ng-show="!isFormSubmiting">{{userSettingModal.saveBtn}}</span>
+                    </button>
+                    <button ng-show="!init" style="margin-left: 10px" class="btn btn-le-green btn-submit-order pull-right" ng-click="closeModal()" >
+                        <span ng-show="!isFormSubmiting">{{userSettingModal.cancelBtn}}</span>
+                    </button>
+                    <div class="clearfix"></div>
+                </div>
+
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </form>
+</div>

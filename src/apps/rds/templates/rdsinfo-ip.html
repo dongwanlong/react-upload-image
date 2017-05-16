@@ -1,0 +1,26 @@
+<div class="">
+    <div class="le-modal-header">
+        <span class="header-title">{{RdsInfoOptionPage.title}}:{{username}}</span>
+        <a class="close" ng-click="closeModal()">
+            <i class="iconfont icon-add"></i>
+        </a>
+    </div>
+    <div class="le-modal-body">
+        <form novalidate class="rdsinfo_modify_form" name="rdsinfo_modify_form">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th><span>IP</span></th>
+                    <th><span>{{RdsInfoIpModalPage.power}}</span></th>
+                </tr>
+                </thead>
+                <tbody id="tby">
+                <tr ng-repeat="ip in ipList | filter:{used:1}">
+                    <td class=""><span>{{ip.addr}}</span></td>
+                    <td class=""><span>{{ip.type|rdsTransDbUserFilter}}</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>

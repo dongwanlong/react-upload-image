@@ -1,0 +1,81 @@
+<div class="modal-header letv-modal-header vm-edit-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 ng-if="handleType=='edit'" class="modal-title">{{mirrorCreateModalPage.mirrorEdit}}:{{mirrorName}}</h3>
+    <h3 ng-if="handleType=='create'" class="modal-title">{{mirrorCreateModalPage.mirrorCreate}}</h3>
+</div>
+<div class="modal-body">
+    <form novalidate class="mirror_edit_form" name="mirror_edit_form">
+        <div>
+            <div ng-class="{'edit': 'le-col-8 body-left', 'create': 'le-col-8 body-left'}[handleType]">
+                    <div class="left-inputs">
+
+                        <!--NAME-->
+                        <div class="inputs-item clearfix">
+                            <div class="le-col-12"><span class="letv-control-label">{{mirrorCreateModalPage.mirrorName}}：</span></div>
+                            <div class="le-col-12 letv-control-content">
+                                <div class="le-col-10 clear-space">
+                                    <input ng-mouseover="mirrorCreateDesc=REGEX_MESSAGE.NAME_MIRROR_NAME" ng-readonly="handleType=='edit'" min="4" max="32" regex="REGEX.NAME_MIRROR_NAME" necessary="true" type="text" name="mirror_name" class="le-form-control" ng-model="mirrorName" ng-trim="false" placeholder="{{mirrorCreateModalPage.inputMirrorName}}" le-auto-focus input-restrict/>
+                                </div>
+                                <div class="le-col-2 clear-space col-control-height">
+                                    <input-validation-tooltip ng-show="(mirror_edit_form.$submitted || mirror_edit_form.mirror_name.$touched )&& mirror_edit_form.mirror_name.$error.inputRestrict"
+                                                              validation-message="{{REGEX_MESSAGE.NAME_MIRROR_NAME}}">
+                                    </input-validation-tooltip>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--描述-->
+                        <div class="inputs-item clearfix">
+                            <div class="le-col-12"><span class="letv-control-label">{{mirrorCreateModalPage.mirrorDescribe}}：</span></div>
+                            <div class="le-col-12 letv-control-content">
+                                <div class="le-col-10 clear-space">
+                                    <input ng-mouseover="mirrorCreateDesc=REGEX_MESSAGE.TIP_MIRROR_DESCRIBE" tooltip-class="tooltip-validate-info" type="text" name="mirror_describe" min-length="5" length="1024" necessary=true class="le-form-control" ng-model="mirrorDescribe" placeholder="{{mirrorCreateModalPage.inputMirrorDescribe}}" ng-trim="false" input-length-restrict />
+                                </div>
+                                <div class="le-col-2 clear-space col-control-height">
+                                    <input-validation-tooltip ng-show="(mirror_edit_form.$submitted || mirror_edit_form.mirror_describe.$touched )&& mirror_edit_form.mirror_describe.$error.inputLengthRestrict"
+                                                              validation-message="{{REGEX_MESSAGE.NAME_LE_ENGINE_NECESSARY}}">
+                                    </input-validation-tooltip>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="inputs-item clearfix">
+                            <div class="le-col-12"><span class="letv-control-label">{{mirrorCreateModalPage.ownership}}：</span></div>
+                            <div class="le-col-12 letv-control-content">
+                                <div class="le-col-10 clear-space">
+                                    <le-radio-select class="multiple-radio" radio-style="{'margin-left':'50px','width':'70px'}" select-model="selectedOwnershipType" select-options="ownershipTypes"></le-radio-select>
+                                </div>
+                            </div>
+                            <div class="le-col-12 text-red" ng-show="selectedOwnershipType.value==1">
+                                {{mirrorCreateModalPage.powerTip}}
+                            </div>
+                        </div>
+
+                    </div>
+            </div>
+
+            <div class="le-col-4 body-right">
+                <div class="right-top">
+                    <div class="top-title"><span>{{mirrorCreateModalPage.rootImageDesc}}</span><i class="iconfont icon-rounddown"></i></div><br>
+                    <p>{{mirrorCreateDesc}}</p>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <!--按钮-->
+        <div class="button-body">
+            <div class="le-col-12">
+                <div class="row-submit-order pull-right">
+                    <button class="btn btn-le-red btn-submit-order" ng-click="mirror_edit_form.$valid && settingMirror()">
+                        <span>{{mirrorCreateModalPage.ok}}</span>
+                    </button>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <iframe style="display:none" ng-src="{{keypairDownloadUrl}}"></iframe>
+    </form>
+</div>

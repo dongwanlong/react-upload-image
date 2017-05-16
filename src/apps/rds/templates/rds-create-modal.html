@@ -1,0 +1,157 @@
+<div class="modal-header letv-modal-header vm-create-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{rdsCreateModalPage.title}}</h3>
+</div>
+<div class="modal-body">
+    <form novalidate class="rds-create-form" name="rds_create_form">
+        <div class="col-sm-8 body-left">
+            <div class="left-flow clearfix">
+                <div class="flow-desc pull-left">
+                    <div class="flow-dot-parent">
+                        <div class="dot-parent-child"><span>1</span></div>
+                    </div>
+                    <span>{{rdsCreateModalPage.step1}}</span>
+                </div>
+                <div class="flow-line pull-left" ng-class="{unactive:activeFlow<2}"></div>
+                <div class="flow-desc pull-left" ng-class="{unactive:activeFlow<2}">
+                    <div class="flow-dot-parent">
+                        <div class="dot-parent-child"><span>2</span></div>
+                    </div>
+                    <span>{{rdsCreateModalPage.step2}}</span>
+                </div>
+                <div class="flow-line pull-left" ng-class="{unactive:activeFlow<3}"></div>
+                <div class="flow-desc pull-left" ng-class="{unactive:activeFlow<3}">
+                    <div class="flow-dot-parent">
+                        <div class="dot-parent-child"><span>3</span></div>
+                    </div>
+                    <span>{{rdsCreateModalPage.step3}}</span>
+                </div>
+            </div>
+            <div id="left-flowone" ng-show="activeFlow==1">
+                <div class="left-inputs">
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-2"><span class="letv-control-label">{{rdsCreateModalPage.rdsName}}：</span></div>
+                        <div class="col-sm-10">
+                            <input type="text" name="rds_name" class="le-form-control" necessary="true" ng-model="rdsName" placeholder="{{rdsCreateModalPage.inputRdsName}}" ng-trim="false" regex="REGEX.NAME_RDS" le-auto-focus input-restrict />
+                            <input-validation-tooltip ng-show="(rds_create_form.$submitted || rds_create_form.rds_name.$touched) && rds_create_form.rds_name.$error.inputRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME_RDS}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-2"><span class="letv-control-label">{{rdsCreateModalPage.usableArea}}：</span></div>
+                        <div class="col-sm-10">
+                            <le-select select-model="rdsUsableAreaNow" select-options="rdsUsableAreaList"></le-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="left-button">
+                    <div class="col-sm-12">
+                        <div class="btn btn-le-blue pull-right" ng-click="tabPage1ToPage2($event)"><span>{{rdsCreateModalPage.nextStep}}</span></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div id="left-flowtwo" ng-show="activeFlow==2">
+                <div class="left-inputs">
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-3"><span class="letv-control-label">{{rdsCreateModalPage.dataBaseType}}：</span></div>
+                        <div class="col-sm-9">
+                            <le-select select-model="rdsSqltypeNow" select-options="rdsSqltypeList"></le-select>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-3"><span class="letv-control-label">{{rdsCreateModalPage.linkType}}：</span></div>
+                        <div class="col-sm-9">
+                            <le-radio-select select-model="rdsLinkTypeNow" select-options="rdsLinkTypeList"></le-radio-select>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-3"><span class="letv-control-label">{{rdsCreateModalPage.defaultUser}}：</span></div>
+                        <div class="col-sm-9">
+                            <le-radio-select select-model="rdsUserMangerCreateNow" select-options="rdsUserMangerCreateList"></le-radio-select>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-3"><span class="letv-control-label">{{rdsCreateModalPage.storageSpace}}：</span></div>
+                        <div class="col-sm-9">
+                            <le-select select-model="rdsStorageSpaceNow" select-options="rdsStorageSpaceList"></le-select>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-3"><span class="letv-control-label">{{rdsCreateModalPage.memory}}：</span></div>
+                        <div class="col-sm-9">
+                            <le-select select-model="rdsMemoryNow" select-options="rdsMemoryList"></le-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="left-button">
+                    <div class="col-sm-12">
+                        <div class="btn btn-le-blue pull-left" ng-click="tabPage2ToPage1($event)"><span>{{rdsCreateModalPage.preStep}}</span></div>
+                        <div class="btn btn-le-blue pull-right" ng-click="tabPage2ToPage3($event)"><span>{{rdsCreateModalPage.nextStep}}</span></div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div id="left-flowfour" ng-show="activeFlow==3">
+                <div class="left-inputs">
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-3"><span class="letv-control-label">{{rdsCreateModalPage.buyYears}}：</span></div>
+                        <div class="col-sm-9">
+                            <le-select select-model="rdsBuyTimeNow" select-options="rdsBuyTimeList"></le-select>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-3"><span class="letv-control-label">{{rdsCreateModalPage.buyCounts}}：</span></div>
+                        <div class="col-sm-9">
+                            <numeric-input numeric-model="rdsBuyCount" numeric-max="3" numeric-min="1"></numeric-input>
+                        </div>
+                    </div>
+                </div>
+                <div class="left-button">
+                    <div class="col-sm-12">
+                        <div class="btn btn-le-blue pull-left" ng-click="tabPage3ToPage2($event)"><span>{{rdsCreateModalPage.preStep}}</span></div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 body-right">
+            <div class="right-top">
+                <div class="top-title"><span>{{rdsCreateModalPage.orderTitle}}</span><i class="iconfont icon-rounddown"></i></div>
+                <ul class="top-items">
+                    <li><span class="title">{{rdsCreateModalPage.orderStorage}}：</span><span class="value">{{rdsStorageSpaceNow.text}}</span></li>
+                    <li><span class="title">{{rdsCreateModalPage.memory}}：</span><span class="value">{{rdsMemoryNow.text}}</span></li>
+                    <li><span class="title">{{rdsCreateModalPage.orderType}}：</span><span class="value">{{rdsSqltypeNow.text}}</span></li>
+                    <li><span class="title">{{rdsCreateModalPage.orderLink}}：</span><span class="value">{{rdsLinkTypeNow.text}}</span></li>
+                    <li><span class="title">{{rdsCreateModalPage.buyYears}}：</span><span class="value">{{rdsBuyTimeNow.text}}</span></li>
+                    <li><span class="title">{{rdsCreateModalPage.buyCounts}}：</span><span class="value">{{rdsBuyCount}}</span></li>
+                </ul>
+            </div>
+            <div class="right-bottom">
+            <div class="row-order-price" ng-show="!isCalculatingPrice">
+                       <span>
+                                    <span class="title">{{rdsCreateModalPage.total}}：</span>
+                                    <span class="price">{{vmTotalPrice}}</span>
+                                    <span class="unit">{{rdsCreateModalPage.CNY}}</span>
+                       </span>
+            </div>
+            <div class="row-calculating-price" ng-show="isCalculatingPrice">
+                <span>{{rdsCreateModalPage.priceCalculating}}</span>
+            </div>
+            <div class="row-submit-order">
+                <button class="btn btn-le-red btn-submit-order" ng-click="rds_create_form.$valid && !isFormSubmiting &&createRds()" ng-disabled="isRdsCanBuy">
+                    <span ng-if="!isFormSubmiting">{{rdsCreateModalPage.submitOrderBtn}}</span>
+                    <span ng-if="isFormSubmiting">{{rdsCreateModalPage.submitOrdering}}.</span>
+                </button>
+            </div>
+        </div>
+        </div>
+        <div class="clearfix"></div>
+        <iframe style="display:none" ng-src="{{keypairDownloadUrl}}"></iframe>
+    </form>
+</div>

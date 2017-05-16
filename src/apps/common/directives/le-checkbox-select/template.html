@@ -1,0 +1,6 @@
+<div ng-show="false" ng-bind="model"></div>
+
+    <div class="letv-mutiCheck check-create" ng-click="toggleSelect(option)" ng-repeat="option in options" ng-class="{'selected':isSelect(option)}">
+        <span>{{option.text}}</span>
+        <i class="iconfont icon-checkroundfillicon"></i>
+    </div>

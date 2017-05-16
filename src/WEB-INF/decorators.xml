@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/layouts/">
+	<excludes>
+		<pattern>/static/*</pattern>
+		<pattern>/account/login</pattern>
+		
+		<!-- 异步请求 -->
+		<pattern>/mcluster</pattern>
+		<pattern>/mcluster/*</pattern>
+		<pattern>/container</pattern>
+		<pattern>/container/*</pattern>
+		<pattern>/db</pattern>
+		<pattern>/db/*</pattern>
+		<pattern>/dbUser</pattern>
+		<pattern>/dbUser/*</pattern>
+		<pattern>/build</pattern>
+		<pattern>/build/*</pattern>
+		<pattern>/hcluster</pattern>
+		<pattern>/hcluster/*</pattern>
+		<pattern>/host</pattern>
+		<pattern>/host/*</pattern>
+		<pattern>/monitor</pattern>
+		<pattern>/monitor/*</pattern>
+		<pattern>/dashboard/*</pattern>
+	</excludes>
+	
+	<decorator name="default" page="default.jsp">
+		<pattern>/*</pattern>
+	</decorator>
+</decorators>
+ 

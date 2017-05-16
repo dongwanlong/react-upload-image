@@ -1,0 +1,551 @@
+<div class="view-common" ng-controller="VmVpcCtrl">
+    <div class="le-row le-tab-header">
+        <div class="le-tab-btn" ng-class="{'le-tab-active': tabShow === 'vpc'}" ng-click="switchTabToVpc()"><span>VPC</span></div>
+        <div class="le-tab-btn" ng-class="{'le-tab-active': tabShow === 'subnet'}" ng-click="switchTabToSubnet()"><span>子网</span></div>
+    </div>
+    <div ng-show="tabShow === 'vpc'">
+        <div class="le-row operate-panel">
+            <div class="le-col-6 le-btn-group">
+                <button class="btn btn-le-blue" ng-click="openVpcCreateModal('medium')"><span>创建VPC</span></button>
+                <button class="btn btn-le-blueGreen" ng-click="subnetCreateWithVpc()"><span>创建子网</span></button>
+                <button class="btn btn-le-green" ng-click="editVpc()"><span>编辑VPC</span></button>
+                <button class="btn btn-le-roseRed" ng-click="deleteVpc()"><span>删除VPC</span></button>
+            </div>
+        </div>
+        <div class="le-row list-common">
+            <div class="le-col-12">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th class="unselectable">
+                        <span class="iconfont icon-righticon" ng-class="{checked:isAllVpcChecked()}"
+                              ng-click="checkAllVpc()"></span>
+                        </th>
+                        <th><span>名称</span></th>
+                        <th><span>子网</span></th>
+                        <th><span>状态</span></th>
+                        <th><span>创建时间</span></th>
+                    </tr>
+                    </thead>
+                    <tbody id="tby">
+                    <tr ng-repeat="vpc in vpcList">
+                        <td class="unselectable">
+                        <span class="iconfont icon-checkiconfill" ng-class="{checked:vpc.checked}"
+                              ng-click="checkVpc(vpc)"></span>
+                        </td>
+                        <td class="le-col-name"><span>{{vpc.name|| EMPTY_TEXT}}</span></td>
+                        <td class="le-col-name"><span>{{vpc.subnets | vpcSubnetsFilter}}</span></td>
+                        <td>
+                            <span>{{vpc.status | vpcStatusFilter}}</span>
+                        </td>
+                        <td><span>{{vpc.created | date:'yyyy-MM-dd HH:mm'}}</span></td>
+                    </tr>
+                    <tr ng-if="vpcList.length==0">
+                        <td ng-if="!isListLoading" colspan=10 class="nodata">暂无私有网络，去创建吧。</td>
+                        <td ng-if="isListLoading" colspan=10></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div ng-if="!isListLoading && vpcList.length>0" class="le-pagination">
+                    <span>共{{vpc.totalItems}}条，每页显示{{vpc.pageSize}}条</span>
+                    <pagination boundary-links="true" direction-links="true"
+                                ng-change="vpc.onPageChange()"
+                                items-per-page="vpc.pageSize" total-items="vpc.totalItems" ng-model="vpc.currentPage"
+                                class="pagination-sm" max-size="5" rotate="false" previous-text="&lsaquo;"
+                                next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
+                    </pagination>
+                </div>
+                <div ng-if="isListLoading" class="spin"></div>
+                <div ng-if="isListLoading" class="far-spin"></div>
+            </div>
+        </div>
+    </div>
+    <div ng-show="tabShow === 'subnet'">
+        <div class="le-row operate-panel">
+            <div class="le-col-6 le-btn-group">
+                <button class="btn btn-le-blue" ng-click="openSubnetCreateModal('medium')" ng-disabled="operationBtn.create==0"><span>创建子网</span></button>
+                <button class="btn btn-le-blueGreen" ng-click="openSubnetAssociateVmModal('medium')" ng-disabled="operationBtn.bindvm==0"><span>添加云主机</span></button>
+                <button class="btn btn-le-green" ng-click="associateRouter()" ng-disabled="operationBtn.bindrouter==0"><span>绑定路由器</span></button>
+                <div dropdown class="more-operation-dropdown">
+                    <a href class="btn btn-le-yellow" dropdown-toggle>
+                        更多操作
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="simple-dropdown">
+                        <li><button class="btn dropdown-btn" ng-click="openSubnetDetachVmModal('medium')" ng-disabled="operationBtn.unbindvm==0">移除云主机</button></li>
+                        <li><button class="btn dropdown-btn" ng-click="unbundRouter()" ng-disabled="operationBtn.unbindrouter==0">解绑路由器</button></li>
+                        <li><button class="btn dropdown-btn" ng-click="editSubnet()" ng-disabled="operationBtn.edit==0">编辑子网</button></li>
+                        <li><button class="btn dropdown-btn" ng-click="deleteSubnet()" ng-disabled="operationBtn.delete==0">删除子网</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="le-row list-common">
+            <div class="le-col-12">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th class="unselectable">
+                        <span class="iconfont icon-righticon" ng-class="{checked:isAllSubnetChecked()}"
+                              ng-click="checkAllSubnet()"></span>
+                        </th>
+                        <th><span>名称</span></th>
+                        <th><span>VPC</span></th>
+                        <th><span>网段</span></th>
+                        <th><span>绑定路由器</span></th>
+                        <th><span>创建时间</span></th>
+                    </tr>
+                    </thead>
+                    <tbody id="subnet-tby">
+                    <tr ng-repeat="subnet in subnetList">
+                        <td class="unselectable">
+                        <span class="iconfont icon-checkiconfill" ng-class="{checked:subnet.checked}"
+                              ng-click="checkSubnet(subnet)"></span>
+                        </td>
+                        <td class="le-col-name"><span>{{subnet.name|| EMPTY_TEXT}}</span></td>
+                        <td class="le-col-name"><span>{{subnet.network.name}}</span></td>
+                        <td><span>{{subnet.cidr}}</span></td>
+                        <td class="le-col-name"><span>{{subnet.router.name || EMPTY_TEXT}}</span></td>
+                        <td><span>{{subnet.created | date:'yyyy-MM-dd HH:mm'}}</span></td>
+                    </tr>
+                    <tr ng-if="subnetList.length==0">
+                        <td ng-if="!isListLoading" colspan=10 class="nodata">暂无子网，去创建吧。</td>
+                        <td ng-if="isListLoading" colspan=10></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div ng-if="!isListLoading && subnetList.length>0" class="le-pagination">
+                    <span>共{{subnet.totalItems}}条，每页显示{{subnet.pageSize}}条</span>
+                    <pagination boundary-links="true"
+                                direction-links="true" ng-change="subnet.onPageChange()"
+                                items-per-page="subnet.pageSize" total-items="subnet.totalItems"
+                                ng-model="subnet.currentPage"
+                                class="pagination-sm" max-size="5" rotate="false" previous-text="&lsaquo;"
+                                next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
+                    </pagination>
+                </div>
+                <div ng-if="isListLoading" class="spin"></div>
+                <div ng-if="isListLoading" class="far-spin"></div>
+            </div>
+        </div>
+    </div>
+    <toaster-container
+            toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+    </toaster-container>
+    <script type="text/ng-template" id="VpcCreateModalTpl">
+        <div class="modal-vm-disk-create">
+            <form novalidate class="form-vm-vpc-create" name="vpc_create_form">
+                <div class="le-modal-header">
+                    <span class="header-title">创建VPC</span>
+                    <a class="close" ng-click="closeModal()">
+                        <i class="iconfont icon-add"></i>
+                    </a>
+                </div>
+                <div class="le-modal-body">
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">私有网络名称：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <input type="text" class="le-form-control input-disk-name" ng-model="vpcCreate.name"
+                                   name="vpc_name" ng-trim="false" le-auto-focus name-input-restrict />
+                            <input-validation-tooltip ng-show="(vpc_create_form.$submitted || vpc_create_form.vpc_name.$touched) && vpc_create_form.vpc_name.$error.nameInputRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">创建子网：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <div class="letv-radioCheck" ng-class="{'selected':vpcCreate.isCreateSubnet=='true'}" ng-click="vpcCreate.isCreateSubnet='true'">
+                                <i class="iconfont icon-checkblockicon"></i>
+                                <span class="letv-radio-content">是</span>
+                            </div>
+                            <div class="letv-radioCheck" ng-class="{'selected':vpcCreate.isCreateSubnet=='false'}" ng-click="vpcCreate.isCreateSubnet='false'">
+                                <i class="iconfont icon-checkblockicon"></i>
+                                <span class="letv-radio-content">否</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="le-row" ng-if="vpcCreate.isCreateSubnet === 'true'">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">子网名称：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <input type="text" class="le-form-control input-disk-name" ng-model="vpcCreate.subnet.name"
+                                   name="subnet_name" ng-trim="false" le-auto-focus name-input-restrict/>
+                            <input-validation-tooltip ng-show="(vpc_create_form.$submitted || vpc_create_form.subnet_name.$touched) && vpc_create_form.subnet_name.$error.nameInputRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="le-row" ng-if="vpcCreate.isCreateSubnet === 'true'">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">子网地址：</span>
+                        </div>
+                        <div class="le-col-8 col-control">
+                            <input type="hidden" name='cidr' ng-model="vpcCreate.subnet.selectedCidr" required/>
+                            <le-select select-model="vpcCreate.subnet.selectedCidr" select-options="vpcCreate.subnet.cidrListSelectorData" select-empty-text="暂无可用子网地址" is-select-option-loading="isCidrListLoading"></le-select>
+                            <input-validation-tooltip class="le-select-tooltip" ng-show="vpc_create_form.$submitted && vpc_create_form.cidr.$error.required"
+                                                      validation-message="请选择子网地址">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="le-row" ng-if="vpcCreate.isCreateSubnet === 'true'">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">子网网关：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <span class="letv-control-label">{{vpcCreate.subnet.selectedCidr.relatedOption.gatewayIp}}</span>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-12 col-submit-order">
+                            <button class="btn btn-le-blue" ng-click="vpc_create_form.$valid && !isFormSubmiting && createVpc()" ng-disabled="isFormSubmiting">
+                                <span ng-if="!isFormSubmiting">创建</span>
+                                <span ng-if="isFormSubmiting">创建执行中...</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+    <script type="text/ng-template" id="VpcEditModalTpl">
+        <form novalidate class="form-vm-vpc-create" name="vpc_edit_form">
+            <div class="letv-modal-header">
+                <span class="header-title">编辑VPC</span>
+                <a class="close" ng-click="closeModal()">
+                    <i class="iconfont icon-add"></i>
+                </a>
+            </div>
+            <div class="le-modal-body">
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">私有网络名称：</span>
+                    </div>
+                    <div class="le-col-9 col-control">
+                        <input type="text" class="le-form-control input-disk-name" ng-model="vpcEdit.name"
+                               name="edit_vpc_name" ng-trim="false" le-auto-focus name-input-restrict/>
+                        <input-validation-tooltip ng-show="(vpc_edit_form.$submitted || vpc_edit_form.edit_vpc_name.$touched) && vpc_edit_form.edit_vpc_name.$error.nameInputRestrict"
+                                                  validation-message="{{REGEX_MESSAGE.NAME}}">
+                        </input-validation-tooltip>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-12 col-submit-order">
+                        <button class="btn btn-le-blue" ng-click="vpc_edit_form.$valid && !isFormSubmiting && editVpc()" ng-disabled="isFormSubmiting">
+                            <span ng-if="!isFormSubmiting">编辑</span>
+                            <span ng-if="isFormSubmiting">编辑执行中...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </script>
+    <script type="text/ng-template" id="SubnetEditModalTpl">
+        <form novalidate class="form-vm-subnet-create" name="subnet_edit_form">
+            <div class="letv-modal-header">
+                <span class="header-title">编辑子网</span>
+                <a class="close" ng-click="closeModal()">
+                    <i class="iconfont icon-add"></i>
+                </a>
+            </div>
+            <div class="le-modal-body">
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">子网名称：</span>
+                    </div>
+                    <div class="le-col-9 col-control">
+                        <input type="text" class="le-form-control input-disk-name" ng-model="subnetEdit.name"
+                               name="edit_subnet_name" ng-trim="false" le-auto-focus name-input-restrict/>
+                        <input-validation-tooltip ng-show="(subnet_edit_form.$submitted || subnet_edit_form.edit_subnet_name.$touched) && subnet_edit_form.edit_subnet_name.$error.nameInputRestrict"
+                                                  validation-message="{{REGEX_MESSAGE.NAME}}">
+                        </input-validation-tooltip>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-12 col-submit-order">
+                        <button class="btn btn-le-blue" ng-click="subnet_edit_form.$valid && !isFormSubmiting && editSubnet()" ng-disabled="isFormSubmiting">
+                            <span ng-if="!isFormSubmiting">编辑</span>
+                            <span ng-if="isFormSubmiting">编辑执行中...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </script>
+    <script type="text/ng-template" id="SubnetCreateModalTpl">
+        <div class="modal-vm-disk-create">
+            <form novalidate class="form-vm-subnet-create" name="subnet_create_form">
+                <div class="le-modal-header">
+                    <span class="header-title">创建子网</span>
+                    <a class="close" ng-click="closeModal()">
+                        <i class="iconfont icon-add"></i>
+                    </a>
+                </div>
+                <div class="le-modal-body">
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">子网名称：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <input type="text" class="le-form-control input-disk-name" ng-model="subnetCreate.name"
+                                   name="subnet_name" ng-trim="false" le-auto-focus name-input-restrict/>
+                            <input-validation-tooltip ng-show="(subnet_create_form.$submitted || subnet_create_form.subnet_name.$touched) && subnet_create_form.subnet_name.$error.nameInputRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">私有网络：</span>
+                        </div>
+                        <div class="le-col-8 col-control">
+                            <input type="hidden" name='vpc' ng-model="selectedVpc" required/>
+                            <le-select select-model="selectedVpc" select-options="vpcListSelectorData" select-empty-text="暂无可用私有网络" is-select-option-loading="isVpcListLoading"></le-select>
+                            <input-validation-tooltip class="le-select-tooltip" ng-show="subnet_create_form.$submitted && subnet_create_form.vpc.$error.required"
+                                                      validation-message="请选择私有网络">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">子网地址：</span>
+                        </div>
+                        <div class="le-col-8 col-control">
+                            <input type="hidden" name='cidr' ng-model="selectedCidr" required/>
+                            <le-select select-model="selectedCidr" select-options="cidrListSelectorData" select-empty-text="暂无可用子网地址" is-select-option-loading="isCidrListLoading"></le-select>
+                            <input-validation-tooltip class="le-select-tooltip" ng-show="subnet_create_form.$submitted && subnet_create_form.cidr.$error.required"
+                                                      validation-message="请选择子网地址">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">子网网关：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <span class="letv-control-label">{{selectedCidr.relatedOption.gatewayIp}}</span>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-12 col-submit-order">
+                            <button class="btn btn-le-blue" ng-click="subnet_create_form.$valid && !isFormSubmiting && createSubnet()" ng-disabled="isFormSubmiting">
+                                <span ng-if="!isFormSubmiting">创建</span>
+                                <span ng-if="isFormSubmiting">创建执行中...</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+    <script type="text/ng-template" id="SubnetCreateWithVpcModalTpl">
+        <div class="modal-vm-disk-create">
+            <form novalidate class="form-vm-subnet-create" name="subnet_create_with_vpc_form">
+                <div class="le-modal-header">
+                    <span class="header-title">创建子网</span>
+                    <a class="close" ng-click="closeModal()">
+                        <i class="iconfont icon-add"></i>
+                    </a>
+                </div>
+                <div class="le-modal-body">
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">子网名称：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <input type="text" class="le-form-control input-disk-name" ng-model="subnetCreate.name"
+                                   name="subnet_name" ng-trim="false" le-auto-focus name-input-restrict/>
+                            <input-validation-tooltip ng-show="(subnet_create_with_vpc_form.$submitted || subnet_create_with_vpc_form.subnet_name.$touched) && subnet_create_with_vpc_form.subnet_name.$error.nameInputRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">私有网络：</span>
+                        </div>
+                        <div class="le-col-8 col-control">
+                            <span class="letv-control-label label-name">{{subnetCreate.vpcForSubnet.name}}</span>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">子网地址：</span>
+                        </div>
+                        <div class="le-col-8 col-control">
+                            <input type="hidden" name='cidr' ng-model="selectedCidr" required/>
+                            <le-select select-model="selectedCidr" select-options="cidrListSelectorData" select-empty-text="暂无可用子网地址" is-select-option-loading="isCidrListLoading"></le-select>
+                            <input-validation-tooltip class="le-select-tooltip" ng-show="subnet_create_with_vpc_form.$submitted && subnet_create_with_vpc_form.cidr.$error.required"
+                                                      validation-message="请选择子网地址">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">子网网关：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <span class="letv-control-label">{{selectedCidr.relatedOption.gatewayIp}}</span>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-12 col-submit-order">
+                            <button class="btn btn-le-blue" ng-click="subnet_create_with_vpc_form.$valid && !isFormSubmiting && createSubnet()" ng-disabled="isFormSubmiting">
+                                <span ng-if="!isFormSubmiting">创建</span>
+                                <span ng-if="isFormSubmiting">创建执行中...</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+    <script type="text/ng-template" id="AssociateRouterModalTpl">
+        <form novalidate class="form-vm-router-create" name="associate_router_form">
+            <div class="letv-modal-header">
+                <span class="header-title">绑定路由器</span>
+                <a class="close" ng-click="closeModal()">
+                    <i class="iconfont icon-add"></i>
+                </a>
+            </div>
+            <div class="le-modal-body">
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">名称：</span>
+                    </div>
+                    <div class="le-col-9 col-control">
+                        <span class="letv-control-label label-name">{{associateSubnetName}}</span>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">路由器：</span>
+                    </div>
+                    <div class="le-col-8 col-control">
+                        <input type="hidden" name='router' ng-model="selectedRouter" required/>
+                        <le-select select-model="selectedRouter" select-options="routerListSelectorData" select-empty-text="暂无可用路由器" is-select-option-loading="isRouterListLoading"></le-select>
+                        <input-validation-tooltip class="le-select-tooltip" ng-show="associate_router_form.$submitted && associate_router_form.router.$error.required"
+                                                  validation-message="请选择路由器">
+                        </input-validation-tooltip>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-12 col-submit-order">
+                        <button class="btn btn-le-blue" ng-click="associate_router_form.$valid && !isFormSubmiting && associateRouter()" ng-disabled="isFormSubmiting">
+                            <span ng-if="!isFormSubmiting">绑定</span>
+                            <span ng-if="isFormSubmiting">绑定执行中...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </script>
+    <script type="text/ng-template" id="SubnetAssociateVmModalTpl">
+        <form novalidate class="form-vm-router-create" name="associate_vm_form">
+            <div class="letv-modal-header">
+                <span class="header-title">添加云主机</span>
+                <a class="close" ng-click="closeModal()">
+                    <i class="iconfont icon-add"></i>
+                </a>
+            </div>
+            <div class="le-modal-body">
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">子网名称：</span>
+                    </div>
+                    <div class="le-col-9 col-control">
+                        <span class="letv-control-label label-name">{{subnetAssociateVm.subnetName}}</span>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">云主机：</span>
+                    </div>
+                    <div class="le-col-8 col-control">
+                        <ul class="nav nav-tabs letv-nav-tab">
+                            <li class="active">
+                                <a href="javascript:void(0);">可添加</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content letv-tab-content">
+                            <div class="tab-pane active">
+                                <ul class="system-content mutiple-selection-area">
+                                    <li ng-repeat="vm in associatedVmList">
+                                        <div class="letv-radioCheck" ng-class="{'selected':isSelectedAssociatedVmImage(vm)}" ng-click="selectAssociatedVmImage(vm)">
+                                            <i class="iconfont icon-checkblockicon"></i>
+                                            <span class="letv-radio-content" title="{{vm.name}}">{{vm.name}}</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-12 col-submit-order">
+                        <button class="btn btn-le-blue" ng-click="associate_vm_form.$valid && !isFormSubmiting && associateVm()" ng-disabled="isFormSubmiting">
+                            <span ng-if="!isFormSubmiting">添加</span>
+                            <span ng-if="isFormSubmiting">添加执行中...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </script>
+    <script type="text/ng-template" id="SubnetDetachVmModalTpl">
+        <form novalidate class="form-vm-router-create" name="detach_vm_form">
+            <div class="letv-modal-header">
+                <span class="header-title">移除云主机</span>
+                <a class="close" ng-click="closeModal()">
+                    <i class="iconfont icon-add"></i>
+                </a>
+            </div>
+            <div class="le-modal-body">
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">子网名称：</span>
+                    </div>
+                    <div class="le-col-9 col-control">
+                        <span class="letv-control-label label-name">{{subnetDetachVm.subnetName}}</span>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">云主机：</span>
+                    </div>
+                    <div class="le-col-8 col-control">
+                        <ul class="nav nav-tabs letv-nav-tab">
+                            <li class="active">
+                                <a href="javascript:void(0);">可移除</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content letv-tab-content">
+                            <div class="tab-pane active">
+                                <ul class="system-content mutiple-selection-area">
+                                    <li ng-repeat="vm in detachVmList">
+                                        <div class="letv-radioCheck" ng-class="{'selected':isSelectedDetachVmImage(vm)}" ng-click="selectDetachVm(vm)">
+                                            <i class="iconfont icon-checkblockicon"></i>
+                                            <span class="letv-radio-content" title="{{vm.name}}">{{vm.name}}</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-12 col-submit-order">
+                        <button class="btn btn-le-blue" ng-click="detach_vm_form.$valid && !isFormSubmiting && detachVm()" ng-disabled="isFormSubmiting">
+                            <span ng-if="!isFormSubmiting">移除</span>
+                            <span ng-if="isFormSubmiting">移除执行中...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </script>
+</div>

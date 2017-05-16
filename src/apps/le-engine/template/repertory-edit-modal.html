@@ -1,0 +1,36 @@
+<div class="modal-header letv-modal-header vm-create-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{repertoryCreateModalPage.repertoryEdit}}：{{editTitle}}</h3>
+</div>
+<div class="modal-body">
+    <form novalidate class="repertory-create-form" name="repertory_create_form">
+        <div class="le-col-12 ">
+            <div class="left-inputs clearfix" >
+                <div class="inputs-item clearfix">
+                    <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{repertoryCreateModalPage.repertoryDescribe}}：</span></div>
+                    <div class="le-col-8">
+                        <div class="le-col-10 clear-space">
+                            <textarea tooltip-placement="right" tooltip-trigger="mouseenter" tooltip-class="tooltip-validate-info" necessary="true" min-length = "5" length="1024" type="text" name="repertory_describe" class="repertory le-form-control " ng-model="repertoryDescribe" placeholder="{{repertoryCreateModalPage.inputRepertoryDescribe}}" ng-trim="false" input-length-restrict/>
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(repertory_create_form.$submitted || repertory_create_form.repertory_describe.$touched) && repertory_create_form.repertory_describe.$error.inputLengthRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME_APP_DESCRIPTION}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="left-button">
+                <button class="btn btn-le-red btn-submit-order pull-right" ng-click="repertory_create_form.$valid && editRepertory()" >
+                    <span>{{repertoryCreateModalPage.ok}}</span>
+                </button>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+        <iframe style="display:none" ng-src="{{keypairDownloadUrl}}"></iframe>
+    </form>
+</div>

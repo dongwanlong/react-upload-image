@@ -1,0 +1,41 @@
+<div class="modal-header letv-modal-header vm-create-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{title}}</h3>
+</div>
+
+<div class="modal-body">
+    <div class="le-col-12 codeTheme clearfix">
+        <pre class="clearfix codeThemePanel" >
+            <p>Auto building system support both "legitlab.letv.cn" and "git.letv.cn".</p>
+            <p>legitlab.letv.cn:</p>
+            <p>1 Login in "legitlab.letv.cn" and enter to your git repo: {{gitAddress}}</p>
+            <p>2 Click "Members" and add user "cloud_leengine" which it authorization is reporter, e.g.：
+            <img src="/images/apps/le-engine/1.jpeg">
+            </p>
+            <p>3 Click "Settings"(You must this repo's Owner), and use "Web Hooks": e.g.
+            <img src="/images/apps/le-engine/2.jpeg">
+            <img src="/images/apps/le-engine/3.jpeg">
+            </p>
+            <p>"Web Hooks" url is： {{wholeUrl}}, and use "Push events" and "Tag push Events"
+            </p>
+            <p>nocache:Use building caches or not, used when the value is false, not use when the value is true, it can save build time when caches is used. <br/>Use maven caches or not, used when the value is true, not use when the value is false.</p>
+            <p>git.letv.cn: </p>
+            <p>1 Login in "legitlab.letv.cn" and enter to your git repo: {{gitAddress}}</p>
+            <p>2 Click Settings(You must this repo's Owner), e.g.:
+            <img src="/images/apps/le-engine/4.jpeg">
+            </p>
+            <p>3 Click "Members" and "New Project member", e.g.:
+            <img src="/images/apps/le-engine/5.jpeg">
+            </p>
+            <p>4 Add user "cloud_leengine" which it authorization is reporter, e.g.:
+            <img src="/images/apps/le-engine/6.jpeg">
+            </p>
+            <p>5 "Web Hooks" url is: {{wholeUrl}} and use "Push events" and "Tag push Events", e.g.
+            <img src="/images/apps/le-engine/7.jpeg">
+            </p>
+        </pre>
+    </div>
+    <div class="clearfix"></div>
+</div>

@@ -1,0 +1,67 @@
+<div class="le-row list-common" ng-controller="rdsInfoBaseCtrl">
+    <div class="le-col-12">
+        <table ng-show="!isloading" class="le-table-base table table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{RdsinfoBasePage.baseInfoTitle}}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr><td><span class="title">{{RdsinfoBasePage.dbId}}:</span><span class="con">{{rdsInfo.dbName}}</span></td><td><span class="title">{{RdsinfoBasePage.area}}:</span><span class="con">北京</span></td></tr>
+            <tr><td><span class="title">{{RdsinfoBasePage.dbName}}:</span><span class="con">{{rdsInfo.dbName}}</span></td><td><span class="title">{{RdsinfoBasePage.usableArea}}:</span><span class="con">{{rdsInfo.availableRegion}}</span><span class="font-disabled pd-r8">{{RdsinfoBasePage.areaTip}}</span></td></tr>
+            <tr><td><span class="title">{{RdsinfoBasePage.innerNetAddr}}:</span><span class="con">{{rdsInfo.netAddr}}</span><span class="text-danger">{{RdsinfoBasePage.innerNetAddrTip}}</span></td><td><span class="title">{{RdsinfoBasePage.port}}:</span><span class="con">3306</span><span class="font-disabled pd-r8">{{RdsinfoBasePage.portTip1}}</span><span class="font-disabled pd-r8">{{RdsinfoBasePage.portTip2}}</span></td></tr>
+            </tbody>
+        </table>
+
+        <table ng-show="!isloading" class="le-table-base table table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{RdsinfoBasePage.runStateTitle}}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr><td><span class="title">{{RdsinfoBasePage.runState}}:</span><span class="con">{{rdsInfo.runningState|rdsStatusFilter}}</span></td><td><span class="title">{{RdsinfoBasePage.lockModal}}:</span><span class="con">正常</span></td></tr>
+            <tr><td><span class="title">{{RdsinfoBasePage.usability}}:</span><span class="con">100.0%</span></td><td><span class="title">{{RdsinfoBasePage.usedSpace}}:</span><span class="con"></span></td></tr>
+            </tbody>
+        </table>
+
+        <table ng-show="!isloading" class="le-table-base table table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{RdsinfoBasePage.configurationInfoTitle}}</span><a class="pull-right tb-set-btn" ng-click="showOption('small');"><i class="iconfont icon-sousuo"></i>&nbsp&nbsp{{RdsinfoBasePage.configurationInfoTitle}}</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr><td><span class="title">{{RdsinfoBasePage.dbMemory}}:</span><span class="con">{{rdsInfo.memorySize|gTransMemoryFilter}}</span></td><td><span class="title">{{RdsinfoBasePage.dbSpace}}:</span><span class="con">{{rdsInfo.storageSize|gTransMemoryFilter}}</span></td></tr>
+            <tr><td><span class="title">{{RdsinfoBasePage.instanceType}}:</span><span class="con">{{RdsinfoBasePage.vip}}</span></td><td><span class="title">{{RdsinfoBasePage.dbType}}:</span><span class="con">MySQL5.5</span></td></tr>
+            <tr><td><span class="title">{{RdsinfoBasePage.maxLink}}:</span><span class="con"></span></td><td><span class="title">{{RdsinfoBasePage.maxIOPS}}:</span><span class="con"></span></td></tr>
+            </tbody>
+        </table>
+
+        <table ng-show="!isloading" class="le-table-base table table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{RdsinfoBasePage.OperationPeriodTitle}}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr><td><span class="title">{{RdsinfoBasePage.createTime}}:</span><span class="con">{{rdsInfo.createTime|date :'yyyy-MM-dd HH:mm:ss'}}</span></td><td><span class="title">{{RdsinfoBasePage.payTime}}:</span><span class="con">{{RdsinfoBasePage.pacYears}} {{rdsInfo.createTime | rdsTransLastDateFilter}}{{RdsinfoBasePage.daysAfterMaturity}}</span></td></tr>
+            </tbody>
+        </table>
+
+        <table ng-show="!isloading" class="le-table-base table table-bordered">
+            <thead>
+            <tr>
+                <th><span>{{RdsinfoBasePage.timeAvailableTitle}}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr><td><span class="title">{{RdsinfoBasePage.timeAvailable}}:</span><span class="con">{{RdsinfoBasePage.unSet}}</span></td></tr>
+            </tbody>
+        </table>
+
+        <div ng-if="isloading" class="spin"></div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

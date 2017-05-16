@@ -1,0 +1,91 @@
+<div class="view-common apper-list">
+    <p class="lead" ng-show="!viewAppCellsPermissions">{{apperListPage.viewAppCellsPermissionsTip}}</p>
+    <div class="le-row operate-panel" ng-show="viewAppCellsPermissions">
+        <div class="le-row le-tab-header app-cell-tab">
+            <div ng-repeat="cell in cellList" class="le-tab-btn" ng-class="{'le-tab-active': currentCellId === cell.Id}" ng-click="switchCell(cell.Id)">
+                <span tooltip="{{cell.Name}}" tooltip-placement="right" tooltip-trigger="mouseenter" tooltip-class="tooltip-validate-info" >{{cell.Name|limitTo : 8}}{{cell.Name.length>8?'...':''}}</span>
+            </div>
+        </div>
+        <div class="le-col-12">
+            <div class="le-col-12 le-btn-group">
+                <button class="btn btn-le-blue" ng-if="cellList.length>0 && apperList.length>0" ng-click="refreshApperList()"><span>{{apperListPage.refreshApperBtn}}</span></button>
+                <button class="btn btn-le-blue" ng-if="cellList.length>0 && deployAppPermissions" ng-click="createApper('large')"><span>{{apperListPage.createApperBtn}}</span></button>
+                <button class="btn btn-le-blue" ng-if="cellList.length>0 && apperList.length>0 && removeAppVersionPermissions" ng-click="deleteApper('small')"><span>{{apperListPage.deleteApperBtn}}</span></button>
+                <button class="btn btn-le-blue" ng-if="cellList.length>0 && apperList.length>0 && eidtAppVersionPermissions" ng-click="setPodCount('medium')"><span>{{apperListPage.setPodCountBtn}}</span></button>
+                <button class="btn btn-le-yellow" ng-if="cellList.length>0 && apperList.length>0 && cellList[getCellIndexById(currentCellId)].servicesName=='' && isDomainName && createAppServicePermissions" ng-click="createServices()"><span>{{apperListPage.createServicesBtn}}</span></button>
+                <button class="btn btn-le-blue" ng-if="cellList.length>0 && apperList.length>0 && cellList[getCellIndexById(currentCellId)].servicesName!='' && isDomainName && viewAppServiceInfoPermissions" ng-click="viewServices('large')"><span>{{apperListPage.viewServicesBtn}}</span></button>
+                <button class="btn btn-le-blue" ng-if="cellList.length>0 && apperList.length>0 && cellList[getCellIndexById(currentCellId)].servicesName!='' && isDomainName && removeAppServicePermissions" ng-click="closeServices('small')"><span>{{apperListPage.closeServicesBtn}}</span></button>
+            </div>
+        </div>
+    </div>
+    <div class="le-row list-common" ng-show="viewAppCellsPermissions">
+        <div class="le-row list-common">
+            <p class="lead" ng-show="!viewAppVersionListPermissions">{{apperListPage.viewAppVersionListPermissionsTip}}</p>
+            <div class="le-col-12" ng-show="viewAppVersionListPermissions">
+                <table class="table table-header">
+                    <thead>
+                    <tr>
+                        <th width="10%"></th>
+                        <th width="12%" class="le-left"><span>{{apperListPage.tableApperName}}</span></th>
+                        <th width="20%"><span>{{apperListPage.tableImageTag}}</span></th>
+                        <th width="10%"><span>{{apperListPage.tablePodCount}}</span></th>
+                        <th width="10%"><span>{{apperListPage.tableMemory}}</span></th>
+                        <th width="10%"><span>{{apperListPage.tableCpuCount}}</span></th>
+                        <th width="14%"><span>{{apperListPage.tableAppCreateTime}}</span></th>
+                        <th width="14%"><span>{{apperListPage.tableAppUpdateTime}}</span></th>
+                    </tr>
+                    </thead>
+                    <tbody id="tby">
+
+                    <tr ng-repeat="apper in apperList">
+                        <td colspan="8">
+                            <table class="table-outer">
+                                <tr class="table-real">
+                                    <td width="10%" class="unselectable"><span class="iconfont icon-checkiconfill" ng-class="{checked:apper.checked}" ng-click="checkApper(apper)"></span></td>
+                                    <td width="12%" class="le-col-name le-left">
+                                        <i ng-show="viewAppPodsPermissions" ng-click="switchPodBtn(apper);" class="iconfont icon-arrow01 icon-drop" ng-class="{'dropdown':apper.open}"></i>
+                                        <a href="javascript:void(0);" ng-click="openApperInfo('xxxl',apper.Id)">{{apper.Name}}</a>
+                                    </td>
+                                    <td width="20%"><span>{{apper.Params | getImageTagFilter}}</span></td>
+                                    <td width="10%" ><span>{{apper.PodCount}}</span></td>
+                                    <td width="10%"><span>{{apper.Memory}}</span></td>
+                                    <td width="10%"><span>{{apper.Cpu}}</span></td>
+                                    <td width="14%"><span>{{apper.CreatedAt | date :'yyyy-MM-dd HH:mm:ss'}}</span></td>
+                                    <td width="14%"><span>{{apper.UpdatedAt | date :'yyyy-MM-dd HH:mm:ss'}}</span></td>
+                                </tr>
+                                <tr ng-if="apper.open">
+                                    <td colspan="8" width="100%">
+                                        <table class="table-inner">
+                                            <tr class="table-real" ng-repeat="pod in apper.podList">
+                                                <td width="10%">{{pod.Index}}</td>
+                                                <td width="10%">
+                                                    <!-- <span ng-show="pod.Status!='Running'">{{pod.Name}}</span> -->
+                                                    <!-- <a ng-show="pod.Status==='Running'" href="javascript:void(0);" ng-click="openPodInfo('xxxl',apper,pod)">{{pod.Name}}</a> -->
+                                                    <a href="javascript:void(0);" ng-click="openPodInfo('xxxl',apper,pod)">{{pod.Name}}</a>
+                                                </td>
+                                                <td width="15%">P: <span ng-if="pod.Status==='Running'" class="text-white text-bg-green">{{pod.Status}}</span><span ng-if="pod.Status!='Running'" class="text-white text-bg-red">{{pod.Status}}</span></td>
+                                                <td width="15%">C: <span ng-if="pod.ContainerStatus==='Running'" class="text-white text-bg-green">{{pod.ContainerStatus}}</span><span ng-if="pod.ContainerStatus!='Running'" class="text-white text-bg-red">{{pod.ContainerStatus}}</span></td>
+                                                <td width="10%"><span>Restart counts : {{pod.RestartCounts}}</span></td>
+                                                <td width="15%" style="text-align: left;text-indent:2em;"><span>{{apperListPage.podIp}} : {{pod.PodIP}}</span></td>
+                                                <td width="10%"><a class="clear-decoration" href="javascript:void(0);" ng-click="deletePod('small',pod)"><i class="iconfont icon-DELETE"></i></a></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr ng-if="!apperList || apperList.length==0">
+                        <td ng-if="!isListLoading" colspan=8 class="nodata">{{apperListPage.goToCreateApper}}</td>
+                        <td ng-if="isListLoading" colspan=8></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div ng-if="isListLoading" class="spin"></div>
+                <div ng-if="isListLoading" class="far-spin"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

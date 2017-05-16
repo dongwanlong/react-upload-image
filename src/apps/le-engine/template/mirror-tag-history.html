@@ -1,0 +1,50 @@
+<div class="modal-header letv-modal-header vm-create-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{mirrorTagHistoryPage.title}}:<strong>{{title}}</strong></h3>
+</div>
+<div class="modal-body">
+        <div class="le-col-12 mirrorTagHistory">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th width="20%"><span>{{mirrorTagHistoryPage.BuildResult}}</span></th>
+                    <th width="10%"><span>{{mirrorTagHistoryPage.BuildProcess}}</span></th>
+                    <th width="40%"><span>{{mirrorTagHistoryPage.UniqueIdentification}}</span></th>
+                    <th width="15%"><span>{{mirrorTagHistoryPage.CreatedAt}}</span></th>
+                    <th width="15%"><span>{{mirrorTagHistoryPage.UpdatedAt}}</span></th>
+                </tr>
+                </thead>
+                <tbody id="allMirrorTag">
+                <tr ng-repeat="mirrorTagHistory in mirrorTagHistoryList">
+                <tr ng-repeat="mirrorTagHistory in mirrorTagHistoryList">
+                    <td width="20%" class="" ng-click="openUniqueHistory('hlarge',mirrorTagHistory);">
+                        <span ng-show="mirrorTagHistory.BuildResult==0" class="link span span-process">{{mirrorTagHistory.BuildResult|BuildResult}}</span>
+                        <span ng-show="mirrorTagHistory.BuildResult==1" class="link span span-success">{{mirrorTagHistory.BuildResult|BuildResult}}</span>
+                        <span ng-show="mirrorTagHistory.BuildResult==-1" class="link span span-warning">{{mirrorTagHistory.BuildResult|BuildResult}}</span>
+                    </td>
+                    <td width="10%" class="">
+                        <span ng-show="mirrorTagHistory.BuildResult!=0">{{mirrorTagHistory.BuildProcess}}</span>
+                        <span ng-show="mirrorTagHistory.BuildResult==0" class="status-loading"></span>
+                    </td>
+                    <td width="40%" class="unique">
+                        <span ng-mouseover="mouseHandle('enter');"  ng-mouseleave="mouseHandle('leave')">  {{mirrorTagHistory.UniqueIdentification}}</span>
+                    </td>
+                    <td width="15%" class=""><span>{{mirrorTagHistory.CreatedAt|date : 'yyyy-MM-dd HH:mm:ss'}}</span></td>
+                    <td width="15%" class=""><span>{{mirrorTagHistory.UpdatedAt|date : 'yyyy-MM-dd HH:mm:ss'}}</span></td>
+                </tr>
+                <tr ng-if="mirrorTagHistoryList.length==0">
+                    <td ng-if="!isListLoading" colspan=4 class="nodata">{{mirrorTagHistoryPage.goToCreateMirrorTagHistory}}</td>
+                    <td ng-if="isListLoading" colspan=4></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="clearfix"></div>
+        <iframe style="display:none" ng-src="{{keypairDownloadUrl}}"></iframe>
+</div>
+<script>
+    $(function () { $("[data-toggle='tooltip']").tooltip(); });
+</script>

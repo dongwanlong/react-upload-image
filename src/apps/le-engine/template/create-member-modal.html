@@ -1,0 +1,57 @@
+<div class="modal-header letv-modal-header vm-create-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{createMemberModalPage.MemberCreate}}</h3>
+</div>
+<div class="modal-body">
+    <form novalidate class="create-form" name="create_form">
+        <div class="le-col-12 ">
+            <div class="left-inputs clearfix" >
+                <div class="inputs-item Member clearfix">
+                    <div class="le-col-2 letv-control-title"><span class="letv-control-label"></span></div>
+                    <div class="le-col-6">
+                        <div class="le-search-box pull-left">
+                            <input type="text" ng-model="searchName" ng-model-options="{debounce:500}" ng-change="doSearch()" ng-keydown="doSearch($event)"
+                                   placeholder="{{createMemberModalPage.inputMemberName}}"/>
+                            <span class="search-icon" ng-click="doSearch()"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="left-inputs clearfix" >
+                <div class="inputs-item Member clearfix">
+                    <div class="le-col-2 letv-control-title"><span class="letv-control-label"></span></div>
+                    <div class="le-col-10">
+                        <le-checkbox-select class="memberRadio" select-model="memberLinkTypeNow" select-options="memberLinkTypeList"></le-checkbox-select>
+                    </div>
+                </div>
+            </div>
+            <div class="left-inputs clearfix" >
+                <div class="inputs-item Member clearfix">
+                    <div class="le-col-2 letv-control-title"><span class="letv-control-label"></span></div>
+                    <div class="le-col-10">
+                        <span class="menber-label" ng-repeat="user in memberLinkTypeNow">{{user.text}}<i ng-click="deleteCheckUser(user)" class="iconfont icon-DELETE"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="left-inputs clearfix" >
+                <div class="inputs-item Auth clearfix">
+                    <div class="le-col-2 letv-control-title"><span class="letv-control-label">{{createMemberModalPage.MemberAuth}}：</span></div>
+                    <div class="le-col-10 memberRadio">
+                        <le-radio-select  select-model="memberAuthTypeNow" select-options="memberAuthTypeList"></le-radio-select>
+                    </div>
+                </div>
+            </div>
+            <div class="left-button">
+                <button type="" class="btn btn-le-red btn-submit-order pull-right" ng-click="createMember()" >
+                    <span>{{createMemberModalPage.ok}}</span>
+                </button>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+        <iframe style="display:none" ng-src="{{keypairDownloadUrl}}"></iframe>
+    </form>
+</div>

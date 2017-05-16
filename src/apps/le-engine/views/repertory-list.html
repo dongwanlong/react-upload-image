@@ -1,0 +1,166 @@
+<div class="view-common">
+    <div class="le-row list-common">
+        <div class="le-row operate-panel">
+            <div class="le-row le-tab-header">
+                <div class="le-tab-btn" ng-class="{'le-tab-active': repertoryType === 'owner'}" ng-click="repertoryType='owner';doSearch()"><span>{{repertoryListPage.repertoryMy}}</span></div>
+                <div class="le-tab-btn" ng-class="{'le-tab-active': repertoryType === 'join'}" ng-click="repertoryType='join';doSearch()"><span>{{repertoryListPage.repertoryParticipate}}</span></div>
+                <div class="le-tab-btn" ng-class="{'le-tab-active': repertoryType === 'all'}" ng-click="repertoryType='all';doSearch()"><span>{{repertoryListPage.repertoryAll}}</span></div>
+            </div>
+            <div class="le-col-12 le-btn-group">
+                <div class="le-search-box pull-right">
+                    <button class="btn btn-le-blue" ng-if="repertoryType=='owner'" ng-click="openRepertoryCreateModal('large')"><span>{{repertoryListPage.repertoryCreate}}</span></button>
+                    <input ng-show="repertoryType === 'owner'" type="text" ng-model="searchNameOwer" ng-keyup="doSearch($event)"
+                           placeholder="{{repertoryListPage.repertorySearch}}"/>
+                    <input ng-show="repertoryType === 'join'" type="text" ng-model="searchNameJoin" ng-keyup="doSearch($event)"
+                           placeholder="{{repertoryListPage.repertorySearch}}"/>
+                    <input ng-show="repertoryType === 'all'" type="text" ng-model="searchNameAll" ng-keyup="doSearch($event)"
+                           placeholder="{{repertoryListPage.repertorySearch}}"/>
+                    <span class="search-icon" ng-click="doSearch()"></span>
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="repertoryType=='owner'">
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div ng-if="!repertoryListOwer" class="resource-not-found">{{repertoryListPage.noRepertoryFound}}</div>
+                    <div class="le-col-4" ng-repeat="repertory in repertoryListOwer" ng-if="repertoryListOwer">
+                        <div class="portlet">
+                            <h3 class="portlet-heading bg-blue">{{repertory.Name}}</h3>
+                            <div class="panel-collapse collapse in">
+                                <div class="portlet-body">
+                                    <div class="repertory-content">
+                                        {{repertory.Description}}
+                                    </div>
+                                    <div class = "repertory-time">
+                                        <span>{{repertoryListPage.repertoryCreatedTime}}:  {{repertory.CreatedAt|date : 'yyyy-MM-dd HH:mm:ss '}}</span><br>
+                                        <span>{{repertoryListPage.repertoryCreateBy}}:   {{repertory.OwnerName}}</span><br>
+                                        <span>{{repertoryListPage.accessLevelName}}:   {{repertory.AccessLevelName}}</span><br>
+                                   </div>
+                                </div>
+                            </div>
+                            <a title="{{repertory.Description}}" class="mask" ng-href="#/repertory-mirror-list/{{ encoded(repertory.Id)}}/{{repertory.Name}}">
+                                <div>
+                                    <div class="mask-constant">
+                                        <span class="text-logo"><i class="iconfont icon-gce"></i></span><br>
+                                        <span class="text-title">
+                                            <div class="large-repertory-name">{{repertory.Name}}</div>
+                                        </span><br>
+                                        <span class="text-control">{{repertoryListPage.enterInfo}}</span><br>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div> <!-- End row -->
+                </div>
+
+                <div ng-show="!isListLoading && repertoryListOwer.length>0" class="le-pagination">
+                    <span>{{pagination.total}}{{totalItemsOwer}}{{pagination.nums}}，{{pagination.perPage}}{{pageSize}}{{pagination.nums}}</span>
+                    <pagination boundary-links="true" direction-links="true"
+                                ng-change="pageChange()" items-per-page="pageSize"
+                                total-items="totalItemsOwer" ng-model="currentPageOwer" class="pagination-sm" max-size="5"
+                                rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                                last-text="&raquo;">
+                    </pagination>
+                </div>
+
+            <div ng-if="isListLoading" class="spin"></div>
+            <div ng-if="isListLoading" class="far-spin"></div>
+        </div>
+        <div ng-show="repertoryType=='join'">
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div ng-if="!repertoryListJoin" class="resource-not-found">{{repertoryListPage.noRepertoryFound}}</div>
+                    <div ng-if="repertoryListJoin" class="le-col-4" ng-repeat="repertory in repertoryListJoin">
+                        <div class="portlet">
+                            <h3 class="portlet-heading bg-blue">{{repertory.Name}}</h3>
+                            <div class="panel-collapse collapse in">
+                                <div class="portlet-body" ng-click="setRepertoryName(repertory.Name)">
+                                    <div class="repertory-content">
+                                        {{repertory.Description}}
+                                    </div>
+                                    <div class = "repertory-time">
+                                        <span>{{repertoryListPage.repertoryCreatedTime}}:  {{repertory.CreatedAt|date : 'yyyy-MM-dd HH:mm:ss '}}</span><br>
+                                        <span>{{repertoryListPage.repertoryCreateBy}}:   {{repertory.OwnerName}}</span><br>
+                                        <span>{{repertoryListPage.accessLevelName}}:   {{repertory.AccessLevelName}}</span><br>
+                                    </div>
+                                </div>
+                            </div>
+                            <a title="{{repertory.Description}}" class="mask" ng-href="#/repertory-mirror-list/{{ encoded(repertory.Id)}}/{{repertory.Name}}">
+                                <div>
+                                    <div class="mask-constant">
+                                        <span class="text-logo"><i class="iconfont icon-gce"></i></span><br>
+                                        <span class="text-title">
+                                            <div class="large-repertory-name">{{repertory.Name}}</div>
+                                        </span><br>
+                                        <span class="text-control">{{repertoryListPage.enterInfo}}</span><br>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div> <!-- End row -->
+            </div>
+            <div ng-show="!isListLoading && repertoryListJoin.length>0" class="le-pagination">
+                <span>{{pagination.total}}{{totalItemsJoin}}{{pagination.nums}}，{{pagination.perPage}}{{pageSize}}{{pagination.nums}}</span>
+                <pagination boundary-links="true" direction-links="true"
+                            ng-change="pageChange()" items-per-page="pageSize"
+                            total-items="totalItemsJoin" ng-model="currentPageJoin" class="pagination-sm" max-size="5"
+                            rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                            last-text="&raquo;">
+                </pagination>
+            </div>
+            <div ng-if="isListLoading" class="spin"></div>
+            <div ng-if="isListLoading" class="far-spin"></div>
+        </div>
+        <div ng-show="repertoryType=='all'">
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div ng-if="!repertoryListAll" class="resource-not-found">{{repertoryListPage.noRepertoryFound}}</div>
+                    <div ng-if="repertoryListAll" class="le-col-4" ng-repeat="repertory in repertoryListAll">
+                        <div class="portlet">
+                            <h3 class="portlet-heading bg-blue">{{repertory.Name}}</h3>
+                            <div class="panel-collapse collapse in">
+                                <div class="portlet-body" ng-click="setRepertoryName(repertory.Name)">
+                                    <div class="repertory-content">
+                                        {{repertory.Description}}
+                                    </div>
+                                    <div class = "repertory-time">
+                                        <span>{{repertoryListPage.repertoryCreatedTime}}:  {{repertory.CreatedAt|date : 'yyyy-MM-dd HH:mm:ss '}}</span><br>
+                                        <span>{{repertoryListPage.repertoryCreateBy}}:   {{repertory.OwnerName}}</span><br>
+                                        <span>{{repertoryListPage.accessLevelName}}:   {{repertory.AccessLevelName}}</span><br>
+                                    </div>
+                                </div>
+                            </div>
+                            <a title="{{repertory.Description}}" class="mask" ng-href="#/repertory-mirror-list/{{ encoded(repertory.Id)}}/{{repertory.Name}}">
+                                <div>
+                                    <div class="mask-constant">
+                                        <span class="text-logo"><i class="iconfont icon-gce"></i></span><br>
+                                        <span class="text-title">
+                                            <div class="large-repertory-name">{{repertory.Name}}</div>
+                                        </span><br>
+                                        <span class="text-control">{{repertoryListPage.enterInfo}}</span><br>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div> <!-- End row -->
+            </div>
+            <div ng-show="!isListLoading && repertoryListAll.length>0" class="le-pagination">
+                <span>{{pagination.total}}{{totalItemsAll}}{{pagination.nums}}，{{pagination.perPage}}{{pageSize}}{{pagination.nums}}</span>
+                <pagination boundary-links="true" direction-links="true"
+                            ng-change="pageChange()" items-per-page="pageSize"
+                            total-items="totalItemsAll" ng-model="currentPageAll" class="pagination-sm" max-size="5"
+                            rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                            last-text="&raquo;">
+                </pagination>
+            </div>
+            <div ng-if="isListLoading" class="spin"></div>
+            <div ng-if="isListLoading" class="far-spin"></div>
+        </div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

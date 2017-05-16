@@ -1,0 +1,304 @@
+ <div class="modal-header letv-modal-header vm-create-modal-header">
+         <a class="close" ng-click="closeModal()">
+             <i class="iconfont icon-add"></i>
+         </a>
+        <h3 class="modal-title">创建云主机</h3>
+    </div>
+    <div class="modal-body">
+        <form novalidate class="vm-create-form" name="vm_create_form">
+            <div class="col-sm-8 body-left">
+                <div class="left-flow clearfix">
+                    <div class="flow-desc pull-left">
+                        <div class="flow-dot-parent">
+                            <div class="dot-parent-child"><span>1</span></div>
+                        </div>
+                        <span>镜像选择</span>
+                    </div>
+                    <div class="flow-line pull-left" ng-class="{unactive:activeFlow<2}"></div>
+                    <div class="flow-desc pull-left" ng-class="{unactive:activeFlow<2}">
+                        <div class="flow-dot-parent">
+                            <div class="dot-parent-child"><span>2</span></div>
+                        </div>
+                        <span>配置选择</span>
+                    </div>
+                    <div class="flow-line pull-left" ng-class="{unactive:activeFlow<3}"></div>
+                    <div class="flow-desc pull-left" ng-class="{unactive:activeFlow<3}">
+                        <div class="flow-dot-parent">
+                            <div class="dot-parent-child"><span>3</span></div>
+                        </div>
+                        <span>网络设置</span>
+                    </div>
+                    <div class="flow-line pull-left" ng-class="{unactive:activeFlow<4}"></div>
+                    <div class="flow-desc pull-left" ng-class="{unactive:activeFlow<4}">
+                        <div class="flow-dot-parent">
+                            <div class="dot-parent-child"><span>4</span></div>
+                        </div>
+                        <span>主机设置</span>
+                    </div>
+                </div>
+                <div id="left-flowone" ng-show="activeFlow==1">
+                    <div class="left-inputs">
+                        <div class="inputs-item clearfix">
+                            <div class="col-sm-2"><span class="letv-control-label">主机名称：</span></div>
+                            <div class="col-sm-10">
+                                <input type="text" name="vm_name" class="le-form-control" ng-model="vmName" placeholder="请输入云主机名称" ng-trim="false" le-auto-focus name-input-restrict />
+                                <input-validation-tooltip ng-show="(vm_create_form.$submitted || vm_create_form.vm_name.$touched) && vm_create_form.vm_name.$error.nameInputRestrict"
+                                                          validation-message="{{REGEX_MESSAGE.NAME}}">
+                                </input-validation-tooltip>
+                            </div>
+                        </div>
+                        <div class="inputs-item clearfix">
+                            <div class="col-sm-2"><span class="letv-control-label">镜像：</span></div>
+                            <div class="col-sm-10">
+                                <ul class="nav nav-tabs letv-nav-tab">
+                                    <li ng-class="{active:imageActiveTab === 'image'}" ng-click="!isDesignatedVmSnapshot && (imageActiveTab = 'image')">
+                                        <a href="javascript:void(0);">系统镜像</a>
+                                    </li>
+                                    <li ng-class="{active:imageActiveTab === 'snapshot'}" ng-click="imageActiveTab = 'snapshot';">
+                                        <a href="javascript:void(0);">主机快照</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content letv-tab-content">
+                                    <div class="tab-pane" ng-class="{active:imageActiveTab === 'image'}">
+                                        <ul class="system-content clearfix">
+                                            <li ng-repeat="vmImage in vmImageList">
+                                                <div class="letv-radioCheck" ng-class="{'selected':isSelectedVmImage(vmImage)}" ng-click="selectVmImage(vmImage)">
+                                                    <i class="iconfont icon-checkblockicon"></i>
+                                                    <span class="letv-radio-content" title="{{vmImage.name}}">{{vmImage.name}}</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane" ng-class="{active:imageActiveTab === 'snapshot'}">
+                                        <div class="vm-snapshot-no-message" ng-show="!vmSnapshotList.length">暂无主机快照</div>
+                                        <ul ng-show="vmSnapshotList.length" class="system-content clearfix">
+                                            <li ng-repeat="vmSnapshot in vmSnapshotList">
+                                                <div class="letv-radioCheck" ng-class="{'selected':isSelectedVmSnapshot(vmSnapshot)}" ng-click="selectVmSnapshot(vmSnapshot)">
+                                                    <i class="iconfont icon-checkblockicon"></i>
+                                                    <span class="letv-radio-content" title="{{vmSnapshot.name}}">{{vmSnapshot.name}}</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left-button">
+                        <div class="col-sm-12">
+                            <div class="btn btn-le-blue pull-right" ng-click="firstStepToNextTab($event)"><span>下一步</span></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div id="left-flowtwo" ng-show="activeFlow==2">
+                    <div class="left-inputs">
+                        <div class="inputs-item nomargin row clearfix">
+                            <div class="col-sm-2"><span class="letv-control-label">CPU：</span></div>
+                            <div class="col-sm-10">
+                                <div class="letv-mutiCheck check-cpu" ng-repeat="vmCpu in vmCpuList" ng-class="{'selected':isSelectedVmCpu(vmCpu)}" ng-click="selectVmCpu(vmCpu)">
+                                    <span>{{vmCpu}}核</span>
+                                    <i class="iconfont icon-checkroundfillicon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inputs-item nomargin row clearfix">
+                            <div class="col-sm-2"><span class="letv-control-label">内存：</span></div>
+                            <div class="col-sm-10">
+                                <div class="letv-mutiCheck check-ram" ng-repeat="vmRam in vmRamList" ng-class="{'selected':isSelectedVmRam(vmRam)}" ng-click="selectVmRam(vmRam)">
+                                    <span>{{vmRam/1024 | number:0}}G</span>
+                                    <i class="iconfont icon-checkroundfillicon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inputs-item nomargin row clearfix">
+                            <div class="col-sm-2"><span class="letv-control-label">数据盘：</span></div>
+                            <div class="col-sm-10">
+                                <div class="letv-mutiCheck check-disk-type" ng-repeat="vmDiskType in vmDiskTypeList" ng-class="{'selected':isSelectedVmDiskType(vmDiskType)}" ng-click="selectVmDiskType(vmDiskType)" ng-disabled="!vmDiskType.enable">
+                                    <span>{{vmDiskType.name}}</span>
+                                    <i class="iconfont icon-checkroundfillicon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inputs-item nomargin row clearfix row-item-description">
+                            <div class="col-sm-offset-2">
+                                <span>吞吐量：{{selectedVmDiskType.throughput}}Mb/s&nbsp;&nbsp;&nbsp;IOPS：{{selectedVmDiskType.iops}}&nbsp;&nbsp;&nbsp;容量：0-{{selectedVmDiskType.capacity}}GB</span>
+                            </div>
+                        </div>
+                        <div class="inputs-item nomargin row clearfix">
+                            <div class="col-sm-offset-2">
+                                <le-slider le-slider-model="dataDiskVolume" le-slider-min="0" le-slider-max="2000" le-slider-step="10" le-slider-unit="GB" is-slider-min-changeable="false"></le-slider>
+                            </div>
+                        </div>
+                        <div class="inputs-item row clearfix">
+                            <div class="col-sm-2"><span class="letv-control-label">系统盘：</span></div>
+                            <div class="col-sm-10"><span class="letv-control-label">默认系统盘 40G</span></div>
+                        </div>
+                    </div>
+                    <div class="left-button">
+                        <div class="col-sm-12">
+                            <div class="btn btn-le-blue pull-left" ng-click="$event.preventDefault();activeFlow=1;hackRzSlider();"><span>上一步</span></div>
+                            <div class="btn btn-le-blue pull-right" ng-click="$event.preventDefault();activeFlow=3;hackRzSlider();"><span>下一步</span></div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div id="left-flowthree" ng-show="activeFlow==3">
+                    <div class="left-inputs">
+                        <div class="inputs-item nomargin row clearfix">
+                            <div class="col-sm-2">
+                                <span class="letv-control-label">类型：</span>
+                            </div>
+                            <div class="col-sm-10 radio-check-group">
+                                <div class="letv-radioCheck" ng-class="{'selected':vmNetworkType === 'primary'}" ng-click="vmNetworkType='primary'">
+                                    <i class="iconfont icon-checkblockicon"></i>
+                                    <span class="letv-radio-content">基础网络</span>
+                                </div>
+                                <div class="letv-radioCheck" ng-class="{'selected':vmNetworkType === 'private'}" ng-click="vmNetworkType='private'">
+                                    <i class="iconfont icon-checkblockicon"></i>
+                                    <span class="letv-radio-content">私有网络</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inputs-item nomargin row clearfix" ng-show="vmNetworkType=='primary'">
+                            <div class="col-sm-2"><span class="letv-control-label">网络：</span></div>
+                            <div class="col-sm-10">
+                                <div class="letv-mutiCheck check-network-type" ng-class="{'selected':vmNetworkPublicIpModel=='now'}" ng-click="vmNetworkPublicIpModel='now';">
+                                    <span>绑定公网IP</span>
+                                    <i class="iconfont icon-checkroundfillicon"></i>
+                                </div>
+                                <div class="letv-mutiCheck check-network-type" ng-class="{'selected':vmNetworkPublicIpModel=='later'}" ng-click="vmNetworkPublicIpModel='later';">
+                                    <span>稍后设置</span>
+                                    <i class="iconfont icon-checkroundfillicon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inputs-item nomargin row clearfix row-item-description" ng-show="vmNetworkPublicIpModel==='now' && vmNetworkType==='primary'">
+                            <div class="col-sm-offset-2">
+                                <span>带宽：1-50Mbps</span>
+                            </div>
+                        </div>
+                        <div class="inputs-item nomargin row clearfix" ng-show="vmNetworkPublicIpModel==='now' && vmNetworkType==='primary'">
+                            <div class="col-sm-2"><span class="letv-control-label">带宽：</span></div>
+                            <div class="col-sm-10">
+                                <le-slider le-slider-model="networkBandWidth" le-slider-min="1" le-slider-max="50" le-slider-step="1" le-slider-unit="Mbps" is-slider-min-changeable="false"></le-slider>
+                            </div>
+                        </div>
+                        <div class="inputs-item nomargin row clearfix" ng-show="vmNetworkType=='private'">
+                            <div class="col-sm-2"><span class="letv-control-label">子网：</span></div>
+                            <div class="col-sm-10">
+                                <le-select select-model="selectedVmNetworkSubnet" select-options="vmNetworkSubnetSelectorData" select-empty-text="暂无子网"></le-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left-button">
+                        <div class="col-sm-12">
+                            <div class="btn btn-le-blue pull-left" ng-click="$event.preventDefault();activeFlow=2;hackRzSlider();"><span>上一步</span></div>
+                            <div class="btn btn-le-blue pull-right" ng-click="thirdStepToNextTab($event)"><span>下一步</span></div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div id="left-flowfour" ng-show="activeFlow==4">
+                    <div class="left-inputs">
+                        <div class="inputs-item nomargin row clearfix">
+                            <div class="col-sm-2"><span class="letv-control-label">登录方式：</span></div>
+                            <div class="col-sm-10 radio-check-group">
+                                <div class="letv-radioCheck" ng-class="{'selected':vmSecurityType=='keypair'}" ng-click="vmSecurityType='keypair';">
+                                    <i class="iconfont icon-checkblockicon"></i>
+                                    <span class="letv-radio-content">密钥</span>
+                                </div>
+                                <div class="letv-radioCheck" ng-class="{'selected':vmSecurityType=='password'}" ng-click="vmSecurityType='password';">
+                                    <i class="iconfont icon-checkblockicon"></i>
+                                    <span class="letv-radio-content">密码</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inputs-item nomargin row clearfix">
+                            <div class="col-sm-2"><span class="letv-control-label">用户名：</span></div>
+                            <div class="col-sm-10"><input type="text" class="le-form-control" ng-disabled="true" value="root" /></div>
+                        </div>
+                        <div class="inputs-item nomargin row clearfix" ng-show="vmSecurityType=='keypair'">
+                            <div class="col-sm-2"><span class="letv-control-label">密钥：</span></div>
+                            <div class="col-sm-10">
+                                <input ng-if="vmSecurityType=='keypair'" type="hidden" name='keypair' ng-model="selectedVmSecurityKeypair" vm-create-keypair-validator />
+                                <span class="no-keypair-text" ng-show="!vmSecurityKeypairSelectorData.length">没有密钥，<a href="javascript:void(0);" ng-click="openVmKeypairCreateModal('medium')">请创建</a></span>
+                                <input-validation-tooltip ng-if="vmSecurityType=='keypair'" ng-show="vm_create_form.$submitted && vm_create_form.keypair.$error.keypairIsNullRestrict"
+                                                          validation-message="请创建密钥">
+                                </input-validation-tooltip>
+                                <le-select ng-show="vmSecurityKeypairSelectorData.length" select-model="selectedVmSecurityKeypair" select-options="vmSecurityKeypairSelectorData"></le-select>
+                                <input-validation-tooltip class="validation-tooltip-keypair" ng-if="vmSecurityType=='keypair' && selectedVmSecurityKeypair" ng-show="vm_create_form.$submitted && vm_create_form.keypair.$error.keypairValueRestrict"
+                                                          validation-message="请选择密钥">
+                                </input-validation-tooltip>
+                            </div>
+                        </div>
+                        <div class="inputs-item nomargin row clearfix" ng-if="vmSecurityType=='password'">
+                            <div class="col-sm-2"><span class="letv-control-label">密码：</span></div>
+                            <div class="col-sm-10">
+                                <input type="password" name='password' class="le-form-control" ng-model="vmSecurityPassword.value" password-restrict />
+                                <input-validation-tooltip ng-show="(vm_create_form.$submitted || vm_create_form.password.$touched) && vm_create_form.password.$error.passwordRestrict"
+                                                          validation-message="{{REGEX_MESSAGE.PASSWORD}}">
+                                </input-validation-tooltip>
+                            </div>
+                        </div>
+                        <div class="inputs-item nomargin row clearfix">
+                            <div class="col-sm-2"><span class="letv-control-label">购买时长：</span></div>
+                            <div class="col-sm-10">
+                                <buy-period-selector buy-period-model="vmBuyPeriod" buy-period-options="allVmBuyPeriods"></buy-period-selector>
+                            </div>
+                        </div>
+                        <div class="inputs-item nomargin row clearfix">
+                            <div class="col-sm-2"><span class="letv-control-label">购买数量：</span></div>
+                            <div class="col-sm-10">
+                                <numeric-input numeric-model="vmCount" numeric-max="20" numeric-min="1"></numeric-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left-button">
+                        <div class="col-sm-12">
+                            <div class="btn btn-le-blue pull-left" ng-click="$event.preventDefault();activeFlow=3;hackRzSlider();"><span>上一步</span></div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 body-right">
+                <div class="right-top">
+                    <div class="top-title"><span>配置详情</span><i class="iconfont icon-rounddown"></i></div>
+                    <ul class="top-items">
+                        <li ng-show="imageActiveTab === 'snapshot'"><span class="title">快照：</span><span class="value le-text-ellipsis" title="{{selectedVmSnapshot.name}}">{{selectedVmSnapshot.name}}</span></li>
+                        <li ng-show="imageActiveTab === 'image'"><span class="title">镜像：</span><span class="value le-text-ellipsis" title="{{selectedVmImage.name}}">{{selectedVmImage.name}}</span></li>
+                        <li><span class="title">CPU：</span><span class="value">{{selectedVmCpu}}核</span></li>
+                        <li><span class="title">内存：</span><span class="value">{{selectedVmRam/1024 | number:0}}GB</span></li>
+                        <li><span class="title">硬盘：</span><span class="value">{{dataDiskVolume}}GB</span></li>
+                        <li ng-show="vmNetworkPublicIpModel==='now' && vmNetworkType==='primary'"><span class="title">带宽：</span><span class="value">{{networkBandWidth}}Mbps</span></li>
+                        <li><span class="title">购买时长：</span><span class="value">{{vmBuyPeriod | buyPeriodFilter:isSelectedVmBuyPeriod(vmBuyPeriod) }}</span></li>
+                        <li><span class="title">数量：</span><span class="value">{{vmCount}}台</span></li>
+                    </ul>
+                </div>
+                <div class="right-bottom">
+                    <div class="row-order-price" ng-show="!isCalculatingPrice">
+                       <span>
+                                    <span class="title">合计：</span>
+                                    <span class="price">{{vmTotalPrice}}</span>
+                                    <span class="unit">元</span>
+                       </span>
+                    </div>
+                    <div class="row-calculating-price" ng-show="isCalculatingPrice">
+                        <span>价格计算中...</span>
+                    </div>
+                    <div class="row-submit-order">
+                            <button class="btn btn-le-red btn-submit-order" ng-click="vm_create_form.$valid && !isFormSubmiting &&createVm()" ng-disabled="isFormSubmiting">
+                                <span ng-if="!isFormSubmiting">提交订单</span>
+                                <span ng-if="isFormSubmiting">订单提交中...</span>
+                            </button>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <iframe style="display:none" ng-src="{{keypairDownloadUrl}}"></iframe>
+        </form>
+    </div>

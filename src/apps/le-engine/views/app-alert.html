@@ -1,0 +1,175 @@
+<div class="view-common">
+    <div class="le-row operate-panel" ng-style="itemListObj.itemList.length<=0 && {'border-bottom': '0px'}">
+        <div class="le-row le-tab-header">
+            <div class="le-tab-btn" ng-class="{'le-tab-active': tabType === 'alertRule'}" ng-click="switchTab('alertRule')"><span>{{langAlertListPage.tabAlertRule}}</span></div>
+            <div class="le-tab-btn" ng-class="{'le-tab-active': tabType === 'alertHistory'}" ng-click="switchTab('alertHistory')"><span>{{langAlertListPage.tabAlertHistory}}</span></div>
+        </div>
+
+        <div class="le-row" ng-show="tabType==='alertRule'">
+            <div class="le-col-12 le-btn-group">
+                <button ng-show="createAppAlertPower" class="btn btn-le-blue btn-alert-create" ng-click="openAlertSettingModal()"><span>{{langAlertListPage.createAlert}}</span></button>
+                <button ng-show="removeAppAlertPower" class="btn btn-le-blue" ng-click="deleteRule('small')"><span>{{langAlertListPage.deleteAlert}}</span></button>
+                <div class="le-search-box pull-right">
+                    <input type="text" ng-model="searchRuleName" ng-model-options="{debounce:500}" ng-change="searchAlertHistory()" placeholder="{{langAlertField.name}}"
+                    />
+                    <span class="search-icon"></span>
+                </div>
+            </div>
+        </div>
+        <div class="le-row" ng-show="tabType==='alertHistory'">
+            <div class="le-col-12 le-btn-group">
+                <div class="pull-left"><span class="letv-control-label">{{langPrimary.time | capitalize }}：</span></div>
+                <div class="pull-left time-margin">
+                    <input ng-readonly="true" type="text" class="le-form-control" char-id="datetimepicker-start" id="datetimepicker-start" current-lang="currentLang"
+                        options="datetimeOption" date-model="datetimeStart" ng-model="datetimeStart" le-datetimepicker>
+                </div>
+                <div class="pull-left"><span class="letv-control-label">&nbsp;-&nbsp;</span></div>
+                <div class="pull-left time-margin">
+                    <input ng-readonly="true" type="text" class="le-form-control" char-id="datetimepicker-end" id="datetimepicker-end" current-lang="currentLang"
+                        options="datetimeOption"  date-model="datetimeEnd" ng-model="datetimeEnd" le-datetimepicker>
+                </div>
+                <div class="pull-left">
+                    <button class="btn btn-le-green btn-alert-history-search" ng-click="searchAlertHistory()"><span>{{langPrimary.search | capitalize }}</span></button>
+                </div>
+                <div class="le-search-box pull-right">
+                    <input type="text" ng-model="searchRuleName" ng-model-options="{debounce:500}" ng-change="searchAlertHistory()" placeholder="{{langAlertField.name}}"
+                    />
+                    <span class="search-icon"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="le-row list-common">
+        <div ng-show="tabType==='alertRule'">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th width="6%"></th>
+                        <th width="8%"><span>{{langAlertField.name}}</span></th>
+                        <th width="6%"><span>{{langAlertField.alertType}}</span></th>
+                        <th width="8%"><span>{{langAlertField.alertMetric}}</span></th>
+                        <th width="6%"><span>{{langAlertField.alertPeriod}}</span></th>
+                        <th width="6%"><span>{{langAlertField.alertMethod}}</span></th>
+                        <th width="6%"><span>{{langAlertField.alertOperator}}</span></th>
+                        <th width="6%"><span>{{langAlertField.alertThreshold}}</span></th>
+                        <th width="26%"><span>{{langAlertField.alertNotifyTarget}}</span></th>
+                        <th width="6%"><span>{{langAlertField.alertNotifyInterval}}</span></th>
+                        <th width="16%" ng-show="permissions['Remove App Alert'] && permissions['Edit App Alert']"><span>{{langPrimary.operation|capitalize}}</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in alertRuleItemListObj.itemList">
+                        <td class="unselectable"><span class="iconfont icon-checkiconfill" ng-class="{checked:item.checked}" ng-click="checkRule(item)"></span></td>
+                        <td><span>{{item.Name}}</span></td>
+                        <td><span>{{item.MonitorType | monitorTypeFilter}}</span></td>
+                        <td><span>{{item.AlertType | alertTypeFilter}}</span></td>
+                        <td>
+                            <span>
+                            {{!isErrorMetricSelected(item)?(item.Period | alertPeriodFilter):'--'}}
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                            {{!isErrorMetricSelected(item)?(item.Method | alertMethodFilter):'--'}}
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                            {{!isErrorMetricSelected(item)?(item.Operator):'--'}}
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                            {{!isErrorMetricSelected(item)?(item | alertThresholdFilter):'--'}}
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                <div>{{langPrimary.sms}}:{{item.NoticeParams.sms | arrayJoinFilter:','}}</div>
+                                <div>{{langPrimary.voice}}:{{item.NoticeParams.voice | arrayJoinFilter:','}}</div>
+                                <div>{{langPrimary.email}}:{{item.NoticeParams.email | arrayJoinFilter:','}}</div>
+                            </span>
+                        </td>
+                        <td><span>{{item.Interval | alertNotifyIntervalFilter}}</span></td>
+                        <td ng-show="permissions['Remove App Alert'] && permissions['Edit App Alert']">
+                            <span>
+                                <a class="text-red" ng-show="!item.Enable && editAppAlertPower" href="javascript:void(0);" ng-click="enable(item)">{{langPrimary.enable|capitalize}}</a>
+                                <a ng-show="item.Enable && editAppAlertPower" href="javascript:void(0);" ng-click="disable(item)">{{langPrimary.disable|capitalize}}</a>&nbsp;
+                                <a ng-show="!item.Enable && editAppAlertPower" href="javascript:void(0);" ng-click="edit(item)">{{langPrimary.edit|capitalize}}</a>&nbsp;
+                                <a ng-show="removeAppAlertPower" href="javascript:void(0);" ng-click="deleteRule('small', item)">{{langPrimary.delete|capitalize}}</a>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr ng-show="!alertRuleItemListObj.itemList || alertRuleItemListObj.itemList.length==0">
+                        <td ng-if="!alertRuleItemListObj.isListLoading" colspan="{{permissions['Remove App Alert'] && permissions['Edit App Alert']?'11':'9'}}"
+                            class="nodata">{{langPrimary.noDataHint}}</td>
+                        <td ng-if="alertRuleItemListObj.isListLoading" colspan="{{permissions['Remove App Alert'] && permissions['Edit App Alert']?'11':'9'}}"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div ng-show="!alertRuleItemListObj.isListLoading && alertRuleItemListObj.itemList.length>0" class="le-pagination">
+                <pagination boundary-links="true" direction-links="true" ng-change="alertHistoryItemListObj.pageChange()" items-per-page="alertRuleItemListObj.pageSize"
+                    total-items="alertRuleItemListObj.totalItems" ng-model="alertRuleItemListObj.currentPage" class="pagination-sm"
+                    max-size="5" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
+                </pagination>
+            </div>
+            <div ng-if="alertRuleItemListObj.isListLoading" class="spin"></div>
+            <div ng-if="alertRuleItemListObj.isListLoading" class="far-spin"></div>
+        </div>
+        <div ng-show="tabType==='alertHistory'">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th><span>{{langAlertField.alertOccurTime}}</span></th>
+                        <th width="8%"><span>{{langAlertField.alertMetric}}</span></th>
+                        <th><span>{{langAlertField.name}}</span></th>
+                        <th><span>{{langAlertField.alertNotifyTarget}}</span></th>
+                        <th width="8%"><span>{{langAlertField.alertResult}}</span></th>
+                        <th width="8%"><span>{{langAlertField.alertLevel}}</span></th>
+                        <th><span>{{langAlertField.alertContent}}</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in alertHistoryItemListObj.itemList">
+                        <td><span>{{item.AlertTime |date : 'yyyy-MM-dd HH:mm:ss '}}</span></td>
+                        <td><span>{{item.AlertType | alertTypeFilter}}</span></td>
+                        <td><span>{{item.RuleName}}</span></td>
+                        <td>
+                            <span>
+                                <div>{{langPrimary.sms}}:{{item.AlertGroups.sms | arrayJoinFilter:','}}</div>
+                                <div>{{langPrimary.voice}}:{{item.AlertGroups.voice | arrayJoinFilter:','}}</div>
+                                <div>{{langPrimary.email}}:{{item.AlertGroups.email | arrayJoinFilter:','}}</div>
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                <div>{{langPrimary.sms}}:{{item.SendStats.sms | alertNotifyResultFilter}}</div>
+                                <div>{{langPrimary.voice}}:{{item.SendStats.voice | alertNotifyResultFilter}}</div>
+                                <div>{{langPrimary.email}}:{{item.SendStats.email | alertNotifyResultFilter}}</div>
+                            </span>
+                        </td>
+                        <td>
+                            <span ng-if="item.AlertLevel!='OK'" class="text-white text-bg-red">{{item.AlertLevel}}</span>
+                            <span ng-if="item.AlertLevel=='OK'" class="text-white text-bg-green">{{item.AlertLevel}}</span>
+                        </td>
+                        <td><span title='{{item.Message}}'>{{item.Message | limitTo:50}}</span></td>
+                    </tr>
+                    <tr ng-show="!alertHistoryItemListObj.itemList || alertHistoryItemListObj.itemList.length==0">
+                        <td ng-if="!alertHistoryItemListObj.isListLoading" colspan=7 class="nodata">{{langPrimary.noDataHint}}</td>
+                        <td ng-if="alertHistoryItemListObj.isListLoading" colspan=7></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div ng-show="!alertHistoryItemListObj.isListLoading && alertHistoryItemListObj.itemList.length>0" class="le-pagination">
+                <pagination boundary-links="true" direction-links="true" ng-change="alertHistoryItemListObj.pageChange()" items-per-page="alertHistoryItemListObj.pageSize"
+                    total-items="alertHistoryItemListObj.totalItems" ng-model="alertHistoryItemListObj.currentPage" class="pagination-sm"
+                    max-size="5" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
+                </pagination>
+            </div>
+            <div ng-if="alertHistoryItemListObj.isListLoading" class="spin"></div>
+            <div ng-if="alertHistoryItemListObj.isListLoading" class="far-spin"></div>
+        </div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

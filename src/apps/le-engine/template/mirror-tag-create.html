@@ -1,0 +1,54 @@
+<div class="modal-header letv-modal-header vm-create-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{mirrorTagCreateModalPage.mirrorTagCreate}}</h3>
+</div>
+<div class="modal-body">
+    <form novalidate class="mirrorTag-create-form" name="mirrorTag_create_form">
+        <div class="le-col-12 left-inputs">
+
+            <div class="inputs-item clearfix">
+                <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{mirrorTagCreateModalPage.tag}}：</span></div>
+                <div class="le-col-8 letv-control-content">
+                    <div class="le-col-10 clear-space">
+                        <input type="text" name="mirror_tag" class="le-form-control" ng-model="mirrorTag" regex="REGEX.TAG_CI" ng-trim="false"  input-restrict/>
+                    </div>
+                    <div class="le-col-2 clear-space col-control-height">
+                        <input-validation-tooltip ng-show="(mirrorTag_create_form.$submitted || mirrorTag_create_form.mirror_tag.$touched )&& mirrorTag_create_form.mirror_tag.$error.inputRestrict"
+                                                  validation-message="{{REGEX_MESSAGE.CI_TAG}}">
+                        </input-validation-tooltip>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inputs-item clearfix">
+                <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{mirrorTagCreateModalPage.forbiddenCookie}}：</span></div>
+                <div class="le-col-8 letv-control-content">
+                    <div class="le-col-10 clear-space">
+                        <le-radio-select class="mirrorRadio" select-model="mirrorTagListNow" select-options="mirrorTagList"></le-radio-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inputs-item clearfix">
+                <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{mirrorTagCreateModalPage.mvncache}}：</span></div>
+                <div class="le-col-8 letv-control-content">
+                    <div class="le-col-10 clear-space">
+                        <le-radio-select class="mirrorRadio" select-model="mirrorTagMvncacheNow" select-options="mirrorTagMvncache"></le-radio-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="left-button">
+                <button class="btn btn-le-red btn-submit-order pull-right" ng-click="mirrorTag_create_form.$valid && !isloading && submitTag()" >
+                    <span>{{mirrorTagCreateModalPage.ok}}</span>
+                </button>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+        <iframe style="display:none" ng-src="{{keypairDownloadUrl}}"></iframe>
+    </form>
+</div>

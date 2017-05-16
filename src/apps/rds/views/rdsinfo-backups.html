@@ -1,0 +1,128 @@
+<meta charset="utf-8" >
+<div class="view-common" ng-controller="rdsInfoBackupsCtrl">
+    <div class="le-row list-common">
+        <div class="le-row le-tab-header">
+            <div class="le-tab-btn" ng-class="{'le-tab-active': tabShow === 'backupsList'}" ng-click="tabShow='backupsList'"><span>{{RdsInfoBackupsPage.backupListTab}}</span></div>
+            <div class="le-tab-btn" ng-class="{'le-tab-active': tabShow === 'backupsSet'}" ng-click="tabShow='backupsSet'"><span>{{RdsInfoBackupsPage.backupConfigTab}}</span></div>
+        </div>
+        <div ng-show="tabShow === 'backupsList'">
+            <div class="le-col-12 backup-select">
+                <div class="pull-left"><span class="letv-control-label">{{RdsInfoBackupsPage.backupListSelect}}：</span></div>
+                <div class="pull-left time-margin">
+                    <input type="text" class="le-form-control"  char-id="datetimepicker-start" id="datetimepicker-start"  current-lang="currentLang" date-model="datetimeStart" ng-model="datetimeStart"  le-datetimepicker>
+                </div>
+                <div class="pull-left"><span class="letv-control-label">{{RdsInfoBackupsPage.backupListTo}}&nbsp&nbsp</span></div>
+                <div class="pull-left time-margin">
+                    <input type="text" class="le-form-control"  char-id="datetimepicker-end" id="datetimepicker-end"  current-lang="currentLang" date-model="datetimeEnd" ng-model="datetimeEnd"  le-datetimepicker>
+                </div>
+                <div class="pull-left">
+                    <button class="btn btn-le-green" ng-click="findBackups()"><span>{{RdsInfoBackupsPage.backupListFind}}</span></button>
+                </div>
+                <div class="pull-right">
+                    <button class="btn btn-le-blue btn-backup-do" ng-click="openBackupDoModal()"><span>{{RdsInfoBackupsPage.doBackup}}</span></button>
+                    <button class="btn btn-le-blue btn-backup-export" ng-click="exportBackup()"><span>{{RdsInfoBackupsPage.exportBackup}}</span></button>
+                </div>
+            </div>
+            <div class="le-col-12">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th class="unselectable">
+                        <span class="iconfont icon-righticon" ng-class="{checked:isAllBackupChecked()}"
+                              ng-click="checkAllBackup()"></span>
+                        </th>
+                        <th><span>{{RdsInfoBackupsPage.tableTime}}</span></th>
+                        <th><span>{{RdsInfoBackupsPage.tableStrategy}}</span></th>
+                        <th><span>{{RdsInfoBackupsPage.tableSize}}</span></th>
+                        <th><span>{{RdsInfoBackupsPage.tableFunction}}</span></th>
+                        <th><span>{{RdsInfoBackupsPage.tableType}}</span></th>
+                        <th><span>{{RdsInfoBackupsPage.tableModal}}</span></th>
+                        <th><span>{{RdsInfoBackupsPage.tableStatus}}</span></th>
+                    </tr>
+                    </thead>
+                    <tbody id="tby">
+                    <tr ng-repeat="backup in backupList">
+                        <td class="unselectable">
+                        <span class="iconfont icon-checkiconfill" ng-class="{checked:backup.checked}"
+                              ng-click="checkBackup(backup)"></span>
+                        </td>
+                        <td class=""><span>{{backup.startTime|date:'yyyy-MM-dd HH:mm:ss'}} / {{!backup.endTime?'--':backup.endTime|date:'yyyy-MM-dd HH:mm:ss'}}</span></td>
+                        <td class=""><span>{{backup.backupProxy}}</span></td>
+                        <td class=""><span>{{!backup.backupSize?'--':(backup.backupSize|gTransMemoryFilter)}}</span></td>
+                        <td class=""><span>{{backup.backupMethod}}</span></td>
+                        <td class=""><span>{{backup.backupType|rdsBackupTypesFilter}}</span></td>
+                        <td class=""><span>{{backup.workType}}</span></td>
+                        <td class="">
+                            <span ng-show="backup.status=='BUILDING'" class="status-loading"></span>
+                            <span>{{backup.status|rdsStatusFilter}}</span>
+                        </td>
+                    </tr>
+                    <tr ng-if="backupList.length==0">
+                        <td ng-if="!isListLoading" colspan=10 class="nodata">{{RdsInfoBackupsPage.tableTip}}</td>
+                        <td ng-if="isListLoading" colspan=10></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div ng-show="!isListLoading && backupList.length>0" class="le-pagination">
+                    <span>{{pagination.total}}{{totalItems}}{{pagination.nums}}，{{pagination.perPage}}{{pageSize}}{{pagination.nums}}</span>
+                    <pagination boundary-links="true" direction-links="true"
+                                ng-change="pageChange()" items-per-page="pageSize"
+                                total-items="totalItems" ng-model="currentPage" class="pagination-sm" max-size="5"
+                                rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                                last-text="&raquo;">
+                    </pagination>
+                </div>
+                <div ng-if="isListLoading" class="spin"></div>
+                <div ng-if="isListLoading" class="far-spin"></div>
+            </div>
+
+        </div>
+        <div ng-show="tabShow === 'backupsSet'">
+            <div class="backup-info">
+                <ul class="top-items">
+                    <li><span class="title">{{RdsInfoBackupsPage.saveDays}}：</span><span class="value">{{backupSetInfo.reserveDays}}{{RdsInfoBackupsPage.day}}</span></li>
+                    <li><span class="title">{{RdsInfoBackupsPage.backupcCycle}}：</span><span class="value">{{backupSetInfo.backupPeriod | rdsBackupSetDateWeekFilter}}</span></li>
+                    <li><span class="title">{{RdsInfoBackupsPage.backupTimes}}：</span><span class="value">{{backupSetInfo.backupDate | rdsBackupSetDateTimeFilter}}</span></li>
+                    <li><span class="title">{{RdsInfoBackupsPage.nextBackup}}：</span><span class="value">{{backupSetInfo.futureBackupDate | rdsBackupSetDateNextTimeFilter}}</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script type="text/ng-template" id="BackupDoModalTpl">
+        <div class="modal-backup-do">
+                <div class="le-modal-header">
+                    <span class="header-title">{{RdsInfoBackupsPage.doBackup}}</span>
+                    <a class="close" ng-click="closeModal()">
+                        <i class="iconfont icon-add"></i>
+                    </a>
+                </div>
+                <div class="le-modal-body">
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">{{RdsInfoBackupsPage.tableType}}：</span>
+                        </div>
+                        <div class="le-col-9 radio-check-group">
+                            <div class="letv-radioCheck" ng-class="{'selected':backupType === 'increment'}" ng-click="backupType='increment'">
+                                <i class="iconfont icon-checkblockicon"></i>
+                                <span class="letv-radio-content">{{common.filters.rdsBackupTypesFilter.incr}}</span>
+                            </div>
+                            <div class="letv-radioCheck" ng-class="{'selected':backupType === 'full'}" ng-click="backupType='full'">
+                                <i class="iconfont icon-checkblockicon"></i>
+                                <span class="letv-radio-content">{{common.filters.rdsBackupTypesFilter.full}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-row">
+                            <div class="le-col-12 alert-dialog">
+                                <button class="btn btn-le-yellow pull-right" ng-click="closeModal()">{{RdsInfoBackupsPage.cancel}}</button>
+                                <button class="btn btn-le-blue pull-right" ng-click="doBackup()">{{RdsInfoBackupsPage.doBackup}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </script>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

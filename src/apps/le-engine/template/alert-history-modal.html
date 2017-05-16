@@ -1,0 +1,66 @@
+<div class="modal-header le-modal-header vm-create-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <span class="header-title">{{langAlertHistoryModal.title}}</span>
+</div>
+<div class="modal-body">
+    <table class="le-table-info table table-bordered">
+        <thead>
+            <tr>
+                <th colspan="2"><span>{{langPrimary.detail}}</span>
+                    <a class="pull-right tb-set-btn"></a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <span class="title">
+                                {{langAlertField.alertOccurTime}}:
+                            </span>
+                    <span class="con">
+                                {{alertHistory.StartTime |date : 'yyyy-MM-dd HH:mm:ss '}}
+                    </span>
+                </td>
+                <td>
+                    <span class="title">
+                                {{langAlertField.name}}:
+                    </span>
+                    <span class="con">
+                                {{alertHistory.RuleName}}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="title">
+                            {{langAlertField.alertNotifyMethod}}:
+                    </span>
+                    <span class="con">
+                            {{alertHistory.NoticeType | alertNotifyTypeFilter}}
+                        </span>
+                </td>
+                <td>
+                    <span class="title">
+                            {{langAlertField.alertNotifyTarget}}:
+                        </span>
+                    <span class="con">
+                            {{alertHistory.AlertGroup}}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <span class="title">
+                                {{langAlertHistoryModal.alertContent}}:
+                            </span>
+                    <span class="con">
+                                {{alertHistory.Message}}
+                            </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="clearfix"></div>
+</div>

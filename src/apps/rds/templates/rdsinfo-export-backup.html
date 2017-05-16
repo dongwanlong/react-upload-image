@@ -1,0 +1,23 @@
+<div class="">
+    <div class="le-modal-header">
+        <span  class="header-title">{{RdsInfoBackupsPage.exportBackup}}</span>
+        <a class="close" ng-click="closeModal()">
+            <i class="iconfont icon-add"></i>
+        </a>
+    </div>
+    <div class="le-modal-body">
+        <form novalidate class="rdsinfo_modify_form" name="rdsinfo_modify_form">
+            <div class="le-row">
+                <div class="le-col-12 text-center">
+                    <a ng-href="{{backupFileUrl}}" title="{{RdsInfoBackupsPage.lastExportTime}}：{{backupTime | date:'yyyy-MM-dd HH:mm'}}" target="_blank">{{RdsInfoBackupsPage.downloadBackupFile}}</a>
+                </div>
+            </div>
+            <div class="le-row alert-dialog">
+                <div class="le-col-12">
+                    <button class="btn btn-le-yellow pull-right" ng-click="closeModal()">{{RdsInfoBackupsPage.cancel}}</button>
+                    <button class="btn btn-le-blue pull-right" ng-click="rebuild()">{{RdsInfoBackupsPage.rebuildBackupFile}}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

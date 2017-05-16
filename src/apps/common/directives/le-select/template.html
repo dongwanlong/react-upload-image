@@ -1,0 +1,11 @@
+<div class="le-select-toggle" ng-click="toggleSelect($event)">
+    <span ng-if="!isOptionLoading && (options && options.length>0)" class="select-value" title="{{model.text}}">{{model.text}}</span>
+    <span ng-if="!isOptionLoading && (!options || !options.length)" class="select-value">{{emptyText}}</span>
+    <span ng-if="isOptionLoading" class="select-value">数据加载中...</span>
+    <a class="select-arrow" href="javascript:void(0);"><i class="fa fa-caret-down"></i></a>
+</div>
+<ul class="le-select-menu" ng-if="!isOptionLoading && (options && options.length>0)" ng-class="{open:isOpen}">
+    <li ng-repeat="option in options" ng-click="selectOption(option)">
+        <a title="{{option.text}}">{{option.text}}</a>
+    </li>
+</ul>

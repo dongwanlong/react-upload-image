@@ -1,0 +1,477 @@
+<div class="main-body" ng-controller="DashboardCtrl">
+	<div class="le-col-7">
+		<div class="body-account clearfix">
+			<div class="clearfix">
+				<div class="le-col-2 text-center">
+					<i class="iconfont icon-user1 usericon" ng-hide="usericon.hide" ng-style="usericon.styles"></i>
+					<a href="https://lcp-uc.letvcloud.com/userView/ucOverview.do"><img class="userimg" src="{{userimg}}" ng-hide="!userimg"></a>
+				</div>
+				<div class="le-col-5">
+					<div class="messagetitle">您好：<a href="https://lcp-uc.letvcloud.com/userView/ucOverview.do"><span class="text-blue">{{username}}</span></a></div>
+					<div class="message">账户余额：&nbsp;&nbsp;<span class="remain">¥{{remain}}</span></div>
+					<!--<ul>
+						<li><a href="https://lcp-uc.letvcloud.com/userView/accountManagerView.do"><i class="iconfont icon-icon" ng-class="{1:'', 'undefined':'text-gray'}[mobileStatus]"></i></a></li>
+						<li><a href="https://lcp-uc.letvcloud.com/userView/accountManagerView.do"><i class="iconfont icon-xinfeng" ng-class="{1:'', 'undefined':'text-gray'}[emailStatus]"></i></a></li>
+						<li><a href="https://lcp-uc.letvcloud.com/userView/accountManagerView.do"><i class="iconfont icon-shenfenrenzheng" ng-class="{1:'', 'undefined':'text-gray'}[userStatus]"></i></a></li>
+					</ul>-->
+				</div>
+				<div class="le-col-5">
+					<div class="le-col-6">
+						<div class="messagetitle">消息中心</div>
+						<div class="message"><a href="https://lcp-uc.letvcloud.com/messageView/msgCenterView.do"><span class="message-num messbounce">{{message || '0'}}</span></a><span class="text-gray">条</span></div>
+					</div>
+					<div class="le-col-6">
+						<div class="messagetitle">我的账单</div>
+						<div class="message"><a href="https://lcp-uc.letvcloud.com/uc/bill/getMonthBillView.do?month={{billdate|date:'yyyyMM'}}"><span class="message-num messbounce">{{billMes || '0'}}</span></a><span class="text-gray">条</span></div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+			<div class="clearfix" style="margin-top: 17px;">
+				<div class="le-col-offset-2 le-col-5">
+					<div style="margin-top:6px;"><span class="text-gray">预估消费：&nbsp;&nbsp;</span>¥{{consume.total || '0.00'}}<span class="text-gray">&nbsp;&nbsp;元/天</span></div>
+				</div>
+				<div class="le-col-5">
+					<div class="le-col-offset-6 le-col-6">
+						<a class="btn btn-le-red" href="https://lcp-uc.letvcloud.com/userView/ucOverview.do">充值</a>
+					</div>
+					<!-- <div class="le-col-6">
+						<div class="btn btn-le-blue hide">提现</div>
+					</div> -->
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+		<div class="body-buyed clearfix">
+			<div class="body-operation clearfix">
+				<div class="operation-title">
+					<!-- <span class="operation-column"></span> -->
+					<span class="iconfont icon-iconshugang operation-column"></span>
+					<span class="title">已开通服务</span>
+				</div>
+				<div class="buyed-products row">
+					<div class="le-col-6 no-paddingR">
+						<a class="product" href="/cvm/#/vm">
+							<span class="iconfont icon-cloudhost"></span>
+							<div class="product-title">云主机</div>
+							<div class="product-num">{{service.ecs || '0'}}个</div>
+						</a>
+						<div class="productDesc">
+							<span>每日消费</span>
+							<div class="productDesc-consume">
+								<span class="iconfont icon-moneyicon"></span> <!-- 钱袋图标 -->
+								<span>¥{{consume.ecsconsume || '0.00'}}</span>
+							</div>
+							<!-- <div class="row">
+								<span class="le-col-6">运行{{ecs || '0'}}个</span>
+								<span class="le-col-6">停止{{ecs_sleep || '0'}}个</span>
+							</div> -->
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="le-col-6 no-paddingL">
+						<a class="product harddisk" href="/cvm/#/vm-disk">
+							<span class="iconfont icon-clouddisk"></span>
+							<div class="product-title">云硬盘</div>
+							<div class="product-num">{{service.disk || '0'}}个</div>
+						</a>
+						<div class="productDesc last">
+							<span>每日消费</span>
+							<div class="productDesc-consume">
+								<span class="iconfont icon-moneyicon"></span> <!-- 钱袋图标 -->
+								<span>¥{{consume.diskconsume || '0.00'}}</span>
+							</div>
+							<!-- <div class="row">
+								<span class="le-col-6">运行{{disk || '0'}}个</span>
+								<span class="le-col-6">停止0个</span>
+							</div> -->
+							<div class="clearfix"></div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="le-col-6 no-paddingR">
+						<a class="product harddisk" href="/cvm/#/vm-floatIP">
+							<span class="iconfont icon-cloudfloatip"></span>
+							<div class="product-title">公网IP</div>
+							<div class="product-num">{{service.floatingIp || '0'}}个</div>
+						</a>
+						<div class="productDesc">
+							<span>每日消费</span>
+							<div class="productDesc-consume">
+								<span class="iconfont icon-moneyicon"></span> <!-- 钱袋图标 -->
+								<span>¥{{consume.floatipconsume || '0.00'}}</span>
+							</div>
+							<!-- <div class="row">
+								<span class="le-col-6">运行{{floatIp || '0'}}个</span>
+								<span class="le-col-6">停止0个</span>
+							</div> -->
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="le-col-6 no-paddingL">
+						<a class="product" href="/cvm/#/vm-router">
+							<span class="iconfont icon-cloudroute"></span>
+							<div class="product-title">路由器</div>
+							<div class="product-num">{{service.router || '0'}}个</div>
+						</a>
+						<div class="productDesc last">
+							<span>每日消费</span>
+							<div class="productDesc-consume">
+								<span class="iconfont icon-moneyicon"></span> <!-- 钱袋图标 -->
+								<span>¥{{consume.routeconsume || '0.00'}}</span>
+							</div>
+							<!-- <div class="row">
+								<span class="le-col-6">运行{{router || '0'}}个</span>
+								<span class="le-col-6">停止0个</span>
+							</div> -->
+							<div class="clearfix"></div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<le-expander layout="{{expander.layout}}">
+		<div class="le-col-5 le-expander">
+			<div class="body-operation expand-operation">
+				<div class="operation-title">
+					<span class="iconfont icon-iconshugang operation-column"></span>
+					<span class="title">最近操作</span>
+					<a class="more" ng-click='expanderToggle($event)' ng-hide="expander.length<=0">更多</a>
+					<div class="clearfix"></div>
+				</div>
+				<ul class="operation-items" ng-hide="expander.length<=0">
+					<div ng-hide="isloading"><i class="iconfont icon-envelope"></i><span>刷新数据中...</span></div>
+					<li ng-repeat="operation in expander" ng-class="{last:$index==expander.length-1&&expander.length>=10,third:$index==2,gotop:$index>2}">
+						<div>{{operation.action}}</div>
+						<div class="items-desc">
+							<span class="text-blue" ng-show="operation.content.indexOf('==')<=0">{{operation.content}}</span>
+							<span ng-show="operation.content.indexOf('==')>0">
+								<span class="text-green">{{operation.content.substring(0,operation.content.indexOf('=='))}}</span>
+								&nbsp;<span>{{operation.content.substring(operation.content.indexOf('==')+2,operation.content.lastIndexOf('=='))}}</span>&nbsp;
+								<span class="text-yellow">{{operation.content.substring(operation.content.lastIndexOf('==')+2)}}</span>
+							</span>
+							<span class="pull-right" ng-show="{{((operation.createTime|date:'yyyyMdH')==year.toString().concat(month.toString(),day.toString(),hour.toString())&&minute-(operation.createTime|date:'m')<5)||((operation.createTime|date:'yyyyMd')==year.toString().concat(month.toString(),day.toString())&&(hour-1==(operation.createTime|date:'H'))&&60+minute-(operation.createTime|date:'m')<5)}}" date-picker>刚刚</span><!--5分钟内-->
+							<!-- <span class="pull-right" ng-show="{{((operation.createTime|date:'yyyyMdH')==year.toString().concat(month.toString(),day.toString(),hour.toString())&&minute-(operation.createTime|date:'m')>=5&&minute-(operation.createTime|date:'m')<30)||((operation.createTime|date:'yyyyMd')==year.toString().concat(month.toString(),day.toString())&&(hour-1==(operation.createTime|date:'H'))&&60+minute-(operation.createTime|date:'m')>=5&&60+minute-(operation.createTime|date:'m')<30)}}" date-picker>4分钟前</span> --><!--30分钟内-->
+							<span class="pull-right" ng-show="{{(operation.createTime|date:'yyyyMdH')==year.toString().concat(month.toString(),day.toString(),hour.toString())&&minute-(operation.createTime|date:'m')>=5&&minute-(operation.createTime|date:'m')<30}}" date-picker>{{minute-(operation.createTime|date:'m')}}分钟前</span><!--30分钟内情况1-->
+							<span class="pull-right" ng-show="{{(operation.createTime|date:'yyyyMd')==year.toString().concat(month.toString(),day.toString())&&(hour-1==(operation.createTime|date:'H'))&&60+minute-(operation.createTime|date:'m')>=5&&60+minute-(operation.createTime|date:'m')<30}}" date-picker>{{60+minute-(operation.createTime|date:'m')}}分钟前</span><!--30分钟内情况2-->
+							<span class="pull-right" ng-show="{{((operation.createTime|date:'yyyyMdH')==year.toString().concat(month.toString(),day.toString(),hour.toString())&&minute-(operation.createTime|date:'m')>=30)||((operation.createTime|date:'yyyyMd')==year.toString().concat(month.toString(),day.toString())&&(hour-1==(operation.createTime|date:'H'))&&60+minute-(operation.createTime|date:'m')>=30)||((operation.createTime|date:'yyyyMd')==year.toString().concat(month.toString(),
+							day.toString())&&(hour-1>(operation.createTime|date:'H')))}}" date-picker>{{operation.createTime|date:'HH:mm'}}</span><!--当天-->
+							<span class="pull-right" ng-show="{{(operation.createTime|date:'yyyyM')==year.toString().concat(month.toString())&&(operation.createTime|date:'d')!=day}}" date-picker>{{operation.createTime|date:'MM-dd'}}</span><!--当年当月非当天-->
+							<span class="pull-right" ng-show="{{(operation.createTime|date:'yyyy')!=year||(operation.createTime|date:'M')!=month}}" date-picker>{{operation.createTime|date:'yyyy-MM-dd'}}</span><!--非当年或非当月-->
+							<div class="clearfix"></div>
+						</div>
+					</li>
+				</ul>
+				<ul class="operation-items operation-noitems" ng-hide="expander.length>0">
+					<div ng-hide="isloading"><i class="iconfont icon-envelope"></i><span>刷新数据中...</span></div>
+					<i class="iconfont icon-baoxiu"></i><span>暂无最近操作</span>
+					<div class="clearfix"></div>
+				</ul>
+			</div>
+			<div class="body-quota">
+				<div class="body-operation">
+					<div class="operation-title">
+						<!-- <span class="operation-column"></span> -->
+						<span class="iconfont icon-iconshugang operation-column"></span>
+						<span class="title">资源配额</span>
+						<!-- <a class="more" ng-click="expanderToggle($event)">更多</a> -->
+						<div class="clearfix"></div>
+					</div>
+				</div>
+				<div class="quota-items">
+					<div class="le-col-6 no-paddingR no-paddingL">
+						<div class="quota-item">
+							<div class="item-source">
+								<div>云主机<span>（个）</span></div>
+								<div class="source-precent">
+									<div class="active" ng-style="quotas.ecsStyle"></div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="item-quota">
+								<div class="text-left">{{service.ecs || '0'}}</div>
+								<div class="quota-line"></div>
+								<div class="text-right">{{quotas.CLOUDVM_VM || '0'}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="le-col-6 no-paddingR">
+						<div class="quota-item">
+							<div class="item-source">
+								<div>带宽<span>（Mbps）</span></div>
+								<div class="source-precent">
+									<div class="active" ng-style="quotas.bandwidthStyle"></div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="item-quota">
+								<div class="text-left">{{service.bandWidth || '0'}}</div>
+								<div class="quota-line"></div>
+								<div class="text-right">{{quotas.CLOUDVM_BAND_WIDTH || '0'}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="le-col-6 no-paddingR no-paddingL">
+						<div class="quota-item">
+							<div class="item-source">
+								<div>CPU<span>（核）</span></div>
+								<div class="source-precent">
+									<div class="active" ng-style="quotas.cpuStyle"></div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="item-quota">
+								<div class="text-left">{{service.cpu || '0'}}</div>
+								<div class="quota-line"></div>
+								<div class="text-right">{{quotas.CLOUDVM_CPU || '0'}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="le-col-6 no-paddingR">
+						<div class="quota-item">
+							<div class="item-source">
+								<div>内存<span>（GB）</span></div>
+								<div class="source-precent">
+									<div class="active" ng-style="quotas.memoryStyle"></div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="item-quota">
+								<div class="text-left">{{service.memory/1024 || '0'}}</div>
+								<div class="quota-line"></div>
+								<div class="text-right">{{quotas.CLOUDVM_MEMORY || '0'}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="le-col-6 no-paddingR no-paddingL">
+						<div class="quota-item">
+							<div class="item-source">
+								<div>云硬盘<span>（个）</span></div>
+								<div class="source-precent">
+									<div class="active" ng-style="quotas.diskStyle"></div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="item-quota">
+								<div class="text-left">{{service.disk || '0'}}</div>
+								<div class="quota-line"></div>
+								<div class="text-right">{{quotas.CLOUDVM_VOLUME || '0'}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="le-col-6 no-paddingR">
+						<div class="quota-item">
+							<div class="item-source">
+								<div>云硬盘容量<span>（GB）</span></div>
+								<div class="source-precent">
+									<div class="active" ng-style="quotas.volumeSizeStyle"></div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="item-quota">
+								<div class="text-left">{{service.volumeSize || '0'}}</div>
+								<div class="quota-line"></div>
+								<div class="text-right">{{quotas.CLOUDVM_VOLUME_SIZE || '0'}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="le-col-6 no-paddingR no-paddingL">
+						<div class="quota-item">
+							<div class="item-source">
+								<div>云主机快照<span>（个）</span></div>
+								<div class="source-precent">
+									<div class="active" ng-style="quotas.vmSnapshotStyle"></div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="item-quota">
+								<div class="text-left">{{service.vmSnapshot || '0'}}</div>
+								<div class="quota-line"></div>
+								<div class="text-right">{{quotas.CLOUDVM_VM_SNAPSHOT || '0'}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="le-col-6 no-paddingR">
+						<div class="quota-item">
+							<div class="item-source">
+								<div>云硬盘快照<span>（个）</span></div>
+								<div class="source-precent">
+									<div class="active" ng-style="quotas.volumeSnapshotStyle"></div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="item-quota">
+								<div class="text-left">{{service.volumeSnapshot || '0'}}</div>
+								<div class="quota-line"></div>
+								<div class="text-right">{{quotas.CLOUDVM_VOLUME_SNAPSHOT || '0'}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="le-col-6 no-paddingR no-paddingL">
+						<div class="quota-item">
+							<div class="item-source">
+								<div>公网IP<span>（个）</span></div>
+								<div class="source-precent">
+									<div class="active" ng-style="quotas.floatIpStyle"></div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="item-quota">
+								<div class="text-left">{{service.floatingIp || '0'}}</div>
+								<div class="quota-line"></div>
+								<div class="text-right">{{quotas.CLOUDVM_FLOATING_IP || '0'}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="le-col-6 no-paddingR">
+						<div class="quota-item">
+							<div class="item-source">
+								<div>路由器<span>（个）</span></div>
+								<div class="source-precent">
+									<div class="active" ng-style="quotas.routerStyle"></div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="item-quota">
+								<div class="text-left">{{service.router || '0'}}</div>
+								<div class="quota-line"></div>
+								<div class="text-right">{{quotas.CLOUDVM_ROUTER || '0'}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="le-col-6 no-paddingR no-paddingL">
+						<div class="quota-item last">
+							<div class="item-source">
+								<div>VPC<span>（个）</span></div>
+								<div class="source-precent">
+									<div class="active" ng-style="quotas.vpcStyle"></div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="item-quota">
+								<div class="text-left">{{service.privateNetwork || '0'}}</div>
+								<div class="quota-line"></div>
+								<div class="text-right">{{quotas.CLOUDVM_NETWORK || '0'}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="le-col-6 no-paddingR">
+						<div class="quota-item last">
+							<div class="item-source">
+								<div>子网<span>（个）</span></div>
+								<div class="source-precent">
+									<div class="active" ng-style="quotas.subNetStyle"></div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="item-quota">
+								<div class="text-left">{{service.privateSubnet || '0'}}</div>
+								<div class="quota-line"></div>
+								<div class="text-right">{{quotas.CLOUDVM_SUBNET || '0'}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="le-col-6 no-paddingR no-paddingL">
+						<div class="quota-item last">
+							<div class="item-source">
+								<div>密钥<span>（个）</span></div>
+								<div class="source-precent">
+									<div class="active" ng-style="quotas.keypairStyle"></div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="item-quota">
+								<div class="text-left">{{service.keyPair || '0'}}</div>
+								<div class="quota-line"></div>
+								<div class="text-right">{{quotas.CLOUDVM_KEY_PAIR || '0'}}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</le-expander>
+
+	<div class="clearfix"></div>
+	<div class="body-recommend le-col-12">
+		<div class="body-operation">
+			<div class="operation-title">
+				<!-- <span class="operation-column"></span> -->
+				<span class="iconfont icon-iconshugang operation-column"></span>
+				<span class="title">推荐的服务</span>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+		<div class="recommend-items">
+			<div class="recommend-item le-col-4 text-right">
+				<div class="le-col-6">
+					<span class="iconfont icon-gce"></span>
+				</div>
+				<div class="item-title le-col-6 text-left">
+					<span>云引擎</span>
+					<div class="item-desc">弹性伸缩，稳定高效安全的应用托管服务</div>
+					<!-- <div><a class="item-detail" href=""><span>查看详情&nbsp;</span><i class="iconfont icon-rilijiantouyoushuang"></i></a></div> -->
+				</div>
+				<div class="clearfix"></div>
+				<div class="item-buttons le-col-6 text-right">
+					<!-- <div class="btn btn-le-blue">立即购买</div> -->
+				</div>
+				<div class="item-buttons le-col-6 text-left">
+					<!-- <div class="btn btn-le-green">免费体验</div> -->
+					<div class="btn btn-le-green">敬请期待</div>
+				</div>
+				<div class="clearfix"></div>	
+			</div>
+			<div class="recommend-item le-col-4 text-right">
+				<div class="le-col-6">
+					<span class="iconfont icon-loadblance"></span>
+				</div>
+				<div class="item-title le-col-6 text-left">
+					<span>负载均衡SLB</span>
+					<div class="item-desc">弹性扩容，消除单点故障，提高应用可用性</div>
+					<!-- <div><a class="item-detail" href=""><span>查看详情&nbsp;</span><i class="iconfont icon-rilijiantouyoushuang"></i></a></div> -->
+				</div>
+				<div class="clearfix"></div>
+				<div class="item-buttons le-col-6 text-right">
+					<!-- <div class="btn btn-le-blue">立即购买</div> -->
+				</div>
+				<div class="item-buttons le-col-6 text-left">
+					<!-- <div class="btn btn-le-green">免费体验</div> -->
+					<div class="btn btn-le-green">敬请期待</div>
+				</div>
+				<div class="clearfix"></div>	
+			</div>
+			<div class="recommend-item last le-col-4 text-right">
+				<div class="le-col-6">
+					<span class="iconfont icon-rds1"></span>
+				</div>
+				<div class="item-title le-col-6 text-left">
+					<span>关系型数据库</span>
+					<div class="item-desc">多主架构安全防护，专业的数据库管理平台</div>
+					<!-- <div><a class="item-detail" href=""><span>查看详情&nbsp;</span><i class="iconfont icon-rilijiantouyoushuang"></i></a></div> -->
+				</div>
+				<div class="clearfix"></div>
+				<div class="item-buttons le-col-6 text-right">
+					<!-- <div class="btn btn-le-blue">立即购买</div> -->
+				</div>
+				<div class="item-buttons le-col-6 text-left">
+					<!-- <div class="btn btn-le-green">免费体验</div> -->
+					<div class="btn btn-le-green">敬请期待</div>
+				</div>
+				<div class="clearfix"></div>	
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+</div>
+	<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+    </toaster-container>

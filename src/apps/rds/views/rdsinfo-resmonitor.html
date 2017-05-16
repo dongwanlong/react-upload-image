@@ -1,0 +1,25 @@
+<div class="view-common" ng-controller="RdsInfoResMonitorCtrl">
+    <div class="le-row list-common">
+        <div class="le-row le-tab-header">
+            <div class="le-tab-btn" ng-class="{'le-tab-active': monitorType === 'comdml'}" ng-click="switchMonitorType('comdml')"><span>COMDML</span></div>
+            <div class="le-tab-btn" ng-class="{'le-tab-active': monitorType === 'innodb'}" ng-click="switchMonitorType('innodb')"><span>{{RdsinfoResMonitorPage.tab2}}</span></div>
+            <div class="le-tab-btn" ng-class="{'le-tab-active': monitorType === 'qps-tps'}" ng-click="switchMonitorType('qps-tps')"><span>QPS/TPS</span></div>
+        </div>
+        <div class="le-row operate-panel">
+            <div class="le-col-9 le-btn-group btn-monitor">
+                <span class="btn" ng-class="{'le-btn-active': timeType === '1'}" ng-click="switchTimeType('1')" autofocus>{{RdsinfoResMonitorPage.oneHour}}</span>
+                <span class="btn" ng-class="{'le-btn-active': timeType === '2'}" ng-click="switchTimeType('2')">{{RdsinfoResMonitorPage.threeHours}}</span>
+                <span class="btn" ng-class="{'le-btn-active': timeType === '3'}" ng-click="switchTimeType('3')">{{RdsinfoResMonitorPage.oneDay}}</span>
+                <span class="btn" ng-class="{'le-btn-active': timeType === '4'}" ng-click="switchTimeType('4')">{{RdsinfoResMonitorPage.sevenDay}}</span>
+                <span class="btn" ng-class="{'le-btn-active': timeType === '5'}" ng-click="switchTimeType('5')">{{RdsinfoResMonitorPage.oneMonth}}</span>
+            </div>
+        </div>
+        <div class="le-row list-common">
+            <div class="le-col-12">
+                <div id="chart-container" char-id="chart-container" style="min-width:800px;height:500px" heightchar monitor-type="monitorType" time-type="timeType" db-id="dbId"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

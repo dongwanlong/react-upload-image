@@ -1,0 +1,71 @@
+<div class="modal-header letv-modal-header vm-create-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{serviceInfoModalPage.pageTitle}}:{{servicesInfo.metadata.name}}</h3>
+</div>
+<div class="modal-body">
+    <div class="le-row operate-panel">
+        <div class="le-row le-tab-header">
+            <div class="le-tab-btn" ng-class="{'le-tab-active': tabType==='serviceInfo'}" ng-click="tabType='serviceInfo'"><span>{{serviceInfoModalPage.tabServiceInfoTitle}}</span></div>
+            <div class="le-tab-btn" ng-class="{'le-tab-active': tabType=='detailInfo'}" ng-click="tabType='detailInfo'"><span>{{serviceInfoModalPage.tabDetailInfoTitle}}</span></div>
+            <div class="le-tab-btn" ng-class="{'le-tab-active': tabType=='serviceDomain'}" ng-click="tabType='serviceDomain'"><span>{{serviceInfoModalPage.tabServiceDomainTitle}}</span></div>
+        </div>
+    </div>
+    <div ng-show="tabType==='serviceInfo'">
+        <table class="le-table-info table table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{serviceInfoModalPage.tabServiceInfoTitle}}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr><td><span class="title">{{serviceInfoModalPage.serviceInfoNameTableTitle}}:</span><span class="con">{{servicesInfo.metadata.name}}</span></td><td><span class="title">{{serviceInfoModalPage.serviceInfoNamespaceTableTitle}}:</span><span class="con">{{servicesInfo.metadata.namespace}}</span></td></tr>
+            <tr><td><span class="title">{{serviceInfoModalPage.serviceInfoCreateTimeTableTitle}}:</span><span class="con">{{servicesInfo.metadata.creationTimestamp|date :'yyyy-MM-dd HH:mm:ss'}}</span></td><td><span class="title">{{serviceInfoModalPage.serviceInfoTargetPortTableTitle}}:</span><span class="con">{{servicesInfo.spec.ports[0].targetPort}}</span></td></tr>
+            <tr><td><span class="title">{{serviceInfoModalPage.serviceInfoProtocolTableTitle}}:</span><span class="con">{{servicesInfo.spec.ports[0].protocol}}</span></td><td><span class="title"></span><span class="con"></span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div ng-show="tabType==='detailInfo'">
+        <div class="le-col-12 ">
+            <pre class="log-window log-window-green">{{detail}}</pre>
+        </div>
+    </div>
+
+    <div ng-show="tabType==='serviceDomain'">
+        <div class="le-col-12">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th><span>Server</span></th>
+                    <th><span>Weight</span></th>
+                    <th><span>MaxFails</span></th>
+                    <th><span>FailTimeout</span></th>
+                </tr>
+                </thead>
+                <tbody id="tby">
+                <tr ng-repeat="slbInfo in slbInfoIpsList">
+                    <td style="text-align: left;"><span style="padding-left: 18px">{{slbInfo.Server}}</span></td>
+                    <td class=""><span>{{slbInfo.Weight}}</span></td>
+                    <td class=""><span>{{slbInfo.MaxFails}}</span></td>
+                    <td class=""><span>{{slbInfo.FailTimeout}}</span></td>
+                </tr>
+                </tbody>
+            </table>
+            <div ng-show="!isListLoading && rdsList.length>0" class="le-pagination">
+                <span>{{pagination.total}}{{totalItems}}{{pagination.nums}}£¬{{pagination.perPage}}{{pageSize}}{{pagination.nums}}</span>
+                <pagination boundary-links="true" direction-links="true"
+                            ng-change="pageChange()" items-per-page="pageSize"
+                            total-items="totalItems" ng-model="currentPage" class="pagination-sm" max-size="5"
+                            rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                            last-text="&raquo;">
+                </pagination>
+            </div>
+            <div ng-if="isListLoading" class="spin"></div>
+            <div ng-if="isListLoading" class="far-spin"></div>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+</div>

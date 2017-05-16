@@ -1,0 +1,79 @@
+<div class="modal-header letv-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{podTabModalPage.pageTitle}}:{{podInfo.metadata.name}}</h3>
+</div>
+<div class="modal-body">
+    <div class="le-row le-tab-header">
+        <div class="le-tab-btn" ng-class="{'le-tab-active': tabType === 'info'}" ng-click="tabType='info';getPodDetail()"><span>{{podTabModalPage.tabInfoTitle}}</span></div>
+        <div class="le-tab-btn" ng-class="{'le-tab-active': tabType === 'log'}" ng-click="tabType='log';getPodLog()"><span>{{podTabModalPage.tabLogTitle}}</span></div>
+        <!--<div class="le-tab-btn" ng-class="{'le-tab-active': tabType === 'detail'}" ng-click="tabType='detail';getPodDetail()"><span>{{podTabModalPage.tabDetailTitle}}</span></div>-->
+        <div class="le-tab-btn" ng-class="{'le-tab-active': tabType === 'podEvent'}" ng-click="tabType='podEvent';getPodEvent(eventList)"><span>{{podTabModalPage.tabPodEvent}}</span></div>
+    </div>
+    <!--pod基本信息-->
+    <div ng-show="tabType === 'info'">
+        <p class="lead" ng-show="!viewAppPodInfoPermissions">{{podTabModalPage.viewAppPodInfoPermissionsTip}}</p>
+        <table class="le-table-info table table-bordered" ng-show="viewAppPodInfoPermissions">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{podTabModalPage.tabInfoTitle}}</span><a class="pull-right tb-set-btn"></a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><span class="title">{{podTabModalPage.tabInfoTableName}}:</span><span class="con">{{podInfo.metadata.name}}</span></td>
+                <td><span class="title">{{podTabModalPage.tabInfoTablePodIP}}:</span><span class="con">{{podInfo.status.podIP}}</span></td>
+            </tr>
+            <tr>
+                <td><span class="title">{{podTabModalPage.tabInfoTableStartTime}}:</span><span class="con">{{podInfo.status.startTime | date:'yyyy-MM-dd HH:mm:ss'}}</span></td>
+                <td><span class="title">{{podTabModalPage.tabInfoTableRestart}}:</span><span class="con">{{podInfo.status.containerStatuses[0].restartCount}}</span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--pod监控日志-->
+    <div ng-show="tabType === 'log'">
+        <p class="lead" ng-show="!viewAppPodLogPermissions">{{podTabModalPage.viewAppPodLogPermissionsTip}}</p>
+        <div class="le-col-12 " ng-show="viewAppPodLogPermissions">
+            <pre class="log-window log-window-green">{{log}}</pre>
+            <!-- <button class="btn btn-le-yellow pull-right" ng-click="refreshPodLog()">{{podTabModalPage.refreshButton}}</button> -->
+        </div>
+    </div>
+    <!--pod详情信息-->
+    <!--<div ng-show="tabType === 'detail'">-->
+        <!--<p class="lead" ng-show="!viewAppPodInfoPermissions">{{podTabModalPage.viewAppPodInfoPermissionsTip}}</p>-->
+        <!--<div class="le-col-12 " ng-show="viewAppPodInfoPermissions">-->
+            <!--<pre class="log-window log-window-green">{{detail}}</pre>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--pod event-->
+    <div ng-show="tabType === 'podEvent'" class="modal-body line-box">
+        <div class="le-col-12 text-center" ng-show="eventList.length<=0 && !loading">
+            <span class="text-blue">{{appEventModalPage.nullListDesc}}</span>
+        </div>
+        <ul ng-if="eventList.length>0" class="timeline">
+            <li class="timeline-inverted" ng-repeat="event in eventList">
+                <div ng-if="event.Type=='Warning'" class="timeline-badge danger"><i class="fa fa-check"></i></div>
+                <div ng-if="event.Type=='Normal'" class="timeline-badge success"><i class="fa fa-check"></i></div>
+                <div class="timeline-panel">
+                    <div class="timeline-heading">
+                        <h4 class="timeline-title">{{event.Reason}}</h4>
+                        <p>
+                            <small class="text-muted"><i class="fa fa-time"></i>{{event.CreatedAt | date : 'yyyy-MM-dd HH:mm:ss '}}</small>
+                        </p>
+                    </div>
+                    <div class="timeline-body">
+                        <p>{{event.Kind}} : {{event.Name}}</p>
+                        <p> {{event.Message}}</p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <div ng-if="isListLoading" class="spin"></div>
+        <div ng-if="isListLoading" class="far-spin"></div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="clearfix"></div>
+</div>

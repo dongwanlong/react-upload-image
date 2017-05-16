@@ -1,0 +1,264 @@
+<div class="view-common" ng-controller="VmRouterCtrl">
+    <div class="le-row operate-panel">
+        <div class="le-col-6 le-btn-group">
+            <button class="btn btn-le-blue" ng-click="openVmRouterCreateModal('medium')"><span>创建路由器</span></button>
+            <button class="btn btn-le-blueGreen" ng-click="associateSubnet()" ng-disabled="operationBtn.bindsubnet==0"><span>关联子网</span></button>
+            <button class="btn btn-le-green" ng-click="editRouter()" ng-disabled="operationBtn.edit==0"><span>编辑路由器</span></button>
+            <div dropdown class="more-operation-dropdown">
+                <a href class="btn btn-le-yellow" dropdown-toggle>
+                    更多操作
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="simple-dropdown">
+                    <li><button class="btn dropdown-btn" ng-click="removeSubnet()" ng-disabled="operationBtn.removesubnet==0">解除关联子网</button></li>
+                    <li><button class="btn dropdown-btn" ng-click="deleteRouter()" ng-disabled="operationBtn.delete==0">删除路由器</button></li>
+                </ul>
+            </div>
+        </div>
+        <div class="le-col-6">
+            <div class="le-search-box pull-right">
+                <input type="text" ng-model="searchRouterName" ng-model-options="{debounce:500}" ng-change="doSearch()" placeholder="输入路由器名称" />
+                <span class="search-icon"></span>
+            </div>
+        </div>
+    </div>
+    <div class="le-row list-common">
+        <div class="le-col-12">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th  class="unselectable">
+                         <span class="iconfont icon-righticon"  ng-class="{checked:isAllRouterChecked()}" ng-click="checkAllRouter()"></span>
+                    </th>
+                    <th><span>名称(ID)</span></th>
+                    <th><span>状态</span></th>
+                    <th><span>网关状态</span></th>
+                    <th><span>关联子网</span></th>
+                    <th><span>创建时间</span></th>
+                </tr>
+                </thead>
+                <tbody id="tby">
+                <tr ng-repeat="router in routerList">
+                    <td class="unselectable">
+                        <span class="iconfont icon-checkiconfill" ng-class="{checked:router.checked}" ng-click="checkRouter(router)"></span>
+                    </td>
+                    <td class="le-col-name"><span>{{router.name|| EMPTY_TEXT}}</span></td>
+                    <td><span>{{router.status|routerStatusFilter}}</span></td>
+                    <td><span>{{router.publicNetworkGatewayEnable|routerGatewayFilter}}</span></td>
+                    <td class="le-col-name"><span>{{router.subnets | routerSubnetFilter}}</span></td>
+                    <td><span>{{router.created | date:'yyyy-MM-dd HH:mm'}}</span></td>
+                </tr>
+                <tr ng-if="routerList.length==0">
+                    <td ng-if="!isListLoading" colspan=10 class="nodata">暂无路由器，去创建吧。</td>
+                    <td ng-if="isListLoading" colspan=10></td>
+                </tr>
+                </tbody>
+            </table>
+            <div ng-show="!isListLoading && routerList.length>0" class="le-pagination">
+                <span>共{{totalItems}}条，每页显示{{pageSize}}条</span>
+                <pagination boundary-links="true" direction-links="true"
+                            ng-change="onPageChange()" items-per-page="pageSize"
+                            total-items="totalItems" ng-model="currentPage" class="pagination-sm" max-size="5"
+                            rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                            last-text="&raquo;">
+                </pagination>
+            </div>
+            <div ng-if="isListLoading" class="spin"></div>
+            <div ng-if="isListLoading" class="far-spin"></div>
+        </div>
+
+    </div>
+    <toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+    </toaster-container>
+
+    <script type="text/ng-template" id="VmRouterCreateModalTpl">
+        <div class="modal-vm-disk-create">
+            <form novalidate class="form-vm-router-create" name="vm_router_create_form">
+                <div class="le-modal-header">
+                    <span class="header-title">创建路由器</span>
+                    <a class="close" ng-click="closeModal()">
+                        <i class="iconfont icon-add"></i>
+                    </a>
+                </div>
+                <div class="le-modal-body">
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">名称：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <input type="text" class="le-form-control input-disk-name" ng-model="routerName" name="router_name" ng-trim="false" le-auto-focus name-input-restrict/>
+                            <input-validation-tooltip ng-show="(vm_router_create_form.$submitted || vm_router_create_form.router_name.$touched) && vm_router_create_form.router_name.$error.nameInputRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">公网网关：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <div class="letv-radioCheck" ng-class="{'selected':enablePublicNetworkGateway=='true'}" ng-click="enablePublicNetworkGateway='true'">
+                                <i class="iconfont icon-checkblockicon"></i>
+                                <span class="letv-radio-content">开启</span>
+                            </div>
+                            <div class="letv-radioCheck" ng-class="{'selected':enablePublicNetworkGateway=='false'}" ng-click="enablePublicNetworkGateway='false'">
+                                <i class="iconfont icon-checkblockicon"></i>
+                                <span class="letv-radio-content">关闭</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-3 col-label">
+                            <span class="letv-control-label">购买时长：</span>
+                        </div>
+                        <div class="le-col-9 col-control">
+                            <buy-period-selector buy-period-model="routeBuyPeriod" buy-period-options="allRouteBuyPeriods"></buy-period-selector>
+                        </div>
+                    </div>
+                    <div class="le-row">
+                        <div class="le-col-12 col-submit-order">
+                             <span class="order-price" ng-show="!isCalculatingPrice">
+                                <span class="title">合计：</span>
+                                <span class="price">{{totalPrice}}</span>
+                                <span class="unit">元</span>
+                            </span>
+                            <span class="calculating-price" ng-show="isCalculatingPrice">价格计算中...</span>
+                            <button class="btn btn-le-red" ng-click="vm_router_create_form.$valid && !isFormSubmiting && createRouter()" ng-disabled="isFormSubmiting">
+                                <span ng-if="!isFormSubmiting">提交订单</span>
+                                <span ng-if="isFormSubmiting">订单提交中...</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="VmRouterEditModalTpl">
+        <form novalidate class="form-vm-router-create" name="vm_router_edit_form">
+        <div class="letv-modal-header">
+            <span class="header-title">编辑路由器</span>
+            <a class="close" ng-click="closeModal()">
+                <i class="iconfont icon-add"></i>
+            </a>
+        </div>
+        <div class="le-modal-body">
+            <div class="le-row">
+                <div class="le-col-3 col-label">
+                    <span class="letv-control-label">名称：</span>
+                </div>
+                <div class="le-col-9 col-control">
+                    <input type="text" class="le-form-control input-disk-name" ng-model="editRouterName" name="edit_router_name" ng-trim="false" le-auto-focus name-input-restrict />
+                    <input-validation-tooltip ng-show="(vm_router_edit_form.$submitted || vm_router_edit_form.edit_router_name.$touched) && vm_router_edit_form.edit_router_name.$error.nameInputRestrict"
+                                              validation-message="{{REGEX_MESSAGE.NAME}}">
+                    </input-validation-tooltip>
+                </div>
+            </div>
+            <div class="le-row">
+                <div class="le-col-3 col-label">
+                    <span class="letv-control-label">公网网关：</span>
+                </div>
+                <div class="le-col-9 col-control">
+                    <div class="letv-radioCheck" ng-class="{'selected':editEnablePublicNetworkGateway==true}" ng-click="editEnablePublicNetworkGateway=true">
+                        <i class="iconfont icon-checkblockicon"></i>
+                        <span class="letv-radio-content">开启</span>
+                    </div>
+                    <div class="letv-radioCheck" ng-class="{'selected':editEnablePublicNetworkGateway==false}" ng-click="editEnablePublicNetworkGateway=false">
+                        <i class="iconfont icon-checkblockicon"></i>
+                        <span class="letv-radio-content">关闭</span>
+                    </div>
+                </div>
+            </div>
+            <div class="le-row">
+                <div class="le-col-12 col-submit-order">
+                    <button class="btn btn-le-blue" ng-click="vm_router_edit_form.$valid && !isFormSubmiting && editRouter()" ng-disabled="isFormSubmiting">
+                        <span ng-if="!isFormSubmiting">编辑</span>
+                        <span ng-if="isFormSubmiting">编辑执行中...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        </form>
+    </script>
+
+    <script type="text/ng-template" id="AssociateSubnetModalTpl">
+        <form novalidate class="form-vm-router-create" name="associate_subnet_form">
+            <div class="letv-modal-header">
+                <span class="header-title">关联子网</span>
+                <a class="close" ng-click="closeModal()">
+                    <i class="iconfont icon-add"></i>
+                </a>
+            </div>
+            <div class="le-modal-body">
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">名称：</span>
+                    </div>
+                    <div class="le-col-9 col-control">
+                        <span class="letv-control-label label-name">{{associateRouterName}}</span>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">子网：</span>
+                    </div>
+                    <div class="le-col-8 col-control">
+                        <input type="hidden" name='subnet' ng-model="selectedSubnet" required/>
+                        <le-select select-model="selectedSubnet" select-options="subnetListSelectorData" select-empty-text="暂无可关联子网"></le-select>
+                        <input-validation-tooltip class="le-select-tooltip" ng-show="associate_subnet_form.$submitted && associate_subnet_form.subnet.$error.required"
+                                                  validation-message="请选择子网">
+                        </input-validation-tooltip>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-12 col-submit-order">
+                        <button class="btn btn-le-blue" ng-click="associate_subnet_form.$valid && !isFormSubmiting && associateSubnet()" ng-disabled="isFormSubmiting">
+                            <span ng-if="!isFormSubmiting">关联</span>
+                            <span ng-if="isFormSubmiting">关联执行中...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </script>
+
+    <script type="text/ng-template" id="RemoveSubnetModalTpl">
+        <form novalidate class="form-vm-router-create" name="remove_subnet_form">
+            <div class="letv-modal-header">
+                <span class="header-title">解除关联子网</span>
+                <a class="close" ng-click="closeModal()">
+                    <i class="iconfont icon-add"></i>
+                </a>
+            </div>
+            <div class="le-modal-body">
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">名称：</span>
+                    </div>
+                    <div class="le-col-9 col-control">
+                        <span class="letv-control-label label-name">{{routerName}}</span>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">子网：</span>
+                    </div>
+                    <div class="le-col-8 col-control">
+                        <input type="hidden" name='subnet' ng-model="selectedSubnet" required/>
+                        <le-select select-model="selectedSubnet" select-options="subnetListSelectorData" select-empty-text="暂无可解除关联子网"></le-select>
+                        <input-validation-tooltip class="le-select-tooltip" ng-show="remove_subnet_form.$submitted && remove_subnet_form.subnet.$error.required"
+                                                  validation-message="请选择子网">
+                        </input-validation-tooltip>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-12 col-submit-order">
+                        <button class="btn btn-le-blue" ng-click="remove_subnet_form.$valid && !isFormSubmiting && removeSubnet()" ng-disabled="isFormSubmiting">
+                            <span ng-if="!isFormSubmiting">解除</span>
+                            <span ng-if="isFormSubmiting">解除执行中...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </script>
+</div>

@@ -1,0 +1,39 @@
+<div class="header" ng-controller="HeaderRdsCtrl">
+    <a href="/" class="header-brand pull-left">
+        <img class="brand-logo" src="http://i3.letvimg.com/lc04_lecloud/201601/12/10/22/letvcloud-logo.png">
+    </a>
+    <div class="header-list dropdown pull-left ">
+        <a id="drop1" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <span ng-bind="regionName"></span>
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="drop1">
+            <li ng-click="changeArea(region.id)" ng-repeat="region in regionList">
+                <a href="#{{region.id}}/rds-list" ng-class="{'active':regionId==region.id}">{{region.name}}</a>
+            </li>
+        </ul>
+    </div>
+    <a href="/account/logout" class="header-logout pull-right">
+        <span>{{headerRdsPage.exit}}</span>
+    </a>
+    <div class="header-separator pull-right">
+        <i class="separator"></i>
+    </div>
+    <a href="/helpCenter/helpCenter.jsp" class="header-help pull-right">
+        <img src="/images/nav-help.png" class="help-icon" />
+        <span>{{headerRdsPage.help}}</span>
+    </a>
+    <a href="/list/db" class="header-help pull-right">
+        <img src="/images/nav-last.png" class="help-icon" />
+        <span>{{headerRdsPage.return}}</span>
+    </a>
+    <div class="header-list languages dropdown pull-right">
+        <a id="drop2" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <span>{{currentLang|gTransLangFilter}}</span>
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="drop2">
+            <li ng-repeat="lang in langList" ng-click="changeLanguage(lang);"><a href="javascript:void(0);" ng-class="{'active': currentLang === lang}">{{lang | gTransLangFilter}}</a></li>
+        </ul>
+    </div>
+</div>

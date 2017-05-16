@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>cross domain deliver page</title>
+</head>
+<body style="background:red;">
+<script src="/javascripts/vendor/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="http://127.0.0.1:8000/popLogin/deliver.js"></script>
+<script type="text/javascript" src="http://127.0.0.1:8000/popLogin/oauthsdk.js"></script>
+<script src="http://127.0.0.1:8000/popLogin/oauthcore.js"></script>
+</body>
+<script>
+var code=location.search.substring(location.search.indexOf('=')+1);
+var clientapiconfig=oauthclientApiconfig("accesstoken");
+var url=clientapiconfig["api"];
+var method=clientapiconfig["method"];
+oauthclient({
+	"opts":{"app_key":"saas_test",
+		"app_secret":"6bdb5dc3d9a360ea136eb219fd225729",
+		"version":"2",
+		"grant_type":"authorization_code",
+		"code":code
+	},
+	"url":url,
+	"method":method
+},function(data){
+	var accesstoken=data.access_token;
+	if(window.localStorage){
+		localStorage.setItem("oauth_accesstoken",accesstoken);
+		location.href="deliver.html#action=loginsuccess"
+		return;
+	}else{
+		Cookie.write("oauth_accesstoken",accesstoken);
+		location.href="deliver.html#action=loginsuccess"
+		return;
+	}
+});
+</script>
+</html>

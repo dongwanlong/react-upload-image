@@ -1,0 +1,113 @@
+<div class='container-fluid container-limited' ng-controller="helpCtrl">
+    <div class='help' ng-show="!imageGroupsLoading && !imagesLoading && !appsLoading && !cisLoading">
+        <div class='clearfix'>
+            <div class='documentation wiki'>
+                <h1><a class="anchor" href="#permissions" aria-hidden="true"></a>{{mainHelpPage.titleLeEngineH1}}</h1>
+                <p>{{mainHelpPage.contentLeEngineP}}</p>
+
+                <h1><a class="anchor" href="#permissions" aria-hidden="true"></a>{{mainHelpPage.titleDocH1}}</h1>
+
+                <h2><a class="anchor" href="#project" aria-hidden="true"></a>{{mainHelpPage.titlePowerH2}}</h2>
+
+                <h3><a class="anchor" href="#project" aria-hidden="true"></a>{{mainHelpPage.titleImagegroupsH3}}</h3>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Guest</th>
+                        <th>Reporter</th>
+                        <th>Developer</th>
+                        <th>Master</th>
+                        <th>Owner</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="imageGrop in imageGropList">
+                        <td>{{imageGrop.Action | optionListFilter}}</td>
+                        <td><span ng-if="imageGrop.AccessLevel.Guest">✓</span></td>
+                        <td><span ng-if="imageGrop.AccessLevel.Reporter">✓</span></td>
+                        <td><span ng-if="imageGrop.AccessLevel.Developer">✓</span></td>
+                        <td><span ng-if="imageGrop.AccessLevel.Master">✓</span></td>
+                        <td><span ng-if="imageGrop.AccessLevel.Owner">✓</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <h3><a class="anchor" href="#project" aria-hidden="true"></a>{{mainHelpPage.titleImageH3}}</h3>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Guest</th>
+                        <th>Reporter</th>
+                        <th>Developer</th>
+                        <th>Master</th>
+                        <th>Owner</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="image in imageList">
+                        <td>{{image.Action | optionListFilter}}</td>
+                        <td><span ng-if="image.AccessLevel.Guest">✓</span></td>
+                        <td><span ng-if="image.AccessLevel.Reporter">✓</span></td>
+                        <td><span ng-if="image.AccessLevel.Developer">✓</span></td>
+                        <td><span ng-if="image.AccessLevel.Master">✓</span></td>
+                        <td><span ng-if="image.AccessLevel.Owner">✓</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <h3><a class="anchor" href="#project" aria-hidden="true"></a>{{mainHelpPage.titleAppH3}}</h3>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Guest</th>
+                        <th>Reporter</th>
+                        <th>Developer</th>
+                        <th>Master</th>
+                        <th>Owner</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="app in appList">
+                        <td>{{app.Action | optionListFilter}}</td>
+                        <td><span ng-if="app.AccessLevel.Guest">✓</span></td>
+                        <td><span ng-if="app.AccessLevel.Reporter">✓</span></td>
+                        <td><span ng-if="app.AccessLevel.Developer">✓</span></td>
+                        <td><span ng-if="app.AccessLevel.Master">✓</span></td>
+                        <td><span ng-if="app.AccessLevel.Owner">✓</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <h3><a class="anchor" href="#project" aria-hidden="true"></a>{{mainHelpPage.titleCiH3}}</h3>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Guest</th>
+                        <th>Reporter</th>
+                        <th>Developer</th>
+                        <th>Master</th>
+                        <th>Owner</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="ci in ciList">
+                        <td>{{ci.Action | optionListFilter}}</td>
+                        <td><span ng-if="ci.AccessLevel.Guest">✓</span></td>
+                        <td><span ng-if="ci.AccessLevel.Reporter">✓</span></td>
+                        <td><span ng-if="ci.AccessLevel.Developer">✓</span></td>
+                        <td><span ng-if="ci.AccessLevel.Master">✓</span></td>
+                        <td><span ng-if="ci.AccessLevel.Owner">✓</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>

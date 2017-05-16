@@ -1,0 +1,179 @@
+<div class="view-common" ng-controller="VmFloatIpCrtl">
+    <div class="le-row operate-panel">
+        <div class="le-col-6 le-btn-group">
+            <button class="btn btn-le-blue" ng-click="openIPcreateModal('medium')"><span>创建公网IP</span></button>
+            <button class="btn btn-le-blueGreen" ng-click="bindVm('medium')" ng-disabled="operationBtn.bindVm==0"><span>绑定云主机</span>
+            </button>
+            <button class="btn btn-le-green" ng-click="editIp('medium')" ng-disabled="operationBtn.edit==0">
+                <span>编辑公网IP</span></button>
+            <div dropdown class="more-operation-dropdown">
+                <a href class="btn btn-le-yellow" dropdown-toggle>
+                    更多操作
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="simple-dropdown">
+                    <li>
+                        <button class="btn dropdown-btn" ng-click="unbindVm('small')"
+                                ng-disabled="operationBtn.detach==0">解绑云主机
+                        </button>
+                    </li>
+                    <li>
+                        <button class="btn dropdown-btn" ng-click="deleteIp('small')"
+                                ng-disabled="operationBtn.delete==0">删除公网IP
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="le-col-6">
+            <div class="le-search-box pull-right">
+                <input type="text" ng-model="searchIpName" ng-model-options="{debounce:500}" ng-change="doSearch()"
+                       placeholder="输入公网IP名称"/>
+                <span class="search-icon"></span>
+            </div>
+        </div>
+    </div>
+    <div class="le-row list-common">
+        <div class="le-col-12">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th class="unselectable">
+                        <span class="iconfont icon-righticon" ng-class="{checked:isAllFipChecked()}"
+                              ng-click="checkAllFip()"></span>
+                    </th>
+                    <th><span>名称</span></th>
+                    <th><span>IP地址</span></th>
+                    <th><span>状态</span></th>
+                    <th><span>已绑定资源</span></th>
+                    <th><span>带宽</span></th>
+                    <th><span>线路</span></th>
+                    <th><span>创建时间</span></th>
+                </tr>
+                </thead>
+                <tbody id="tby">
+                <tr ng-repeat="fIp in floatIpList">
+                    <td class="unselectable">
+                        <span class="iconfont icon-checkiconfill" ng-class="{checked:fIp.checked}"
+                              ng-click="checkFip(fIp)"></span>
+                    </td>
+                    <td class="le-col-name"><span>{{fIp.name|| EMPTY_TEXT}}</span></td>
+                    <td><span>{{fIp.ipAddress}}</span></td>
+                    <td><span>{{fIp.status | vmFloatIpFilter}}</span></td>
+                    <td class="le-col-name"><span>{{fIp.bindResource.name || EMPTY_TEXT}}</span></td>
+                    <td><span>{{fIp.bandWidth}}</span></td>
+                    <td><span>{{fIp.carrier.name}}</span></td>
+                    <td><span>{{fIp.created | date:'yyyy-MM-dd HH:mm'}}</span></td>
+                </tr>
+                <tr ng-if="floatIpList.length==0">
+                    <td ng-if="!isListLoading" colspan=10 class="nodata">暂无公网IP，去创建吧。</td>
+                    <td ng-if="isListLoading" colspan=10></td>
+                </tr>
+                </tbody>
+            </table>
+            <div ng-show="!isListLoading && floatIpList.length>0" class="le-pagination">
+                <span>共{{totalItems}}条，每页显示{{pageSize}}条</span>
+                <pagination boundary-links="true" direction-links="true"
+                            ng-change="onPageChange()" items-per-page="pageSize"
+                            total-items="totalItems" ng-model="currentPage" class="pagination-sm" max-size="5"
+                            rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                            last-text="&raquo;">
+                </pagination>
+            </div>
+            <div ng-if="isListLoading" class="spin"></div>
+            <div ng-if="isListLoading" class="far-spin"></div>
+        </div>
+
+    </div>
+    <toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+    </toaster-container>
+
+    <script type="text/ng-template" id="VmIPbindVmMOdalTpl">
+        <div class="le-modal-header">
+            <span class="header-title">绑定云主机</span>
+            <a class="close" ng-click="closeModal()">
+                <i class="iconfont icon-add"></i>
+            </a>
+        </div>
+        <div class="le-modal-body">
+            <form novalidate class="form-vm-password-change" name="vm_ip_bind_form">
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">名称：</span>
+                    </div>
+                    <div class="le-col-7 col-control">
+                        <span class="letv-control-label label-name">{{floatIpName}}</span>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">IP地址：</span>
+                    </div>
+                    <div class="le-col-9 col-control">
+                        <span class="letv-control-label">{{floatIp}}</span>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">可用云主机：</span>
+                    </div>
+                    <div class="le-col-8 col-control">
+                        <input type="hidden" name='vm' ng-model="selectedVm" required/>
+                        <le-select select-model="selectedVm" select-options="vmListSelectorData"
+                                   select-empty-text="暂无可用云主机"></le-select>
+                        <input-validation-tooltip class="le-select-tooltip"
+                                                  ng-show="vm_ip_bind_form.$submitted && vm_ip_bind_form.vm.$error.required"
+                                                  validation-message="请选择云主机">
+                        </input-validation-tooltip>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-12 col-submit-order">
+                        <button class="btn btn-le-blue"
+                                ng-click="vm_ip_bind_form.$valid && !isFormSubmiting && IpbingVm()"
+                                ng-disabled="isFormSubmiting">
+                            <span ng-if="!isFormSubmiting">绑定</span>
+                            <span ng-if="isFormSubmiting">绑定执行中...</span>
+                        </button>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </form>
+        </div>
+    </script>
+    <script type="text/ng-template" id="VmIpEditMOdalTpl">
+        <div class="le-modal-header">
+            <span class="header-title">编辑公网IP</span>
+            <a class="close" ng-click="closeModal()">
+                <i class="iconfont icon-add"></i>
+            </a>
+        </div>
+        <div class="le-modal-body">
+            <form novalidate class="form-vm-password-change" name="vm_ip_edit_form">
+                <div class="le-row">
+                    <div class="le-col-3 col-label">
+                        <span class="letv-control-label">名称：</span>
+                    </div>
+                    <div class="le-col-9 col-control">
+                        <input type="text" name="ip_name" class="le-form-control" ng-model="ipName"
+                               placeholder="请输入公网IP名称" ng-trim="false" le-auto-focus name-input-restrict/>
+                        <input-validation-tooltip
+                                ng-show="(vm_ip_edit_form.$submitted || vm_ip_edit_form.ip_name.$touched) && vm_ip_edit_form.ip_name.$error.nameInputRestrict"
+                                validation-message="{{REGEX_MESSAGE.NAME}}">
+                        </input-validation-tooltip>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-12 col-submit-order">
+                        <button class="btn btn-le-blue"
+                                ng-click="vm_ip_edit_form.$valid && !isFormSubmiting && editIP()"
+                                ng-disabled="isFormSubmiting">
+                            <span ng-if="!isFormSubmiting">编辑</span>
+                            <span ng-if="isFormSubmiting">编辑执行中...</span>
+                        </button>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </form>
+        </div>
+    </script>
+</div>

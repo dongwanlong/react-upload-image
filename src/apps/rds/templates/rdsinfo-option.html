@@ -1,0 +1,130 @@
+<div class="">
+    <div class="le-modal-header">
+        <span class="header-title">{{RdsInfoOptionPage.title}}:{{handleType==0?dbUsername:""}}</span>
+        <a class="close" ng-click="closeModal()">
+            <i class="iconfont icon-add"></i>
+        </a>
+    </div>
+    <div class="le-modal-body">
+        <form novalidate class="rdsinfo_modify_form" autocomplete="off" name="rdsinfo_modify_form">
+            <div ng-show="(handleType==1)" class="inputs-item clearfix">
+                <div class="col-sm-2"><span class="letv-control-label"><span class="font-danger">*</span> {{RdsInfoOptionPage.dbUserName}}：</span></div>
+                <div class="col-sm-10">
+                    <input type="text" name="db_username" necessary="true" class="le-form-control max_queries" ng-model="dbUsername" placeholder="" ng-trim="false" le-auto-focus  db-name="dbName" regex="REGEX.DB_USER_NAME" input-restrict />
+                    <input-validation-tooltip ng-show="(rdsinfo_modify_form.$submitted || rdsinfo_modify_form.db_username.$touched) && rdsinfo_modify_form.db_username.$error.inputRestrict"
+                                              validation-message="{{REGEX_MESSAGE.DB_USER_NAME}}">
+                    </input-validation-tooltip>
+                </div>
+            </div>
+            <div class="inputs-item clearfix">
+                <div class="col-sm-2"><span class="letv-control-label"><span class="font-danger">*</span> {{RdsInfoOptionPage.authorizeIp}}：</span></div>
+                <div class="col-sm-10">
+                    <div class="inline-block col-xs-4 clear-padding-left ipset-left">
+                        <div class="ipset-head clearfix">
+                            <p class="pull-left">{{RdsInfoOptionPage.unAuthorizeIpTitle}}</p>
+                            <p class="pull-right">
+                                <span class="select-all-rw" ng-click="openIpAlert('medium','add')"><i class="iconfont icon-roundaddfill"></i></span>
+                            </p>
+                        </div>
+                        <div class="ipset">
+                            <ul class="ipset-list ipset-list-left">
+                                <li class="ipset-item" ng-class="{active:item.checked}"   ng-repeat="item in ipList">
+                                    <span ng-click="clickIpItem(item)" class="pull-left">{{item.addr}}</span>
+                                    <a class="pull-right delete-ip" ng-click="openIpAlert('medium','remove',item.addr)" >{{RdsInfoOptionPage.unAuthorizeIpDelBtn}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="inline-block col-xs-2 ipset-authorize">
+                        <div>
+                            <span ng-click="ipMove('add')" class="btn_db_add">{{RdsInfoOptionPage.authorizeAddBtn}}</span>
+                        </div>
+                        <div>
+                            <span ng-click="ipMove('remove')" class="btn_db_remove">{{RdsInfoOptionPage.authorizeRemoveBtn}}</span>
+                        </div>
+                    </div>
+                    <div class="inline-block col-xs-6 ipset-right">
+                        <div class="ipset-head clearfix">
+                            <p class="pull-left">{{RdsInfoOptionPage.authorizeIpTitle}}</p>
+                            <p class="pull-right">
+                                <a class="select-all-rw" ng-click="setAllWrite()">{{RdsInfoOptionPage.authorizeSwitchBtn}}</a>
+                            </p>
+                        </div>
+                        <div class="ipset">
+                            <div>
+                                <ul class="ipset-list">
+                                    <li class="ipset-item" ng-class="{active:item.checked}"  ng-repeat="item in usedIpList">
+                                        <span ng-click="clickIpItem(item)" class="pull-left" >{{item.addr}}</span>
+                                        <span class="pull-right">
+                                            <span ng-class="{active:item.type==1}" class="option-set" ng-click="item.type=1"><i  class="iconfont icon-checkroundfillicon"></i>{{RdsInfoOptionPage.authorizeAllBtn}}</span>
+                                            <span ng-class="{active:item.type==2}" class="option-set" ng-click="item.type=2"><i  class="iconfont icon-checkroundfillicon"></i>{{RdsInfoOptionPage.authorizeReadBtn}}</span>
+                                            <span ng-class="{active:item.type==3}" class="option-set" ng-click="item.type=3"><i  class="iconfont icon-checkroundfillicon"></i>{{RdsInfoOptionPage.authorizeWriteBtn}}</span>
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="inputs-item clearfix">
+                <div class="col-sm-2"><span class="letv-control-label"><span class="font-danger">*</span> {{RdsInfoOptionPage.maxConcurrent}}：</span></div>
+                <div class="col-sm-10">
+                    <input type="text" necessary="true" name="max_queries" class="le-form-control max_queries"  necessary="true" ng-model="max_queries" placeholder="" autocomplete="off" ng-trim="false" min="0" max="2000" input-integer-restrict />
+                    <input-validation-tooltip ng-show="(rdsinfo_modify_form.$submitted || rdsinfo_modify_form.max_queries.$touched) && rdsinfo_modify_form.max_queries.$error.inputIntegerRestrict"
+                                              validation-message="{{REGEX_MESSAGE.MAX_QUERIES}}">
+                    </input-validation-tooltip>
+                </div>
+            </div>
+            <div ng-show="(handleType==1)" class="inputs-item clearfix">
+                <div class="le-row">
+                    <div class="le-col-2 col-label clear-padding-right">
+                        <span class="letv-control-label"><span class="font-danger">*</span>{{RdsInfoOptionPage.passWord}}：</span>
+                    </div>
+                    <div class="le-col-10 col-control">
+                        <input type="password" class="le-form-control"  necessary="true" autocomplete="off"  ng-model="newPassword" name="user_new_password"  regex="REGEX.RDS_USER_PASSWORD" input-restrict />
+                        <input-validation-tooltip ng-show="(rdsinfo_modify_form.$submitted || rdsinfo_modify_form.user_new_password.$touched) && rdsinfo_modify_form.user_new_password.$error.inputRestrict"
+                                                  validation-message="{{REGEX_MESSAGE.RDS_USER_PASSWORD}}">
+                        </input-validation-tooltip>
+                    </div>
+                </div>
+                <div class="le-row">
+                    <div class="le-col-2 col-label clear-padding-right">
+                        <span class="letv-control-label"><span class="font-danger">*</span>{{RdsInfoOptionPage.passWordSure}}：</span>
+                    </div>
+                    <div class="le-col-10 col-control">
+                        <input type="password" class="le-form-control"  autocomplete="off" ng-model="confirmPassword" name="user_confirm_password" password-confirm password-model="newPassword" />
+                        <input-validation-tooltip ng-show="(rdsinfo_modify_form.$submitted || rdsinfo_modify_form.user_confirm_password.$touched) && rdsinfo_modify_form.user_confirm_password.$error.passwordConfirm"
+                                                  validation-message="{{RdsInfoOptionPage.passWordTip}}">
+                        </input-validation-tooltip>
+                    </div>
+                </div>
+            </div>
+            <div class="inputs-item clearfix">
+                <div ng-show="(handleType==1)" class="le-row">
+                    <div class="le-col-2 col-label clear-padding-right">
+                        <span class="letv-control-label">{{RdsInfoOptionPage.mark}}：</span>
+                    </div>
+                    <div class="le-col-10 col-control">
+                        <input type="text" name="remark" class="le-form-control" ng-model="remark" placeholder="" ng-trim="false" length="100" input-length-restrict />
+                        <input-validation-tooltip ng-show="(rdsinfo_modify_form.$submitted || rdsinfo_modify_form.remark.$touched) && rdsinfo_modify_form.remark.$error.inputLengthRestrict"
+                                                  validation-message="{{REGEX_MESSAGE.REMARK}}">
+                        </input-validation-tooltip>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <button ng-show="(handleType==1)" class="btn btn-le-red btn-submit-order pull-right" ng-click="rdsinfo_modify_form.$valid && !isFormSubmiting && submit()" ng-disabled="isFormSubmiting">
+                    <span ng-if="!isFormSubmiting">{{RdsInfoOptionPage.userCreateUser}}</span>
+                    <span ng-if="isFormSubmiting">{{RdsInfoOptionPage.userCreating}}</span>
+                </button>
+                <button ng-show="(handleType==0)" class="btn btn-le-red btn-submit-order pull-right" ng-click="rdsinfo_modify_form.max_queries.$valid && !isFormSubmiting && submit()" ng-disabled="isFormSubmiting">
+                    <span ng-if="!isFormSubmiting">{{RdsInfoOptionPage.powerModify}}</span>
+                    <span ng-if="isFormSubmiting">{{RdsInfoOptionPage.powerModifying}}</span>
+                </button>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </form>
+    </div>
+</div>

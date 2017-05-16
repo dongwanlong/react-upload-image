@@ -1,0 +1,45 @@
+	<!DOCTYPE html>
+	<html>
+	<head>
+	<meta http-equiv="X-UA-compatible" content="IE=edge,chrome=1"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Leengine</title>
+	<link rel="shortcut icon" href="http://i3.letvimg.com/lc05_lecloud/201601/12/10/21/favicon.ico">
+	<link rel="stylesheet" href="/stylesheets/vendor/bootstrap.css">
+	<link rel="stylesheet" href="/stylesheets/vendor/font-awesome.css">
+	<link rel="stylesheet" href="/stylesheets/vendor/toaster.css">
+	<link rel="stylesheet" href="/stylesheets/vendor/rzslider.css">
+	<link rel="stylesheet" href="/stylesheets/common.css">
+	<link rel="stylesheet" href="/stylesheets/style-le-engine.css">
+
+	</head>
+	<style>
+	.main .side-bar {
+	height: 100%;
+	margin-top: 0;
+	padding-top: 10px;
+	z-index: 200;
+	background: #ebebeb;
+	}
+	.main .content-wrapper {
+			 width: 1349px;
+			 width: 100%;
+			 min-width: 1349px;
+		 }
+	</style>
+	<% if(lang!="zh-cn"){ %>
+		<body style="font-family:'arial','Microsoft Yahei','Hiragino Sans GB',tahoma">
+	<% }else{%>
+		<body style="font-family:'\5FAE\8F6F\96C5\9ED1','Microsoft Yahei','Hiragino Sans GB',tahoma">
+	<% }%>
+		<div ng-include="'/apps/le-engine/views/headerEngine.html'"></div>
+        <div class="main">
+        <div ng-include="'/apps/le-engine/views/side-menu.html'"></div>
+        <div class="content-wrapper">
+        <div ng-view="ng-view" class="content"></div>
+        </div>
+        <div class="clearfix"></div>
+        </div>
+		<script type="text/javascript" src="/javascripts/dist/require.min.js" data-main="/apps/le-engine/main-<%=lang%>.js"></script>
+	</body>
+	</html>

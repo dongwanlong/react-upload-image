@@ -1,0 +1,206 @@
+<div class="modal-header le-modal-header vm-create-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <span class="header-title" title="{{apperInfoModalPage.pageTitle+':'+apperInfo.Name}}">{{apperInfoModalPage.pageTitle}}:{{apperInfo.Name}}</span>
+</div>
+<div class="modal-body">
+    <div class="le-row le-tab-header">
+        <div class="le-tab-btn" ng-class="{'le-tab-active': tabType === 'apperGeneral'}" ng-click="tabType='apperGeneral'"><span>{{apperInfoModalPage.tabGeneralInfoTitle}}</span></div>
+        <div class="le-tab-btn" ng-class="{'le-tab-active': tabType === 'apperDetail'}" ng-click="tabType='apperDetail';getAppDetail(apperDetail)"><span>{{apperInfoModalPage.tabDetailInfoTitle}}</span></div>
+        <div class="le-tab-btn" ng-class="{'le-tab-active': tabType === 'rcEvent'}" ng-click="tabType='rcEvent';getRCEvent(eventList)"><span>{{apperInfoModalPage.rcEventTitle}}</span></div>
+    </div>
+    <!--apper概要-->
+    <div ng-show="tabType === 'apperGeneral'">
+        <table class="le-table-info table table-bordered">
+            <thead>
+                <tr>
+                    <th colspan="2"><span>{{apperInfoModalPage.baseInfoTableTitle}}</span><a class="pull-right tb-set-btn"></a></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                        <span class="title">
+                            {{apperInfoModalPage.baseInfoVersionNameTableTitle}}:
+                        </span>
+                        <span class="con">
+                            {{apperInfo.Name}}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <span class="title">
+                            {{apperInfoModalPage.baseInfoPodCountsTableTitle}}:
+                        </span>
+                        <span class="con">
+                            {{apperInfo.PodCount}}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="title">
+                            {{apperInfoModalPage.baseInfoMemoryTableTitle}}:
+                        </span>
+                        <span class="con">
+                            {{apperInfo.Memory}} M
+                        </span>
+                    </td>
+                    <td>
+                        <span class="title">
+                            {{apperInfoModalPage.baseInfoCpuTableTitle}}:
+                        </span>
+                        <span class="con">
+                            {{apperInfo.Cpu}}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <span class="title">
+                            {{apperInfoModalPage.baseInfoImageTableTitle}}:
+                        </span>
+                        <span class="con">
+                            {{apperInfo.Image}}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    <span class="title">
+                        {{apperInfoModalPage.checkHealthTableTitle}}:
+                    </span>
+                    <span class="con">
+                        {{apperInfo.ReadinessProbeCheck | yesnoFormate}}
+                    </span>
+                    </td>
+                    <td>
+                    <span class="title">
+                        {{apperInfoModalPage.checkDnsTableTitle}}:
+                    </span>
+                    <span class="con">
+                        {{apperInfo.SelfDefineDnsEnable | yesnoFormate}}
+                    </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="le-table-info table table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{apperInfoModalPage.environmentTableTitle}}</span><a class="pull-right tb-set-btn"></a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="env in apperInfo.Env"><td><span class="con">{{env.name}}</span></td><td><span class="con">{{env.value}}</span></td></tr>
+            </tbody>
+        </table>
+
+        <table  ng-if="apperInfo.ReadinessProbeCheck" class="le-table-info table table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{apperInfoModalPage.checkTableTitle}}</span><a class="pull-right tb-set-btn"></a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <span class="title">
+                        {{apperInfoModalPage.checkPathTableTitle}}:
+                    </span>
+                    <span class="con">
+                        {{apperInfo.ReadinessProbe.HttpGet.Path}}
+                    </span>
+                </td>
+                <td>
+                    <span class="title">
+                        {{apperInfoModalPage.checkPortTableTitle}}:
+                    </span>
+                    <span class="con">
+                        {{apperInfo.ReadinessProbe.HttpGet.Port}}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="title">
+                        {{apperInfoModalPage.checkSchemeTableTitle}}:
+                    </span>
+                    <span class="con">
+                        {{apperInfo.ReadinessProbe.HttpGet.Scheme}}
+                    </span>
+                </td>
+                <td>
+                    <span class="title">
+                        {{apperInfoModalPage.checkInitialDelayTableTitle}}:
+                    </span>
+                    <span class="con">
+                        {{apperInfo.ReadinessProbe.InitialDelaySeconds}} S
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="title">
+                        {{apperInfoModalPage.checkTimeoutTableTitle}}:
+                    </span>
+                    <span class="con">
+                        {{apperInfo.ReadinessProbe.TimeoutSeconds}} S
+                    </span>
+                </td>
+                <td>
+                    <span class="title">
+                        {{apperInfoModalPage.checkPeriodTableTitle}}:
+                    </span>
+                    <span class="con">
+                        {{apperInfo.ReadinessProbe.PeriodSeconds}} S
+                    </span>
+                </td>
+            </tr>
+            <tr ng-repeat="env in apperInfo.ReadinessProbe.HttpGet.HttpHeaders"><td><span class="con">{{env.name}}</span></td><td><span class="con">{{env.value}}</span></td></tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <!--apper详情-->
+    <div ng-show="tabType === 'apperDetail'">
+        <div class="le-col-12 ">
+            <pre class="log-window log-window-green">{{apperDetail}}</pre>
+        </div>
+    </div>
+
+    <!--rc event-->
+    <div ng-show="tabType === 'rcEvent'" class="modal-body line-box">
+        <div class="le-col-12 text-center" ng-if="eventList.length<=0">
+            <span class="text-blue">{{appEventModalPage.nullListDesc}}</span>
+        </div>
+        <ul ng-if="eventList.length>0" class="timeline">
+            <li class="timeline-inverted" ng-repeat="event in eventList">
+                <div ng-if="event.Type=='Warning'" class="timeline-badge danger"><i class="fa fa-check"></i></div>
+                <div ng-if="event.Type=='Normal'" class="timeline-badge success"><i class="fa fa-check"></i></div>
+                <div class="timeline-panel">
+                    <div class="timeline-heading">
+                        <h4 class="timeline-title">{{event.Reason}}</h4>
+                        <p>
+                            <small class="text-muted"><i class="fa fa-time"></i>{{event.CreatedAt | date : 'yyyy-MM-dd HH:mm:ss '}}</small>
+                        </p>
+                    </div>
+                    <div class="timeline-body">
+                        <p>{{event.Kind}} : {{event.Name}}</p>
+                        <p> {{event.Message}}</p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div ng-if="isListLoading" class="spin"></div>
+        <div ng-if="isListLoading" class="far-spin"></div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="clearfix"></div>
+
+</div>

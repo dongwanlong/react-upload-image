@@ -1,0 +1,50 @@
+{
+  appDir: "./",
+  baseUrl: "./",
+  dir: "../cloudvm-zh-cn-dist",
+  removeCombined: true,
+  optimize: 'uglify2',
+  uglify2: {
+    sequences: false,
+    compress: {
+      properties: true
+    },
+    mangle: true
+  },
+  paths: {
+    //vendor
+    'jquery': 'empty:',
+    'bootstrap': 'empty:',
+    'angular': 'empty:',
+    'common': '../../javascripts/common',
+    'browserCheck': '../../javascripts/home/browserCheck',
+    //js文件
+    'app': './app-build',
+    'app.router': './app.route'
+  },
+  shim: {
+    'browserCheck': {
+      deps: [
+        'jquery'
+      ],
+      exports: 'browserCheck'
+    },
+    'bootstrap': {
+      deps: [
+        'jquery'
+      ],
+      exports: 'bootstrap'
+    },
+    'angular': {
+      deps: [
+        'common'
+      ],
+      exports: 'angular'
+    },
+  },
+  modules: [
+    {
+      name: "main-build"
+    }
+  ]
+}

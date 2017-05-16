@@ -1,0 +1,29 @@
+<div class="modal-header letv-modal-header vm-create-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{editMemberModalPage.MemberEdit}}</h3>
+</div>
+<div class="modal-body">
+    <form novalidate class="repertory-create-form" name="repertory_create_form">
+        <div class="le-col-12 ">
+            <div class="left-inputs clearfix" >
+                <div class="inputs-item Auth clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{editMemberModalPage.MemberAuth}}：</span></div>
+                    <div class="le-col-9">
+                        <le-radio-select class="memberRadio" select-model="memberAuthTypeNow" select-options="memberAuthTypeList"></le-radio-select>
+                    </div>
+                </div>
+            </div>
+            <div class="left-button">
+                <button class="btn btn-le-red btn-submit-order pull-right" ng-click="editMember()" >
+                    <span>{{editMemberModalPage.ok}}</span>
+                </button>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+        <iframe style="display:none" ng-src="{{keypairDownloadUrl}}"></iframe>
+    </form>
+</div>

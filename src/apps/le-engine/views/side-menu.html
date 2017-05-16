@@ -1,0 +1,36 @@
+
+
+<div class="side-bar" ng-controller="SideMenuCtrl">
+    <ul class="side-menu">
+        <li class="menu-item menu-parent" ng-show="linkRepertoryStatus.nowMenuItemType==sideMenuItem.type" ng-class="{'active':isSideMenuActive(sideMenuItem),'menu-head':isChildLink(sideMenuItem)}" ng-repeat="sideMenuItem in sideMenuItems">
+
+            <!--普通链接-->
+            <a ng-href="#{{repaireUrl(sideMenuItem)}}" ng-if="!sideMenuItem.childLink">
+                <div>
+                    <i class="{{sideMenuItem.icon}}"></i>
+                    <span title="{{sideMenuItem.title}}">{{sideMenuItem.title}}</span>
+                </div>
+            </a>
+            <!--展开按钮-->
+            <a ng-if="sideMenuItem.childLink" href="javascript:void(0);" ng-click="sideMenuItem.open = !sideMenuItem.open">
+                <div>
+                    <i class="{{sideMenuItem.icon}}"></i>
+                    <span title="{{sideMenuItem.title}}">{{sideMenuItem.title}}</span>
+                    <i class="iconfont icon-arrow01 icon-drop"  ng-class="{'dropdown':sideMenuItem.open}"></i>
+                </div>
+            </a>
+            <!--子菜单-->
+            <ul class="child-menu" ng-repeat="childItem in sideMenuItem.childLink" ng-show="linkRepertoryStatus.nowMenuItemType==sideMenuItem.type && sideMenuItem.open">
+                <li class="menu-item" ng-class="{'active':isSideMenuActive(childItem)}" >
+                    <a ng-href="#{{repaireUrl(childItem)}}">
+                        <div>
+                            <i class="{{childItem.icon}}"></i>
+                            <span title="{{childItem.title}}">{{childItem.title}}</span>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+
+        </li>
+    </ul>
+</div>

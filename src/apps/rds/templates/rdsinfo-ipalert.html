@@ -1,0 +1,34 @@
+<div class="">
+    <div class="le-modal-header">
+        <span ng-if="type=='add'" class="header-title">{{RdsinfoIpAlert.titleAdd}}</span>
+        <span ng-if="type!='add'" class="header-title">{{RdsinfoIpAlert.titleDelete}}{{ip}}</span>
+        <a class="close" ng-click="closeModal()">
+            <i class="iconfont icon-add"></i>
+        </a>
+    </div>
+    <div class="le-modal-body">
+        <form novalidate class="rdsinfo_modify_form" name="rdsinfo_modify_form">
+            <div class="le-row" ng-show="type=='add'">
+                <div class="le-col-3 col-label">
+                    <span class="letv-control-label">IP：</span>
+                </div>
+                <div class="le-col-9 col-control">
+                    <input type="text" name="ip" class="le-form-control" ng-model="ip" placeholder="" ng-trim="false" le-auto-focus regex="REGEX.IP" input-restrict />
+                    <input-validation-tooltip ng-show="(rdsinfo_modify_form.$submitted || rdsinfo_modify_form.ip.$touched) && rdsinfo_modify_form.ip.$error.inputRestrict"
+                                              validation-message="{{REGEX_MESSAGE.IP}}">
+                    </input-validation-tooltip>
+                </div>
+            </div>
+            <div class="le-row alert-dialog">
+                <div class="le-col-12" ng-if="type=='add'">
+                    <button class="btn btn-le-yellow pull-right" ng-click="closeModal()">{{RdsinfoIpAlert.cancel}}</button>
+                    <button class="btn btn-le-blue pull-right" ng-click="rdsinfo_modify_form.$valid && addGlobalIp()">{{RdsinfoIpAlert.ok}}</button>
+                </div>
+                <div class="le-col-12" ng-if="type!='add'">
+                    <button class="btn btn-le-yellow pull-right" ng-click="closeModal()">{{RdsinfoIpAlert.cancel}}</button>
+                    <button class="btn btn-le-blue pull-right" ng-click="RemoveGlobalIp()">{{RdsinfoIpAlert.delete}}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

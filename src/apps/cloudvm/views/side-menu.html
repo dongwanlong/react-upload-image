@@ -1,0 +1,9 @@
+<div class="side-bar" ng-controller="SideMenuCtrl">
+    <ul class="side-menu">
+        <li class="menu-item" ng-class="{'active':isSideMenuActive(sideMenuItem)}" ng-repeat="sideMenuItem in sideMenuItems">
+            <a ng-href="#{{sideMenuItem.url}}">
+                <div><i class="{{sideMenuItem.icon}}"></i><span>{{sideMenuItem.title}}</span></div>
+            </a>
+        </li>
+    </ul>
+</div>

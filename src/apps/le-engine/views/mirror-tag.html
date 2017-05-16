@@ -1,0 +1,53 @@
+<div class="view-common">
+    <div class="le-row list-common">
+        <div class="le-row operate-panel">
+            <div class="le-col-12 le-btn-group">
+                <button class="btn btn-le-red" ng-click="refreshList()"><span>{{mirrorTagListPage.refresh}}</span></button>
+            </div>
+            <div class="le-col-12" ng-if="mirrorPath">
+                <br><p>{{mirrorTagListPage.currentImagePath}}: {{mirrorPath}}</p>
+            </div>
+            <div class="le-col-8 image-operation">
+                <label class="operation-title">Docker Pull Command</label>
+                <label ng-show="!isPublic" class="operation-login">{{loginOperation}}</label>
+                <label class="operation-pull">{{pullOperation}}</label>
+            </div>
+        </div>
+        <div>
+            <div class="le-row list-common">
+                <div class="le-col-12">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th><span>{{mirrorTagListPage.mirrorTagName}}</span></th>
+                            <th><span>{{mirrorTagListPage.Description}}</span></th>
+                            <th><span>{{mirrorTagListPage.CreatedAt}}</span></th>
+                            <th><span>{{mirrorTagListPage.UpdatedAt}}</span></th>
+                        </tr>
+                        </thead>
+                        <tbody id="allMirrorTag">
+                        <tr ng-repeat="mirrorTag in mirrorTagList">
+                            <td class="le-col-name">
+                                <span>{{mirrorTag.Name}}</span>
+                            </td>
+                            <td class=""><span>{{mirrorTag.PushUser}}</span></td>
+                            <td class=""><span>{{mirrorTag.CreatedAt|date : 'yyyy-MM-dd HH:mm:ss '}}</span></td>
+                            <td class=""><span>{{mirrorTag.UpdatedAt|date : 'yyyy-MM-dd HH:mm:ss '}}</span></td>
+                        </tr>
+                        <tr ng-if="mirrorTagList.length==0">
+                            <td ng-if="!isListLoading" colspan="4" class="nodata">{{mirrorTagListPage.goToCreateMirrorTag}}</td>
+                            <td ng-if="isListLoading" colspan="4"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div ng-if="isListLoading" class="spin"></div>
+                    <div ng-if="isListLoading" class="far-spin"></div>
+                </div>
+            </div>
+
+        </div>
+        </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

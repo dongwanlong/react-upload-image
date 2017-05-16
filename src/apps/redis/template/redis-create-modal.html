@@ -1,0 +1,113 @@
+<div class="modal-header letv-modal-header modal-header-redis-create">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{esCreateModalPage.title}}</h3>
+</div>
+<div class="modal-body">
+    <form novalidate class="form-redis-create" name="form_redis_create">
+        <div class="col-sm-8 body-left">
+            <div id="left-flowone">
+                <div class="left-inputs">
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-2"><span class="letv-control-label">{{langPrimary.AZ}}：</span></div>
+                        <div class="col-sm-10">
+                            <le-select select-model="selectedAZ" select-options="AZList"></le-select>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-2"><span class="letv-control-label">{{langPrimary.name}}：</span></div>
+                        <div class="col-sm-10">
+                            <input type="text" name="redis_name" class="le-form-control" ng-model="redisName" regex="REGEX.NAME_ES"  ng-trim="false" necessary="true" input-restrict le-auto-focus/>
+                            <input-validation-tooltip ng-show="(form_redis_create.$submitted || form_redis_create.redis_name.$touched) && form_redis_create.redis_name.$error.inputRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME_ES}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-2"><span class="letv-control-label">{{langPrimary.type}}：</span></div>
+                        <div class="col-sm-10">
+                            <le-select select-model="selectedType" select-options="typeList"></le-select>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-2"><span class="letv-control-label">{{langPrimary.memory}}：</span></div>
+                        <div class="col-sm-10">
+                            <le-slider le-slider-model="memorySize" le-slider-min="1" le-slider-max="50" le-slider-step="1" le-slider-unit="G" is-slider-min-changeable="false"></le-slider>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-2"><span class="letv-control-label">{{langRedisCreateModal.configFile}}：</span></div>
+                        <div class="col-sm-10">
+                            <le-select select-model="selectedConfigFile" select-options="configFileList"></le-select>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix">
+                        <div class="col-sm-2"><span class="letv-control-label">{{langPassword.passwordSetting}}：</span></div>
+                        <div class="col-sm-10">
+                            <div class="letv-mutiCheck check-password-type" ng-class="{'selected':passwordModel.passwordMode=='now'}" ng-click="passwordModel.passwordMode='now';">
+                                <span>{{langPassword.setNow}}</span>
+                                <i class="iconfont icon-checkroundfillicon"></i>
+                            </div>
+                            <div class="letv-mutiCheck check-password-type" ng-class="{'selected':passwordModel.passwordMode=='later'}" ng-click="passwordModel.passwordMode='later';">
+                                <span>{{langPassword.setLater}}</span>
+                                <i class="iconfont icon-checkroundfillicon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix" ng-if="passwordModel.passwordMode=='now'">
+                        <div class="col-sm-2">
+                            <span class="letv-control-label">{{langPassword.inputPassword}}：</span>
+                        </div>
+                        <div class="col-sm-10">
+                            <input type="password" class="le-form-control" ng-model="passwordModel.newPassword" name="redis_new_password" password-restrict />
+                            <input-validation-tooltip ng-show="(form_redis_create.$submitted || form_redis_create.redis_new_password.$touched) && form_redis_create.redis_new_password.$error.passwordRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.PASSWORD}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                    <div class="inputs-item clearfix" ng-if="passwordModel.passwordMode=='now'">
+                        <div class="col-sm-2">
+                            <span class="letv-control-label">{{langPassword.confirmPassword}}：</span>
+                        </div>
+                        <div class="col-sm-10">
+                            <input type="password" class="le-form-control" ng-model="passwordModel.confirmPassword" name="redis_confirm_password" password-confirm password-model="passwordModel.newPassword" />
+                            <input-validation-tooltip ng-show="(form_redis_create.$submitted || form_redis_create.redis_confirm_password.$touched) && form_redis_create.redis_confirm_password.$error.passwordConfirm"
+                                                      validation-message="两次输入的密码不一致">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 body-right">
+            <div class="right-top">
+                <div class="top-title"><span>{{esCreateModalPage.orderTitle}}</span><i class="iconfont icon-rounddown"></i></div>
+                <ul class="top-items">
+                    <li><span class="title">{{esCreateModalPage.memorySize}}：</span><span class="value">{{esMemorySizeNow.text}}</span></li>
+                    <li><span class="title">{{esCreateModalPage.storageSize}}：</span><span class="value">{{esStorageSizeNow.text}}</span></li>
+                    <li><span class="title">{{esCreateModalPage.esNodeCount}}：</span><span class="value">{{esNodeCount}}</span></li>
+                </ul>
+            </div>
+            <div class="right-bottom">
+                <div class="row-order-price" ng-show="!isCalculatingPrice">
+                       <span>
+                                    <span class="title">{{esCreateModalPage.total}}：</span>
+                                    <span class="price">{{esTotalPrice}}</span>
+                                    <span class="unit">{{esCreateModalPage.CNY}}</span>
+                       </span>
+                </div>
+                <div class="row-calculating-price" ng-show="isCalculatingPrice">
+                    <span>{{esCreateModalPage.priceCalculating}}</span>
+                </div>
+                <div class="row-submit-order">
+                    <button class="btn btn-le-red btn-submit-order" ng-click="form_redis_create.$valid && !isFormSubmiting &&createRedis()">
+                        <span ng-if="!isFormSubmiting">{{langOrder.submitOrder}}</span>
+                        <span ng-if="isFormSubmiting">{{langOrder.submitOrder}}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </form>
+</div>

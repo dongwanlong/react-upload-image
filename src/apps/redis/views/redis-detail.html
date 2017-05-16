@@ -1,0 +1,67 @@
+<div class="le-row list-common" ng-controller="RedisDetailCtrl">
+    <div class="le-col-12">
+        <table ng-show="!isloading" class="le-table-base table table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{langPrimary.basicInfo}}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="title">{{langPrimary.name}}:</span><span class="con">{{redisInfo.name}}</span></td>
+                    <td><span class="title">{{langPrimary.type}}:</span><span class="con">{{redisInfo.type}}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="title">{{langPrimary.region}}:</span><span class="con">{{redisInfo.regionCNname}}</span></td>
+                    <td><span class="title">{{langPrimary.AZ}}:</span><span class="con">{{redisInfo.azName}}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="title">{{langPrimary.config}}:</span><span class="con">{{redisInfo.configName}}</span></td>
+                    <td><span class="title">{{langPrimary.creteTime}}:</span><span class="con">{{redisInfo.createTime | date :'yyyy-MM-dd HH:mm:ss'}}</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table ng-show="!isloading" class="le-table-base table table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{langPassword.passwordSetting}}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                        <span class="title">{{langPassword.password}}:</span>
+                        <span class="con">{{password || '*********'}}</span>
+                        <a ng-show="!password" href="javascript:void(0);" ng-click="viewPassword()">{{langPrimary.view}}</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table ng-show="!isloading" class="le-table-base table table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"><span>{{langRedisDetailPage.domainAndPort}}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <table class="table table-bordered table-redis-domain">
+                            <tbody>
+                                <tr ng-repeat="domainItem in redisInfo.domain">
+                                    <td>{{domainItem.domain}}</td>
+                                    <td>{{redisInfo.domain}}</td>
+                                    <td>{{domainItem.domain}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div ng-if="isloading" class="spin"></div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

@@ -1,0 +1,207 @@
+<div class="modal-header letv-modal-header vm-edit-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 ng-if="handleType=='edit'" class="modal-title">{{apperSettingModalPage.edit}}:{{apperName}}</h3>
+    <h3 ng-if="handleType=='create'" class="modal-title">{{apperSettingModalPage.create}}</h3>
+</div>
+<div class="modal-body">
+    <form novalidate class="apper_edit_form" name="apper_edit_form">
+        <div class="le-col-12 clearfix ">
+            <div class="left-inputs clearfix">
+                <div class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.apperVersion}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space">
+                            <input type="text" name="apper_version" class="le-form-control" necessary="true" ng-model="apperVersion"  regex="REGEX.VERSION_APPER" ng-trim="false" min="1" max="32" le-auto-focus input-restrict />
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(apper_edit_form.$submitted || apper_edit_form.apper_version.$touched) && apper_edit_form.apper_version.$error.inputRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.VERSION_APPER}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+                <div class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.apperPodcount}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <numeric-input numeric-model="apperPodcount" numeric-max="65536" numeric-min="1"></numeric-input>
+                    </div>
+                </div>
+
+                <div class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.apperImage}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space">
+                            <le-select  select-model="apperMirrorTagNow" select-options="apperMirrorTagList"></le-select>
+                        </div>
+                        <div ng-if="!apperMirrorTagNow && !isListLoading" class="le-col-12 clear-space col-control-height">
+                            <span style="color: red;">{{apperSettingModalPage.canNotDeploy}}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.apperCpu}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <le-radio-select radio-style="{'width':'60px','margin-right':'10px'}" select-model="curentCpu" select-options="cpuArray"></le-radio-select>
+                    </div>
+                </div>
+
+                <div class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.apperMemory}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <le-radio-select radio-style="{'width':'60px','margin-right':'10px'}" select-model="curentMemory" select-options="memoryArray"></le-radio-select>
+                    </div>
+                </div>
+
+                <div class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.apperDns}}：</span></div>
+                    <div class="le-col-5 letv-control-content">
+                        <le-radio-select radio-style="{'width':'110px','margin-right':'10px'}" select-model="currentDns" select-options="dnsOptions"></le-radio-select>
+                    </div>
+                </div>
+
+
+                <div class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.envTitle}} :</span></div>
+                    <div class="le-col-9 letv-control-content col-control-height clear-space">
+                        <div class="le-col-4  col-control-height"><span class="">key</span></div>
+                        <div class="le-col-4  col-control-height"><span>value</span></div>
+                    </div>
+                </div>
+
+
+                <div class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label"></span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="row" ng-repeat="env in envList">
+                            <div class="le-col-4"><input tooltip="{{REGEX_MESSAGE.APPER_EVN}}" tooltip-placement="right" tooltip-trigger="mouseenter" tooltip-class="tooltip-validate-info" type="text" class="le-form-env-text" necessary="true"  name="{{'env_key'+$index}}" ng-model="env.name" regex="REGEX.APPER_EVN" input-restrict/></div>
+                            <div class="le-col-4"><input type="text" class="le-form-env-text" necessary="true"  name="{{'env_value'+$index}}" ng-model="env.value" input-restrict/></div>
+                            <div class="le-col-2 col-control-height"><button type="button" ng-click="deleteEnv($index)" class="btn btn-primary btn-xs le-form-env-remove"><i class="iconfont icon-DELETE"></i></button></div>
+                        </div>
+                        <div class="row">
+                            <div class="le-col-4 col-control-height"><button type="button" ng-click="addEnv($index)" class="btn btn-primary btn-xs le-form-env-add"><i class="iconfont icon-add"></i></button></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.readinessProbe}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <le-radio-select class="multiple-radio" radio-style="{'width':'110px','margin-right':'10px'}" select-model="readinessProbeCheck" select-options="readinessProbeCheckTypes"></le-radio-select>
+                    </div>
+                </div>
+
+                <div ng-if="readinessProbeCheck.value" class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.readinessProbePath}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space">
+                            <input type="text" name="readiness_probe_path" class="le-form-control" ng-model="readinessProbeDataModel.path" ng-trim="false" input-length-restrict length="8182" min-length="1" necessary="true" />
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(apper_edit_form.$submitted || apper_edit_form.readiness_probe_path.$touched) && apper_edit_form.readiness_probe_path.$error.inputLengthRestrict"
+                                                      validation-message="{{common.services.TIP_READINESS_PROBE_PATH}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="readinessProbeCheck.value" class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.readinessProbePort}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space">
+                            <input type="text" name="readiness_probe_port" class="le-form-control" ng-model="readinessProbeDataModel.port" ng-trim="false" input-integer-restrict max="65535" min="1" necessary="true" />
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(apper_edit_form.$submitted || apper_edit_form.readiness_probe_port.$touched) && apper_edit_form.readiness_probe_port.$error.inputIntegerRestrict"
+                                                      validation-message="{{common.services.TIP_READINESS_PROBE_PORT}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="readinessProbeCheck.value" class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.readinessProbeScheme}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <le-radio-select radio-style="{'width':'60px','margin-right':'10px'}" select-model="readinessProbeDataModel.selectedScheme" select-options="readinessProbeDataModel.schemes"></le-radio-select>
+                    </div>
+                </div>
+
+                <div ng-if="readinessProbeCheck.value" class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.readinessProbeHttpHeaders}} :</span></div>
+                    <div class="le-col-9 letv-control-content col-control-height clear-space">
+                        <div class="le-col-4  col-control-height"><span class="">Name</span></div>
+                        <div class="le-col-4  col-control-height"><span>Value</span></div>
+                    </div>
+                </div>
+
+                <div ng-if="readinessProbeCheck.value" class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label"></span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="row" ng-repeat="httpHeader in readinessProbeDataModel.httpHeaders">
+                            <div class="le-col-4"><input type="text" class="le-form-env-text"  necessary="true"  name="{{'http_header_name'+$index}}" ng-model="httpHeader.name" input-restrict/></div>
+                            <div class="le-col-4"><input type="text" class="le-form-env-text" necessary="true"  name="{{'http_header_value'+$index}}" ng-model="httpHeader.value" input-restrict/></div>
+                            <div class="le-col-2 col-control-height"><button type="button" ng-click="deleteHttpHeader($index)" class="btn btn-primary btn-xs le-form-env-remove"><i class="iconfont icon-DELETE"></i></button></div>
+                        </div>
+                        <div class="row">
+                            <div class="le-col-4 col-control-height"><button type="button" ng-click="addHttpHeader($index)" class="btn btn-primary btn-xs le-form-env-add"><i class="iconfont icon-add"></i></button></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="readinessProbeCheck.value" class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.readinessProbeInitialDelay}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space">
+                            <input type="text" name="readiness_probe_initial_delay_deconds" class="le-form-control" ng-model="readinessProbeDataModel.initialDelaySeconds" ng-trim="false" input-integer-restrict max="3600" min="3" necessary="true" />
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(apper_edit_form.$submitted || apper_edit_form.readiness_probe_initial_delay_deconds.$touched) && apper_edit_form.readiness_probe_initial_delay_deconds.$error.inputIntegerRestrict"
+                                                      validation-message="{{common.services.TIP_READINESS_PROBE_INITIAL_DELAY_SECONDS}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="readinessProbeCheck.value" class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.readinessProbeTimeout}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space">
+                            <input type="text" name="readiness_probe_timeoutSeconds" class="le-form-control" ng-model="readinessProbeDataModel.timeoutSeconds" ng-trim="false" input-integer-restrict max="3600" min="1" necessary="true" />
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(apper_edit_form.$submitted || apper_edit_form.readiness_probe_timeoutSeconds.$touched) && apper_edit_form.readiness_probe_timeoutSeconds.$error.inputIntegerRestrict"
+                                                      validation-message="{{common.services.TIP_READINESS_PROBE_TIMEOUT_SECONDS}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="readinessProbeCheck.value" class="inputs-item clearfix">
+                    <div class="le-col-3 letv-control-title"><span class="letv-control-label">{{apperSettingModalPage.readinessProbePeriod}}：</span></div>
+                    <div class="le-col-9 letv-control-content">
+                        <div class="le-col-8 clear-space">
+                            <input type="text" name="readiness_probe_periodSeconds" class="le-form-control" ng-model="readinessProbeDataModel.periodSeconds" ng-trim="false" input-integer-restrict max="3600" min="10" necessary="true" />
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(apper_edit_form.$submitted || apper_edit_form.readiness_probe_periodSeconds.$touched) && apper_edit_form.readiness_probe_periodSeconds.$error.inputIntegerRestrict"
+                                                      validation-message="{{common.services.TIP_READINESS_PROBE_PERIOD_SECONDS}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="left-button clearfix" ng-if="apperMirrorTagNow">
+                <button class="btn btn-le-red btn-submit-order pull-right" ng-click="apper_edit_form.$valid && createApper();hackRzSlider();" >
+                    <span>{{apperSettingModalPage.ok}}</span>
+                </button>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </form>
+</div>
+
+

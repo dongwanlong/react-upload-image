@@ -1,0 +1,11 @@
+<div  class="le-select-find-toggle" ng-click="toggleSelect($event)">
+    <input class="select-find-value"  ng-model="model.text" />
+    <a class="select-find-arrow" href="javascript:void(0);"><i class="fa fa-caret-down"></i></a>
+</div>
+
+<ul class="le-select-find-menu" ng-class="{open:isOpen}" >
+    <li ng-repeat="option in optionsView" ng-click="selectOption(option)">
+        <a title="{{option.text}}">{{option.text}}</a>
+    </li>
+</ul>
+

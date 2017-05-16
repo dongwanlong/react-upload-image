@@ -1,0 +1,3 @@
+<div class="letv-mutiCheck check-buy-period" ng-repeat="buyPeriod in allBuyPeriods" ng-class="{'selected':isSelectedBuyPeriod(buyPeriod)}" ng-click="selectBuyPeriod(buyPeriod)">
+    <span>{{buyPeriod | buyPeriodFilter:isSelectedBuyPeriod(buyPeriod) }}</span>
+</div>

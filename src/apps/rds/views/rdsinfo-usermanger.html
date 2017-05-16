@@ -1,0 +1,60 @@
+<meta charset="utf-8" >
+<div class="view-common" ng-controller="rdsInfoUserMangerCtrl">
+<div class="le-row list-common">
+    <div class="le-col-12">
+        <div class="le-row operate-panel">
+            <div class="le-col-6 le-btn-group">
+                <button class="btn btn-le-green" ng-click="createUser('xxxl')"><span>{{RdsinfoUsermangerPage.createUserBtn}}</span></button>
+                <div dropdown class="more-operation-dropdown">
+                    <a href class="btn btn-le-yellow" dropdown-toggle>
+                        {{RdsinfoUsermangerPage.moreBtn}}
+                    </a>
+                    <ul class="dropdown-menu user-manger" aria-labelledby="simple-dropdown">
+                        <li><button class="btn dropdown-btn" ng-click="ipUserVisit('small')">{{RdsinfoUsermangerPage.ipVisterBtn}}</button></li>
+                        <li><button class="btn dropdown-btn" ng-click="resetPassWord('small')">{{RdsinfoUsermangerPage.resetPassWordBtn}}</button></li>
+                        <li><button class="btn dropdown-btn" ng-click="modifyRemark('small')">{{RdsinfoUsermangerPage.resetMarkBtn}}</button></li>
+                        <li><button class="btn dropdown-btn" ng-click="modifyOption('xxxl')">{{RdsinfoUsermangerPage.resetPowerBtn}}</button></li>
+                        <li><button class="btn dropdown-btn" ng-click="deleteUser('small')">{{RdsinfoUsermangerPage.deleteUserBtn}}</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="le-col-12">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th class="unselectable">
+                        <span class="iconfont icon-righticon" ng-class="{checked:isAllUserChecked()}"
+                              ng-click="checkAllUser()"></span>
+                    </th>
+                    <th><span>{{RdsinfoUsermangerPage.userTh}}</span></th>
+                    <th><span>{{RdsinfoUsermangerPage.stateTh}}</span></th>
+                    <th><span>{{RdsinfoUsermangerPage.maxTh}}</span></th>
+                    <th><span>{{RdsinfoUsermangerPage.mark}}</span></th>
+                </tr>
+                </thead>
+                <tbody id="tby">
+                <tr ng-repeat="user in rdsUserList">
+                    <td class="unselectable">
+                        <span class="iconfont icon-checkiconfill" ng-class="{checked:user.checked}"
+                              ng-click="checkUser(user)"></span>
+                    </td>
+                    <td class=""><span>{{user.username}}</span></td>
+                    <td class=""><span>{{user.status | rdsStatusFilter}}</span></td>
+                    <td class=""><span>{{user.maxConcurrency}}</span></td>
+                    <td class=""><span class="cur-pointer" ng-click="checkUser(user);modifyRemark('small');">{{user.descn|gReconvertFilter}}</span></td>
+                </tr>
+                <tr ng-if="rdsUserList.length==0">
+                    <td ng-if="!isloading" colspan=10 class="nodata">{{RdsinfoUsermangerPage.listTip}}</td>
+                    <td ng-if="isloading" colspan=10></td>
+                </tr>
+                </tbody>
+            </table>
+            <div ng-if="isloading" class="spin"></div>
+            <div ng-if="isloading" class="far-spin"></div>
+        </div>
+    </div>
+</div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

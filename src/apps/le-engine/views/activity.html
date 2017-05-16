@@ -1,0 +1,48 @@
+<div class="view-common" infinite-scroll="scrollCallBack()" infinite-scroll-disabled="isListLoading" infinite-scroll-distance="0">
+    <p class="lead" ng-show="!viewActiveList">{{activityListPage.viewActivePermissionsTip}}</p>
+    <div class="le-row list-common" ng-show="viewActiveList">
+        <div>
+            <div class="le-row list-common">
+                <div class="le-col-12" ng-show="activityDayList.length<=0">
+                    <p class="lead">{{activityListPage.dataListNull}}</p>
+                </div>
+                <div class="le-col-12">
+                    <div class="le-col-10">
+                        <ul>
+                            <li class="dayline" ng-repeat="activityDay in activityDayList">
+                                    <span class="dayline-title">{{activityDay[0].CreatedAt| date:'yyyy-MM-dd '}}</span>
+                                    <ul class="timeline">
+                                        <li class="timeline-inverted" ng-repeat="activity in activityDay">
+                                            <div ng-if="getActivityType(activity.Title)=='delete'" class="timeline-badge danger"><i class="fa fa-trash"></i>
+                                            </div>
+                                            <div ng-if="getActivityType(activity.Title)=='create'" class="timeline-badge info"><i class="fa fa-check"></i>
+                                            </div>
+                                            <div ng-if="getActivityType(activity.Title)=='edit'" class="timeline-badge warning"><i class="fa fa-edit"></i>
+                                            </div>
+                                            <div class="timeline-panel">
+                                                <div class="timeline-heading">
+                                                    <h4 class="timeline-title">{{activity.AuthorName}}</h4>
+                                                    <p>
+                                                        <small class="text-muted"><i class="fa fa-time"></i>{{activity.CreatedAt|date : 'yyyy-MM-dd HH:mm:ss '}}</small>
+                                                    </p>
+                                                </div>
+                                                <div class="timeline-body">
+                                                    <p><i ng-click="activity.open = !activity.open" class="iconfont icon-arrow01  icon-drop"  ng-class="{'dropdown':activity.open}"></i>{{activity.Title}}</p>
+                                                    <pre ng-show="activity.open" class="log-window log-window-green">{{formatObjStr(activity.RequestBody)}}</pre>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                            </li>
+                         </ul>
+                    </div>
+                    <div class="le-col-2"></div>
+                </div>
+            </div>
+        </div>
+        <div ng-if="isListLoading" class="spin"></div>
+        <div ng-if="isListLoading" class="far-spin"></div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

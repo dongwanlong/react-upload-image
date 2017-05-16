@@ -1,0 +1,17 @@
+<div class="side-bar" ng-controller="SideMenuCtrl">
+    <span  ng-show="linkGRdsStatus.nowMenuItemType=='parent'" class="menu-head" href="javascript:void(0);return false;" ng-click="menuHeadOpen=!menuHeadOpen">
+        <i class="iconfont icon-arrow01 dropdown-title" ng-class="{down:menuHeadOpen}"></i>
+        <span class="dropdown-title">{{sideMenuPage.rdsMenuTitle}}</span>
+    </span>
+    <ul class="side-menu" ng-show="!menuHeadOpen">
+        <li class="menu-item" ng-show="linkGRdsStatus.nowMenuItemType==sideMenuItem.type" ng-class="{'active':isSideMenuActive(sideMenuItem)}" ng-repeat="sideMenuItem in sideMenuItems">
+            <a ng-href="#{{repaireUrl(sideMenuItem)}}">
+                <div>
+                    <i class="{{sideMenuItem.icon}}"></i>
+                    <span ng-if="sideMenuItem.title!='return'">{{sideMenuItem.title}}</span>
+                    <span ng-if="sideMenuItem.title=='return'" title="{{linkGRdsStatus.rdsInfo.rdsName}}">{{ linkGRdsStatus.rdsInfo.rdsName | limitTo : 10}}</span>
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>

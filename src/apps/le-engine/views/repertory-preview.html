@@ -1,0 +1,62 @@
+<div class="view-common">
+    <div class="le-row list-common">
+        <div>
+            <div class="le-row list-common">
+                <div class="le-col-12 mirror-info">
+                    <p class="lead" ng-show="!viewImageGroupPermissions">{{repertoryPreviewPage.viewAppPermissionsTip}}</p>
+                    <table class="le-table-info table table-bordered" ng-show="viewImageGroupPermissions">
+                        <thead>
+                        <tr>
+                            <th colspan="2">
+                                <span>{{repertoryPreviewPage.repertory}}</span>
+                                    <a ng-show="deleteImageGroupPermissions" class="pull-right tb-set-btn" ng-click="deleteRepertory('small',repertoryInfo)">
+                                        <i class="iconfont icon-move delete-option"></i>
+                                    </a>
+                                    <a ng-show="editImageGroupPermissions" class="pull-right tb-set-btn" ng-click="editRepertory('large',repertoryInfo)">
+                                        <i class="iconfont icon-write edit-option"></i>
+                                    </a>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2">
+                                    <span class="title">ID:</span>
+                                    <span class="con">{{repertoryInfo.Id}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="title">{{repertoryPreviewPage.repertoryName}}:</span>
+                                    <span class="con">{{repertoryInfo.Name}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{repertoryPreviewPage.CreatedBy}}:</span>
+                                    <span class="con">{{repertoryInfo.OwnerName}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="title">{{repertoryPreviewPage.CreatedAt}}:</span>
+                                    <span class="con">{{repertoryInfo.CreatedAt| date: 'yyyy-MM-dd HH:mm:ss '}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{repertoryPreviewPage.UpdatedAt}}:</span>
+                                    <span class="con">{{repertoryInfo.LastActivityAt | date: 'yyyy-MM-dd HH:mm:ss '}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span class="title">{{repertoryPreviewPage.Description}}:</span>
+                                    <span class="con">{{repertoryInfo.Description}}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

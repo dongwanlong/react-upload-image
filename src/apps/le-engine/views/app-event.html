@@ -1,0 +1,28 @@
+<div class="view-common">
+    <div class="le-row list-common">
+            <div class="le-col-12">
+                <p class="lead" ng-if="!viewAppEventsPermissions">{{appEventPage.viewAppEventsPermissionsTip}}</p>
+                <p class="lead" ng-if="viewAppEventsPermissions && eventList.length<=0 && !loading">{{appEventPage.viewAppEventsNoEventTip}}</p>
+                <ul ng-if="viewAppEventsPermissions && eventList.length>0" class="timeline">
+                    <li class="timeline-inverted" ng-repeat="event in eventList">
+                        <div ng-if="event.Type=='Warning'" class="timeline-badge danger"><i class="fa fa-remove"></i></div>
+                        <div ng-if="event.Type=='Normal'" class="timeline-badge success"><i class="fa fa-check"></i></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4 class="timeline-title">{{event.Reason}}</h4>
+                                <p>
+                                    <small class="text-muted"><i class="fa fa-time"></i>{{event.CreatedAt | date : 'yyyy-MM-dd HH:mm:ss '}}</small>
+                                </p>
+                            </div>
+                            <div class="timeline-body">
+                                <p>{{event.Kind}} : {{event.Name}}</p>
+                                <p> {{event.Message}}</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

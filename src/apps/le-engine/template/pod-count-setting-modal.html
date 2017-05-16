@@ -1,0 +1,28 @@
+<div class="">
+    <div class="le-modal-header">
+        <span class="header-title" title="{{podCountSettingModalPage.title+':'+version}}">{{podCountSettingModalPage.title}}:{{version}}</span>
+        <a class="close" ng-click="closeModal()">
+            <i class="iconfont icon-add"></i>
+        </a>
+    </div>
+    <div class="le-modal-body">
+        <form novalidate class="pod_modify_form" name="pod_modify_form">
+            <div class="le-row">
+                <div class="le-col-3 col-label">
+                    <span class="letv-control-label">{{podCountSettingModalPage.countTitle}}：</span>
+                </div>
+                <div class="le-col-9 col-control">
+                    <input type="text" name="pod_count" class="le-form-control" ng-model="podCount" necessary="true" placeholder="" ng-trim="false" le-auto-focus regex="REGEX.PODCOUNT_APPER" input-integer-restrict />
+                    <input-validation-tooltip ng-show="(pod_modify_form.$submitted || pod_modify_form.pod_count.$touched) && pod_modify_form.pod_count.$error.inputIntegerRestrict"
+                                              validation-message="{{REGEX_MESSAGE.PODCOUNT_APPER}}">
+                    </input-validation-tooltip>
+                </div>
+            </div>
+            <div class="le-row alert-dialog">
+                <div class="le-col-12" ng-if="type!='add'">
+                    <button class="btn btn-le-yellow pull-right" ng-click="pod_modify_form.$valid && !isloading && changePodCount()">{{podCountSettingModalPage.ok}}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

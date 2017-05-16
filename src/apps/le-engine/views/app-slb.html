@@ -1,0 +1,72 @@
+<div class="view-common">
+    <div class="le-row le-tab-header">
+        <div class="le-tab-btn" ng-class="{'le-tab-active': tabType === 'list'}" ng-click="tabType='list';refreshSlbList()"><span>{{slbListPage.tabStatus}}</span></div>
+        <div class="le-tab-btn" ng-class="{'le-tab-active': tabType === 'log'}" ng-click="tabType='log';refreshSlbLog()"><span>{{slbListPage.tabSetting}}</span></div>
+    </div>
+    <!--状态-->
+    <div ng-show="tabType === 'list' && DomainInfoPermissions" class="list-common">
+        <div class="le-col-12">
+            <table class="le-table-info table table-bordered">
+                <thead>
+                <tr>
+                    <th colspan="2"><span>{{slbListPage.tableBaseInfoTitle}}</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr><td><span class="title">{{slbListPage.tableBaseInfoDomain}}:</span><span class="con">{{slbDetails.Domain}}</span></td><td><span class="title">{{slbListPage.tableBaseInfoGropIp}}:</span><span class="con">{{slbDetails.GroupId}}</span></td></tr>
+                <tr><td><span class="title">{{slbListPage.tableBaseInfoGropName}}:</span><span class="con">{{slbDetails.GroupName}}</span></td><td><span class="title">{{slbListPage.tableBaseInfoUpdateTime}}:</span><span class="con">{{slbDetails.UpdateTime|date :'yyyy-MM-dd HH:mm:ss'}}</span></td></tr>
+                <tr><td><span class="title">{{slbListPage.tableBaseInfoCNAME}}:</span><span class="con">{{slbDetails.Cname}}</span></td><td><span class="title">{{slbListPage.tableBaseInfoVIP}}:</span><span class="con">{{slbDetails.Vip}}</span></td></tr>
+                </tbody>
+            </table>
+
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th width="20%"><span>{{slbListPage.tableHost}}</span></th>
+                    <th width="15%"><span>{{slbListPage.tableDb}}</span></th>
+                    <th width="15%"><span>{{slbListPage.tablePublish}}</span></th>
+                    <th width="50%"><span>{{slbListPage.tableError}}</span></th>
+                </tr>
+                </thead>
+                <tbody id="tby">
+                <tr ng-repeat="slb in slbList">
+                    <td class=""><span>{{slb.Host}}</span></td>
+                    <td><span class="text-bg-blueGreen text-white">{{slb.DBStatus|slbDBMatchFilter}}</span></td>
+                    <td >
+                        <span ng-if="slb.Publish" class="text-bg-blueGreen text-white">
+                            {{slb.Publish}}
+                        </span>
+                        <span ng-if="!slb.Publish" class="text-bg-red text-white">
+                            {{slb.Publish}}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="text-bg-blueGreen text-white" ng-show="slb.Msg!='ok'" title="{{slb.Msg}}">{{slb.Msg}}</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div ng-show="!isListLoading && slbList.length>0" class="le-pagination">
+                <span>{{pagination.total}}{{totalItems}}{{pagination.nums}}，{{pagination.perPage}}{{pageSize}}{{pagination.nums}}</span>
+                <pagination boundary-links="true" direction-links="true"
+                            ng-change="pageChange()" items-per-page="pageSize"
+                            total-items="totalItems" ng-model="currentPage" class="pagination-sm" max-size="5"
+                            rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                            last-text="&raquo;">
+                </pagination>
+            </div>
+            <div ng-if="isListLoading" class="spin"></div>
+            <div ng-if="isListLoading" class="far-spin"></div>
+        </div>
+    </div>
+
+    <!--配置-->
+    <div ng-show="tabType === 'log'" && DomainStatusPermissions>
+        <div class="le-col-12 ">
+            <pre class="log-window log-window-green">{{log}}</pre>
+        </div>
+    </div>
+
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

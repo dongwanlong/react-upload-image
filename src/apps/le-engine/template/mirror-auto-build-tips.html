@@ -1,0 +1,40 @@
+<div class="modal-header letv-modal-header vm-create-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{title}}</h3>
+</div>
+<div class="modal-body">
+    <div class="le-col-12 codeTheme clearfix">
+        <pre class="clearfix codeThemePanel" >
+            <p>自动构建现阶段只支持  http://legitlab.letv.cn/ 和 http://git.letv.cn/ 两个地址里的git 项目.</p>
+            <p>一  如果您的项目地址在 http://legitlab.letv.cn/ 下，请按照下面的步骤操作：</p>
+            <p>1 登陆 http://legitlab.letv.cn/ 进入您当前镜像所使用的git 库: {{gitAddress}}</p>
+            <p>2 点击 左侧Members 导航栏 (您必须是此git 项目的Owner 或者Master 才能看到Member导航栏) ， 在右侧 界面中,添加用户 cloud_leengine ，权限赋值为： Report， 如下图：
+            <img src="/images/apps/le-engine/1.jpeg">
+            </p>
+            <p>3 点击左侧Settings 导航栏（您必须是此git 项目的Owner 才能看到Setting导航栏），进入setting 设置页面，点击左侧Web Hooks 导航栏，出现web hooks 设置页：如下图
+            <img src="/images/apps/le-engine/2.jpeg">
+            <img src="/images/apps/le-engine/3.jpeg">
+            </p>
+            <p>url: 中请输入： {{wholeUrl}}<br/>Trigger： 中勾选 Push events 和Tag push Events 两个复选框<br/>最后点击： Add Web Hook
+            </p>
+            <p>nocache:构建过程中是否使用之前构建的缓存，值为false时使用，为true时不使用,使用构建缓存可以节约构建时间<br/>mvncache:是否使用maven缓存,为true时使用,为false时不使用</p>
+            <p>二 如果您的项目地址在 http://git.letv.cn/ 下，请按照下面的步骤操作：</p>
+            <p>1 登陆 http://git.letv.cn/ 进入您当前镜像所使用的git 库: {{gitAddress}}</p>
+            <p>2 点击右上角的setting 按钮（您必须是这个项目的Owner，才能看到setting按钮）， 如下图：
+            <img src="/images/apps/le-engine/4.jpeg">
+            </p>
+            <p>3 点击左侧导航栏 Members 按钮， 点击右侧的：New Project member 按钮，添加成员， 如下图：
+            <img src="/images/apps/le-engine/5.jpeg">
+            </p>
+            <p>4 添加 cloud_leengine  成员， 权限设置Report ，点击Add users 。如下图：
+            <img src="/images/apps/le-engine/6.jpeg">
+            </p>
+            <p>5 点击左侧Web Hooks 导航栏，url 一栏请输入： {{wholeUrl}}<br/>Trigger 中请勾选Push Evens 和 Tag Push Events 两个复选框， <br/>点击：Add Web Hook 按钮， 如下图：
+            <img src="/images/apps/le-engine/7.jpeg">
+            </p>
+        </pre>
+    </div>
+    <div class="clearfix"></div>
+</div>

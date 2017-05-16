@@ -1,0 +1,49 @@
+{
+  appDir: "./",
+  baseUrl: "./",
+  dir: "../le-engine_en-us_dist",
+  removeCombined: true,
+  optimize: 'uglify2',
+  uglify2: {
+    sequences: false,
+    compress: {
+      properties: true
+    },
+    mangle: true
+  },
+  paths: {
+    //vendor
+    'jquery': 'empty:',
+    'bootstrap': 'empty:',
+    'bootstrap-datetimepicker': 'empty:',
+    'highcharts': 'empty:',
+    'ace': 'empty:',
+    'ui-ace': 'empty:',
+    'mode-dockerfile': 'empty:',
+    'angular': 'empty:',
+
+    //
+    'angular-animate':'empty:',
+    'angular-route': 'empty:',
+    'angular-cookies': 'empty:',
+    'angular-sanitize':'empty:',
+    'ui-bootstrap': 'empty:',
+    'ng-toaster': 'empty:',
+    'ng-rzslider':'empty:',
+    'infinite-scroll':'empty:',
+    //
+
+    'common': '../../javascripts/common',
+    'browserCheck': '../../javascripts/home/browserCheck',
+    //js文件
+    'app': './app-build',
+    'app.router': './app.route',
+    'language': './languages/language.en-us',
+    'common-language': '../common/languages/language.en-us'
+  },
+  modules: [
+    {
+      name: "main-build"
+    }
+  ]
+}

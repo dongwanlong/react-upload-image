@@ -1,0 +1,67 @@
+<div class="modal-header letv-modal-header vm-create-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 class="modal-title">{{repertoryCreateModalPage.repertoryCreate}}</h3>
+</div>
+<div class="modal-body">
+    <form novalidate class="repertory-create-form" name="repertory_create_form">
+        <div>
+            <div class="le-col-8">
+                <div class="left-inputs clearfix" >
+
+                    <!--仓库名称-->
+                    <div class="inputs-item clearfix">
+                        <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{repertoryCreateModalPage.repertoryName}}：</span></div>
+                        <div class="le-col-8 letv-control-content">
+                            <div class="le-col-10 clear-space">
+                                <input type="text" name="repertory_name" class="le-form-control" ng-model="repertoryName" regex="REGEX.NAME_LE_ENGINE" ng-mouseover="repertoryCreateDesc=REGEX_MESSAGE.NAME_LE_ENGINE" placeholder="{{repertoryCreateModalPage.inputRepertoryName}}" ng-trim="false" le-auto-focus necessary="true" min="4" max="30" input-restrict/>
+                            </div>
+                            <div class="le-col-2 clear-space col-control-height">
+                                <input-validation-tooltip ng-show="(repertory_create_form.$submitted || repertory_create_form.repertory_name.$touched) && repertory_create_form.repertory_name.$error.inputRestrict"
+                                                          validation-message="{{REGEX_MESSAGE.NAME_LE_ENGINE}}">
+                                </input-validation-tooltip>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--仓库描述-->
+                    <div class="inputs-item clearfix">
+                        <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{repertoryCreateModalPage.repertoryDescribe}}：</span></div>
+                        <div class="le-col-8 letv-control-content">
+                            <div class="le-col-10 clear-space">
+                                <textarea  min-length="5" length="1024" necessary=true type="text" name="repertory_describe" class="repertory le-form-control " ng-model="repertoryDescribe" ng-mouseover="repertoryCreateDesc=REGEX_MESSAGE.NAME_APP_DESCRIPTION"  placeholder="{{repertoryCreateModalPage.inputRepertoryDescribe}}" ng-trim="false" input-length-restrict/>
+                            </div>
+                            <div class="le-col-2 clear-space col-control-height">
+                                <input-validation-tooltip ng-show="(repertory_create_form.$submitted || repertory_create_form.repertory_describe.$touched) && repertory_create_form.repertory_describe.$error.inputLengthRestrict"
+                                                          validation-message="{{REGEX_MESSAGE.NAME_APP_DESCRIPTION}}">
+                                </input-validation-tooltip>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="le-col-4 body-right">
+                <div class="right-top">
+                    <div class="top-title"><span>{{mirrorCreateModalPage.rootImageDesc}}</span><i class="iconfont icon-rounddown"></i></div><br>
+                    <p>{{repertoryCreateDesc}}</p>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <!--按钮-->
+        <div class="button-body">
+            <div class="le-col-12">
+                <div class="row-submit-order pull-right">
+                    <button class="btn btn-le-red btn-submit-order" ng-click="repertory_create_form.$valid && createRepertory()">
+                        <span>{{repertoryCreateModalPage.ok}}</span>
+                    </button>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <iframe style="display:none" ng-src="{{keypairDownloadUrl}}"></iframe>
+    </form>
+</div>

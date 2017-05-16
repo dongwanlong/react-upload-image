@@ -1,0 +1,150 @@
+<div class="view-common">
+    <div class="le-row list-common">
+        <div>
+            <div class="le-row list-common">
+                <div class="le-col-12 mirror-info">
+                    <!--代码构建信息-->
+                    <div ng-if="resType=='ci'">
+                        <p class="lead" ng-show="!viewImagePermissions">{{mirrorPreviewListPage.viewCiPermissionsTip}}</p>
+                        <table class="le-table-info table table-bordered" ng-show="viewImagePermissions">
+                            <thead>
+                            <tr>
+                                <th colspan="2">
+                                    <span>{{mirrorPreviewListPage.basicMirror}}</span>
+                                    <a ng-show="deleteImagePermissions" class="pull-right tb-set-btn" ng-click="deleteMirror('small',mirrorInfo)">
+                                        <i class="iconfont icon-move delete-option"></i>
+                                    </a>
+                                    <a ng-show="editImagePermissions" class="pull-right tb-set-btn" ng-click="editMirror('xlarge');">
+                                        <i class="iconfont icon-write edit-option"></i>
+                                    </a>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <span class="title">ID:</span>
+                                    <span class="con">{{mirrorInfo.Id}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{mirrorPreviewListPage.mirror}}:</span>
+                                    <span class="con">{{mirrorInfo.Path}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="title">{{mirrorPreviewListPage.baseMirrorTableGit}}:</span>
+                                    <span class="con">{{mirrorInfo.Git}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{mirrorPreviewListPage.baseMirrorTableCreateTime}}:</span>
+                                    <span class="con">{{mirrorInfo.CreatedAt | date: 'yyyy-MM-dd HH:mm:ss '}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="title">{{mirrorPreviewListPage.baseMirrorTableBranch}}:</span>
+                                    <span class="con">{{mirrorInfo.Branch}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{mirrorPreviewListPage.baseMirrorTableLastTime}}:</span>
+                                    <span class="con">{{mirrorInfo.LastActivityAt | date : 'yyyy-MM-dd HH:mm:ss '}}</span>
+                                </td>
+                            </tr>
+                            <tr ng-if="resType=='ci' && mirrorInfo.BuildToken">
+                                <td colspan="2">
+                                    <span class="title">{{mirrorPreviewListPage.buildToken}}:</span>
+                                    <span class="con">{{mirrorInfo.BuildToken}}</span>
+                                </td>
+                            </tr>
+                            <tr ng-if="resType=='ci'">
+                                <td>
+                                    <span class="title">{{mirrorPreviewListPage.baseMirrorTableDockerFilePath}}:</span>
+                                    <span class="con">{{mirrorInfo.DockerFilePath}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{mirrorPreviewListPage.tableShellPath}}:</span>
+                                    <span class="con">{{mirrorInfo.CompileEnable?mirrorInfo.CompileFilePath:""}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span class="title">{{mirrorPreviewListPage.mirrorActivityDescribe}}:</span>
+                                    <span class="con">{{mirrorInfo.Description}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="title">{{mirrorPreviewListPage.tableCompile}}:</span>
+                                    <span class="con">{{mirrorInfo.CompileEnable?ciSettingModalPage.compile:ciSettingModalPage.noCompile}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{mirrorPreviewListPage.tableCompileImage}}:</span>
+                                    <span class="con">{{mirrorInfo.CompileEnable?mirrorInfo.CompileImage:''}}</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--镜像信息-->
+                    <div ng-if="resType!='ci'">
+                        <p class="lead" ng-show="!viewImagePermissions">{{mirrorPreviewListPage.viewImagePermissionsTip}}</p>
+                        <table class="le-table-info table table-bordered" ng-show="viewImagePermissions">
+                            <thead>
+                            <tr>
+                                <th colspan="2">
+                                    <span>{{mirrorPreviewListPage.basicMirror}}</span>
+                                    <a ng-show="deleteImagePermissions" class="pull-right tb-set-btn" ng-click="deleteMirror('small',mirrorInfo)">
+                                        <i class="iconfont icon-move delete-option"></i>
+                                    </a>
+                                    <a ng-show="editImagePermissions" class="pull-right tb-set-btn" ng-click="editMirror('large');">
+                                        <i class="iconfont icon-write edit-option"></i>
+                                    </a>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <span class="title">ID:</span>
+                                    <span class="con">{{mirrorInfo.Id}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{mirrorPreviewListPage.mirror}}:</span>
+                                    <span class="con">{{mirrorInfo.Path}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="title">{{mirrorPreviewListPage.baseMirrorTableCreateTime}}:</span>
+                                    <span class="con">{{mirrorInfo.CreatedAt | date: 'yyyy-MM-dd HH:mm:ss '}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{mirrorPreviewListPage.baseMirrorTableLastTime}}:</span>
+                                    <span class="con">{{mirrorInfo.LastActivityAt | date : 'yyyy-MM-dd HH:mm:ss '}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="title">{{mirrorPreviewListPage.mirrorActivityDescribe}}:</span>
+                                    <span class="con">{{mirrorInfo.Description}}</span>
+                                </td>
+                                <td>
+                                    <span class="title">{{mirrorCreateModalPage.ownership}}:</span>
+                                    <span class="con">{{mirrorInfo.VisibilityLevel | visibility}}</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div ng-if="isListLoading" class="spin"></div>
+                    <div ng-if="isListLoading" class="far-spin"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>

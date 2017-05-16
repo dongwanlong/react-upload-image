@@ -1,0 +1,152 @@
+<div class="modal-header letv-modal-header vm-create-modal-header">
+    <a class="close" ng-click="closeModal()">
+        <i class="iconfont icon-add"></i>
+    </a>
+    <h3 ng-if="handleType=='edit'" class="modal-title">{{appSettingModalPage.appEdit}}:{{appName}}</h3>
+    <h3 ng-if="handleType=='create'" class="modal-title">{{appSettingModalPage.appCreate}}</h3>
+</div>
+<div class="modal-body">
+    <form novalidate class="app-create-form" name="app_create_form">
+        <div class="le-col-8 clearfix ">
+            <div class="left-inputs clearfix">
+                <div class="inputs-item clearfix">
+                    <div class="le-col-4 letv-control-title"><span class="text-red">*</span><span class="letv-control-label">{{appSettingModalPage.appName}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <input ng-mouseover="appCreateDesc=REGEX_MESSAGE.NAME_APP_NAMESPACE" type="text" name="app_name" class="le-form-control appName" ng-model="appName" regex="REGEX.NAME_APP_NAMESPACE" necessary="true" placeholder="{{appSettingModalPage.inputAppName}}"  ng-trim="false" input-restrict/>
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(app_create_form.$submitted || app_create_form.app_name.$touched) && app_create_form.app_name.$error.inputRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME_APP_NAMESPACE}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+                <div class="inputs-item clearfix" ng-show="handleType!='edit'">
+                    <div class="le-col-4 letv-control-title"><span class="text-red">*</span><span class="letv-control-label">{{appSettingModalPage.Company}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <input type="hidden" name="company_name" ng-model="selectedCompany.value" required />
+                            <le-select select-model="selectedCompany" select-options="companyList"></le-select>
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="app_create_form.$submitted && app_create_form.company_name.$error.required"
+                                                      validation-message="{{REGEX_MESSAGE.NAME_APP_COMPANY}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+                <div class="inputs-item clearfix" ng-show="handleType!='edit'">
+                    <div class="le-col-4 letv-control-title"><span class="text-red">*</span><span class="letv-control-label">{{appSettingModalPage.mirrorSelect}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <le-select select-model="appLinkMirrorNow" select-options="appLinkMirrorList"></le-select>
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(app_create_form.$submitted || app_create_form.mirror_now.$touched )&& app_create_form.mirror_now.$error.inputRestrict" validation-message="{{REGEX_MESSAGE.SELECT_APP_MIRROR}}"></input-validation-tooltip>
+                            <input ng-if="appLinkMirrorNow.value==0" necessary="true" type="hidden" name="mirror_now" class="le-form-control" ng-model="initEmptyValue" ng-trim="false" input-restrict />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inputs-item clearfix">
+                    <div class="le-col-4 letv-control-title"><span class="text-red">*</span><span class="letv-control-label">{{appSettingModalPage.appDescribe}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <textarea ng-mouseover="appCreateDesc=REGEX_MESSAGE.TIP_APP_DESCRIBE" type="text" name="app_describe" class="appDescribe le-form-control " min-length="5" length="1024" necessary=true ng-model="appDescribe" regex="REGEX.NAME_APP_DESCRIPTION"  placeholder="{{appSettingModalPage.inputAppDescribe}}" ng-trim="false"  input-length-restrict/>
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(app_create_form.$submitted || app_create_form.app_describe.$touched) && app_create_form.app_describe.$error.inputLengthRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME_APP_DESCRIPTION}}">
+                            </input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-hide="isHideDomain">
+                <div class="inputs-item clearfix">
+                    <div class="le-col-4 letv-control-title"></div>
+                    <div class="le-col-8 letv-control-content">
+                        <input class="show-ssh-pwd" type="checkbox" ng-change="updateDomain()" ng-model="showDomainSet" />{{appSettingModalPage.showDomainOpt}}
+                    </div>
+                </div>
+
+                <div ng-show="showDomainSet">
+                <div class="inputs-item clearfix">
+                        <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{appSettingModalPage.DomainName}}：</span></div>
+                        <div class="le-col-8 letv-control-content">
+                            <div class="le-col-10 clear-space">
+                                <input necessary="showDomainSet"  ng-mouseover="appCreateDesc=appSettingModalPage.inputDomainName" type="text" name="DomainName" regex="REGEX.DOMAIN_NAME" class="le-form-control" ng-model="DomainName" placeholder="{{appSettingModalPage.DomainName}}" ng-trim="false" input-restrict/>
+                            </div>
+                            <div class="le-col-2 clear-space col-control-height">
+                                <input-validation-tooltip ng-show="(app_create_form.$submitted || app_create_form.DomainName.$touched) && (app_create_form.DomainName.$error.inputRestrict)"
+                                                          validation-message="{{REGEX_MESSAGE.DOMAIN_NAME}}">
+                                </input-validation-tooltip>
+                            </div>
+                        </div>
+                </div>
+
+                <div class="inputs-item clearfix" ng-show="!app_create_form.DomainName.$error.inputRestrict">
+                    <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{appSettingModalPage.Port}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <input ng-mouseover="appCreateDesc=common.services.NAME_APP_PORT" type="text" name="Port" compare-value="DomainName" class="le-form-control" ng-model="Port"  ng-trim="false" min="1" max="65535" input-compare-and-integer-restrict />
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip ng-show="(app_create_form.$submitted || app_create_form.Port.$touched )&& app_create_form.Port.$error.inputCompareAndIntegerRestrict"
+                                                      validation-message="{{REGEX_MESSAGE.NAME_APP_PORT}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="inputs-item clearfix">
+                    <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{appSettingModalPage.Https}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <le-radio-select class="httpsRadio" select-model="lbHttpsTypeNow" select-options="lbHttpsTypeList"></le-radio-select>
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input ng-if="DomainName && lbHttpsTypeNow.value==2" necessary="false" type="hidden" name="lb_https_now" compare-value="DomainName" class="le-form-control" ng-model="initEmptyValue" ng-trim="false" input-compare-restrict />
+                            <input-validation-tooltip  ng-show="(app_create_form.$submitted || app_create_form.lb_https_now.$touched )&& app_create_form.lb_https_now.$error.inputCompareRestrict" validation-message="{{REGEX_MESSAGE.SELECT_HTTPS}}"></input-validation-tooltip>
+                        </div>
+                    </div>
+                </div>
+                <div class="inputs-item clearfix">
+                    <div class="le-col-4 letv-control-title"><span class="letv-control-label">{{appSettingModalPage.loadBalanceCluster}}：</span></div>
+                    <div class="le-col-8 letv-control-content">
+                        <div class="le-col-10 clear-space">
+                            <le-select select-model="lbClusterNow" select-options="lbClusterList"></le-select>
+                        </div>
+                        <div class="le-col-2 clear-space col-control-height">
+                            <input-validation-tooltip  ng-show="(app_create_form.$submitted || app_create_form.lb_cluster_now.$touched )&& app_create_form.lb_cluster_now.$error.inputCompareRestrict" validation-message="{{REGEX_MESSAGE.SELECT_SLB_GROUP}}"></input-validation-tooltip>
+                            <input ng-if="DomainName && lbClusterNow.value==0" necessary="false" type="hidden" name="lb_cluster_now" compare-value="DomainName" class="le-form-control" ng-model="initEmptyValue" ng-trim="false" input-compare-restrict />
+                        </div>
+                    </div>
+                </div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="le-col-4 body-right">
+            <div class="right-top">
+                <div class="top-title"><span>{{appSettingModalPage.appDescribe}}</span><i class="iconfont icon-rounddown"></i></div><br>
+                <p class="form-description">{{appCreateDesc}}</p>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <!--按钮-->
+        <div class="button-body">
+            <div class="le-col-12">
+                <div class="row-submit-order pull-right">
+                    <button class="btn btn-le-red btn-submit-order" ng-click="app_create_form.$valid && createApp()">
+                        <span>{{appSettingModalPage.ok}}</span>
+                    </button>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="clearfix"></div>
+    </form>
+</div>

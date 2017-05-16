@@ -1,0 +1,45 @@
+<div class="view-common">
+    <p class="lead" ng-show="!viewMembersPermissions">{{memberListPage.viewMembersPermissionsTip}}</p>
+    <div class="le-row list-common" ng-show="viewMembersPermissions">
+        <div class="le-row operate-panel">
+            <div class="le-col-6 le-btn-group">
+                <button ng-show="addMemberPermissions" class="btn btn-le-blue" ng-click="openMemberCreateModal('large')"><span>{{memberListPage.memberCreate}}</span></button>
+                <button ng-show="!loading && exitMembersPermissions" class="btn btn-le-red" ng-click="logoutMember('small')"><span>{{memberListPage.logoutRepertoryMember}}</span></button>
+            </div>
+        </div>
+        <div>
+            <div class="le-row list-common">
+                <div class="le-col-12">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th><span>{{memberListPage.memberName}}</span></th>
+                            <th><span>{{memberListPage.AccessLevel}}</span></th>
+                            <th><span>{{memberListPage.moreBtn}}</span></th>
+                        </tr>
+                        </thead>
+                        <tbody id="allRepertoryMember">
+                        <tr ng-repeat="member in memberList">
+                            <td class="le-col-name">
+                                <span class="text-gray">{{member.UserName}}</span>
+                            </td>
+                            <td class=""><span>{{member.AccessLevel | authFormat}}</span></td>
+                            <td>
+                                <span ng-if="member.AccessLevelName==='Owner' || userId==member.UserId || !editMemberPermissions && !deleteMemberPermissions">-</span>
+                                <i ng-if="member.AccessLevelName!='Owner' &&  userId!=member.UserId && editMemberPermissions" class="iconfont icon-write edit-option " ng-click="editMember('medium',member)"></i>
+                                <i ng-if="member.AccessLevelName!='Owner' &&  userId!=member.UserId && deleteMemberPermissions" class="iconfont icon-move delete-option" ng-click="deleteMember('small',member)"></i>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <div ng-if="isListLoading" class="spin"></div>
+                    <div ng-if="isListLoading" class="far-spin"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true,'position-class':'toast-top-right'}">
+</toaster-container>
