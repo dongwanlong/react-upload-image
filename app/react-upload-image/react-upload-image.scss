@@ -1,0 +1,130 @@
+$img-size: 100px;
+$iconfont-url: "./font/iconfont";
+
+@font-face {font-family: "iconfont";
+  src: url('#{$iconfont-url}.eot'); /* IE9*/
+  src: url('#{$iconfont-url}.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('#{$iconfont-url}.woff') format('woff'), /* chrome, firefox */
+  url('#{$iconfont-url}.ttf') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('#{$iconfont-url}.svg#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-plus:before { content: "\e758"; }
+
+.icon-delete:before { content: "\e69d"; }
+
+.icon-view:before { content: "\e694"; }
+
+.upload{
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    input{
+        display: none
+    }
+    background-color: #fafafa;
+}
+
+.upload-add-first{
+    display: flex;
+    width: 100%;
+    height: 100px;
+    justify-content:center;
+    align-items:center;
+    &:hover{
+        cursor:pointer;
+    }
+    color: #333;
+    font-size: 16px;
+}
+.upload-options{
+    display: flex;
+    height: 100px;
+    align-items: center;
+    justify-content: flex-start;
+    .upload-add, .upload-action{
+        &:hover{
+            cursor:pointer;
+        }
+        margin-left: 20px;
+        width: 80px;
+        height: 50px;
+        display: flex;
+        background-color: #666;
+        justify-content: center;
+        align-items: center;
+        color: #FFF;
+        border-radius: 4px;
+    }
+}
+
+.upload-add-title{
+    color: #FFF;
+}
+
+.upload-list{
+    display: flex;
+}
+
+.upload-view{
+    display: none;
+    position: absolute;
+    left:200px;
+    top:50px;
+    width: 0;
+    height: 0;
+    z-index: 3;
+}
+.upload-view-show{
+    display: block;
+    left:200px;
+    top:50px;
+}
+
+.upload-img{
+    display: inline-flex;
+    width: $img-size;
+    height: $img-size;
+    position: relative;
+    img{
+        width: $img-size;
+        height: $img-size;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 0;
+    }
+    &:hover{
+        cursor: pointer;
+        .upload-img-mask{
+            display: block;
+        }
+    }
+}
+.upload-img-mask{
+    width: $img-size;
+    height: $img-size;
+    line-height: $img-size;
+    text-align: center;
+    background-color: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 1;
+    i{
+        color: #FFF;
+        font-size: 18px;
+    }
+}
+.upload-img-view{
+    margin-right: 8px;
+}
+.upload-img-delete{
+    margin-left: 8px;
+}
