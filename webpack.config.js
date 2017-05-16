@@ -12,7 +12,6 @@ module.exports = {
 
   entry: {
     "main": "./app/main.jsx",
-    vendors: ['jquery']
   },
 
   output: {

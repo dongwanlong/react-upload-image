@@ -1,11 +1,10 @@
 {
   "name": "react-upload-image",
-  "version": "1.0.3",
+  "version": "1.0.0",
   "description": "give me a start!",
   "main": "lib/index.js",
   "dependencies": {
     "classnames": "^2.2.5",
-    "jquery": "^3.1.1",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "uuid": "^3.0.1"
