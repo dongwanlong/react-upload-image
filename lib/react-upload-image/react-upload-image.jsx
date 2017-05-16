@@ -153,7 +153,7 @@ ReactUploadImage.defaultProps = {
 ReactUploadImage.propTypes = {
     beforeUpload: PropTypes.func.isRequired,
     fileChange: PropTypes.func.isRequired,
-    prefix: PropTypes.string.isRequired,
+    prefix: PropTypes.string,
 };
 
 export default ReactUploadImage;

@@ -1,6 +1,6 @@
 {
   "name": "react-upload-image",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "give me a start!",
   "main": "index.js",
   "dependencies": {
@@ -29,6 +29,10 @@
   },
   "scripts": {
     "start": "webpack-dev-server --hot --inline"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dongwanlong/react-upload-image.git"
   },
   "author": "dongwanlong",
   "license": "ISC"
