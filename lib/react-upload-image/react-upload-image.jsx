@@ -3,6 +3,7 @@ import cx from 'classnames';
 import uuidV1 from 'uuid/v1';
 import './react-upload-image.scss';
 
+
 class ReactUploadImage extends React.Component {
 
     constructor() {
@@ -13,58 +14,127 @@ class ReactUploadImage extends React.Component {
                 isShow: false,
                 path: '',
                 style: {}
-            }
+            },
         };
         this.handChange = this.handChange.bind(this);
         this.viewImg = this.viewImg.bind(this);
         this.deleteImg = this.deleteImg.bind(this);
         this.getImgInfo = this.getImgInfo.bind(this);
         this.closeImg = this.closeImg.bind(this);
+        this.pushImg = this.pushImg.bind(this);
+        this.getBase64Image = this.getBase64Image.bind(this);
+    }
+
+    componentWillMount() {
+        if (this.props.initImgList && this.props.initImgList.length > 0) {
+            let dataList = [];
+            let promiseArr = [];
+            this.props.initImgList.forEach( item => {
+                let image = new Image();
+                image.src = item;
+
+                promiseArr.push(
+                    new Promise((resolve, reject) => {
+                        image.onload = ()=> {
+                            let imageBase64 = this.getBase64Image(image);
+                            dataList.push({
+                                width: image.width,
+                                height: image.height,
+                                src: imageBase64.dataURL,
+                                size: imageBase64.size,
+                                key: uuidV1(),
+                            });
+                            resolve();
+                        }
+                    })
+                );
+            });
+
+            Promise.all(promiseArr).then( result => {
+                this.props.fileChange(dataList);
+                this.setState({
+                    imgList: dataList,
+                });
+            });
+        } else {
+            this.setState({
+                imgList: [],
+            });
+        }
+
+    }
+
+    getBase64Image(img) {
+        var canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+        var dataURL = canvas.toDataURL("image/png");
+
+        let size = parseInt(dataURL.length - (dataURL.length / 8) * 2);
+
+        return {
+            dataURL,
+            size,
+        }
     }
 
     handChange(e) {
         const { beforeUpload, fileChange } = this.props;
-        this.getImgInfo(e).then(list => {
+
+        Promise.all(this.getImgInfo(e)).then(list => {
             if (beforeUpload && !beforeUpload(list)) return;
-            list.forEach(item=>{
-                this.pushImg(item);
+            
+            let promiseArr = [];
+
+            list.forEach(item => {
+                promiseArr.push(this.pushImg(item));
             });
-            fileChange(list);
-        }
-        );
-    };
+
+            Promise.all(promiseArr).then(()=>{
+                fileChange(this.state.imgList);
+            });
+        });
+    }
 
     pushImg(value) {
         let { imgList } = this.state;
-        imgList.push(value);
-        this.setState({
-            imgList: imgList,
+
+        return new Promise((resolve, reject)=>{
+            imgList.push(value);
+            this.setState({
+                imgList: imgList,
+            },function(){
+                resolve();
+            });
         });
-    };
+    }
 
     getImgInfo(e) {
         const fileArray = Array.from(e.target.files);
 
-        let promiseArray = fileArray.map((value, index, arr)=>{
-            return new Promise((resolve, reject)=>{
+        let promiseArray = fileArray.map((value, index, arr) => {
+            return new Promise((resolve, reject) => {
                 let reader = new FileReader();
                 reader.onload = ev => {
-                let image = new Image();
-                image.src = ev.target.result;
-                image.onload = function () {
-                    resolve({
-                        width: image.width,
-                        height: image.height,
-                        src: ev.target.result,
-                        size: ev.total,
-                        key: uuidV1(),
-                    });
-                }
+                    let image = new Image();
+                    image.src = ev.target.result;
+                    image.onload = function () {
+                        resolve({
+                            width: image.width,
+                            height: image.height,
+                            src: ev.target.result,
+                            size: ev.total,
+                            key: uuidV1(),
+                        });
+                    }
                 }
                 reader.readAsDataURL(value);
             });
         });
-        return Promise.all(promiseArray);
+        return promiseArray;
     }
 
     closeImg() {
@@ -93,23 +163,23 @@ class ReactUploadImage extends React.Component {
 
     deleteImg(value) {
         let { imgList } = this.state;
-        let index = imgList.findIndex((item, index, arr)=>{
+        let index = imgList.findIndex((item, index, arr) => {
             return value.key == item.key;
         })
-        imgList.splice(index,1);
+        imgList.splice(index, 1);
         this.setState({
             imgList: imgList,
         });
     }
 
     render() {
-        const {imgList, viewImg} = this.state;
-        const count = this.props.count || 1;
-        const prefix = this.props.prefix;
+        const { imgList, viewImg } = this.state;
+        const { fileKey } = this.props;
+        const fileCount = this.props.fileCount || 1;
 
         return (
-            <div className={`upload ${prefix}`}>
-                <input type="file" name='upload-file' id="upload-file" onChange={this.handChange} />
+            <div className="upload">
+                <input type="file" name={`upload-file-${fileKey}`} id={`upload-file-${fileKey}`} onChange={this.handChange} />
                 <img
                     className={cx({
                         'upload-view': true,
@@ -117,28 +187,24 @@ class ReactUploadImage extends React.Component {
                     })}
                     src={viewImg.path} style={viewImg.style}
                     onClick={this.closeImg}
-                    />
+                />
                 {imgList.length > 0 && <div className="upload-list">
                     {imgList.map(img => {
                         return (
                             <div key={img.key} className="upload-img">
                                 <img src={img.src} />
                                 <div className="upload-img-mask">
-                                    <a className="upload-img-view" onClick={e => { this.viewImg(img) } }>
-                                        <i className="iconfont icon-view" />
-                                    </a>
-                                    <a className="upload-img-delete" onClick={e => { this.deleteImg(img)} }>
-                                        <i className="iconfont icon-delete" />
-                                    </a>
+                                    <Icon type="eye-o" className="upload-img-view" onClick={e => { this.viewImg(img) }} />
+                                    <Icon type="delete" className="upload-img-delete" onClick={e => { this.deleteImg(img) }} />
                                 </div>
                             </div>
                         );
                     })}
                     <img src={this.state.srcPath} />
                 </div>}
-                {imgList.length<count && <div className="upload-options">
-                    <label htmlFor="upload-file" className="upload-add">
-                        <a className="upload-add-title"><i className="iconfont icon-plus" /></a>
+                {imgList.length < fileCount && <div className="upload-options">
+                    <label htmlFor={`upload-file-${fileKey}`} className="upload-add">
+                        <span className="upload-add-title"><Icon type="plus" /></span>
                     </label>
                 </div>}
             </div>
@@ -146,14 +212,12 @@ class ReactUploadImage extends React.Component {
     }
 }
 
-ReactUploadImage.defaultProps = {
-    prefix: 'upload',
-}
-
 ReactUploadImage.propTypes = {
-    beforeUpload: PropTypes.func.isRequired,
-    fileChange: PropTypes.func.isRequired,
-    prefix: PropTypes.string,
+    beforeUpload: React.PropTypes.func,
+    fileChange: React.PropTypes.func.isRequired,
+    fileKey: React.PropTypes.string.isRequired,
+    fileCount: React.PropTypes.number,
+    initImgList: React.PropTypes.array,
 };
 
 export default ReactUploadImage;
