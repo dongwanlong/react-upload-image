@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactUploadImage from './react-upload-image/react-upload-image';
+import ReactUploadImage from '../lib/index';
 
 class App extends React.Component{
     constructor() {
@@ -9,7 +9,7 @@ class App extends React.Component{
     render() {
         return (
           <div className="container">
-            <ReactUploadImage count={4} beforeUpload={()=>{return true;}} fileChange={()=>{}}/>
+            <ReactUploadImage fileCount={8} beforeUpload={()=>{return true;}} fileChange={()=>{}}/>
           </div>
         )
     }

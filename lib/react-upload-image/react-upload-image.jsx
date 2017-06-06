@@ -194,8 +194,12 @@ class ReactUploadImage extends React.Component {
                             <div key={img.key} className="upload-img">
                                 <img src={img.src} />
                                 <div className="upload-img-mask">
-                                    <Icon type="eye-o" className="upload-img-view" onClick={e => { this.viewImg(img) }} />
-                                    <Icon type="delete" className="upload-img-delete" onClick={e => { this.deleteImg(img) }} />
+                                    <a className="upload-img-view" onClick={e => { this.viewImg(img) } }>
+                                        <i className="iconfont icon-view" />
+                                    </a>
+                                    <a className="upload-img-delete" onClick={e => { this.deleteImg(img)} }>
+                                        <i className="iconfont icon-delete" />
+                                    </a>
                                 </div>
                             </div>
                         );
@@ -204,7 +208,7 @@ class ReactUploadImage extends React.Component {
                 </div>}
                 {imgList.length < fileCount && <div className="upload-options">
                     <label htmlFor={`upload-file-${fileKey}`} className="upload-add">
-                        <span className="upload-add-title"><Icon type="plus" /></span>
+                        <a className="upload-add-title"><i className="iconfont icon-plus" /></a>
                     </label>
                 </div>}
             </div>
